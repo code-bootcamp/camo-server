@@ -1,0 +1,27 @@
+steps:
+  #1단계 => docker-compose -f docker-compose.prod.yaml build
+  - name: docker/compose:1.29.0
+    args:
+      - -f
+      - backend/docker-compose.prod.yaml
+      - build
+
+  #2단계 => docker-compose -f docker-compose.prod.yaml push
+  - name: docker/compose:1.29.0
+    args:
+      - -f
+      - backend/docker-compose.prod.yaml
+      - push
+
+  #3단계 => kubectl set image deployment/hamzzi-nestjs my-backend-sha256-1=asia.gcr.io/reliable-aloe-358105/my-backend:2.0(바꾼 버전)
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      [
+        'set',
+        'image',
+        'deployment/hamzzi-nestjs',
+        'my-backend-sha256-1=asia.gcr.io/reliable-aloe-358105/my-backend:1.0',
+      ]
+    env:
+      - CLOUDSDK_COMPUTE_ZONE=asia-northeast3
+      - CLOUDSDK_CONTAINER_CLUSTER=hamzzi-cluster-1

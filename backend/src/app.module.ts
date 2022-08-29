@@ -1,31 +1,16 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { BoardsModule } from './apis/boards/boards.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { ProductCategoryModule } from './apis/productsCategories/productsCategories.module';
-import { ProductModule } from './apis/products/products.module';
-import { UsersModule } from './apis/users/users.module';
-import { AuthsModule } from './apis/auths/auths.module';
-import { PointsTransactionsModule } from './apis/pointsTransactions/pointsTrnasactions.module';
-import { PaymentMoudle } from './apis/payment/payment.module';
-import { FilesModule } from './apis/files/file.module';
-import { AppController } from './commons/app.controller';
+import { UserModule } from './apis/user/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthsModule,
-    BoardsModule,
-    FilesModule,
-    PointsTransactionsModule,
-    ProductCategoryModule,
-    ProductModule,
-    UsersModule,
-    PaymentMoudle,
+    UserModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
@@ -43,6 +28,5 @@ import { AppController } from './commons/app.controller';
       logging: true,
     }),
   ],
-  controllers: [AppController],
 })
 export class AppModule {}

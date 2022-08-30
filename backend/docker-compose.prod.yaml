@@ -14,7 +14,7 @@ services:
 
   my-database:
     platform: linux/x86_64
-    image: mysql:2.3.3
+    image: mysql:latest
     environment:
       MYSQL_DATABASE: 'teamcloud04'
       MYSQL_ROOT_PASSWORD: '3198'

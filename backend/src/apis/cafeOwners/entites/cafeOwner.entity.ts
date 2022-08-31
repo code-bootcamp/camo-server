@@ -1,10 +1,15 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { CafeList } from 'src/apis/cafeLists/entiteis/cafeList.entity';
+import { Review } from 'src/apis/reviews/entites/review.entity';
 import {
   Column,
   PrimaryGeneratedColumn,
   Entity,
   CreateDateColumn,
   DeleteDateColumn,
+  JoinTable,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -36,4 +41,14 @@ export class CafeOwner {
   @DeleteDateColumn({ nullable: true })
   @Field(() => Date, { nullable: true })
   deletedAt: Date;
+
+  @JoinTable()
+  @OneToOne(() => Review, { nullable: true })
+  @Field(() => Review, { nullable: true })
+  review: Review;
+
+  @JoinColumn()
+  @OneToOne(() => CafeList, { nullable: true })
+  @Field(() => CafeList, { nullable: true })
+  cafeList: CafeList;
 }

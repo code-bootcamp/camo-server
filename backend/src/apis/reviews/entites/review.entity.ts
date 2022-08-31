@@ -1,5 +1,16 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CafeOwner } from 'src/apis/cafeOwners/entites/cafeOwner.entity';
+import { CafeReservaion } from 'src/apis/cafeReservations/entites/cafeReservations.entity';
+import { User } from 'src/apis/users/entites/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -12,11 +23,21 @@ export class Review {
   @Field(() => String)
   reviewComment: string;
 
-  @Column()
-  @Field(() => String)
-  reviewPoint: string;
-
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
   ownerComment: string;
+
+  @JoinColumn()
+  @OneToOne(() => User)
+  @Field(() => User)
+  user: User;
+
+  @JoinColumn()
+  @OneToOne(() => CafeOwner, { nullable: true })
+  @Field(() => CafeOwner, { nullable: true })
+  cafeOwner: CafeOwner;
+
+  @ManyToOne(() => CafeReservaion, { nullable: true })
+  @Field(() => CafeReservaion, { nullable: true })
+  review: CafeReservaion;
 }

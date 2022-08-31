@@ -2,43 +2,43 @@ import { UnprocessableEntityException } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { UpdateUserInput } from './dto/updateUser.input';
 import * as bcrypt from 'bcrypt';
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 import { User } from './entites/user.entity';
 
 @Resolver()
-export class UserResolver {
+export class UsersResolver {
   constructor(
-    private readonly userService: UserService, //
+    private readonly usersService: UsersService, //
   ) {}
 
   @Query(() => [User])
   fetchUsers() {
-    return this.userService.findAll();
+    return this.usersService.findAll();
   }
 
   @Query(() => User)
   fetchLoginUser(
     @Args('userId') userId: string, //
   ) {
-    return this.userService.findOne({ userId });
+    return this.usersService.findOne({ userId });
   }
 
   @Query(() => [User])
   fetchUserWithDeleted() {
-    return this.userService.WithDelete();
+    return this.usersService.WithDelete();
   }
 
   @Mutation(() => User)
   async createUser(
-    @Args('userEmail') userEmail: string,
+    @Args('email') email: string,
     @Args('password') password: string,
     @Args('name') name: string,
     @Args('phoneNumber') phoneNumber: string,
   ) {
     const hashedPassword = await bcrypt.hash(password, 10.2);
 
-    return this.userService.create({
-      userEmail,
+    return this.usersService.create({
+      email,
       hashedPassword,
       name,
       phoneNumber,
@@ -48,12 +48,12 @@ export class UserResolver {
   @Mutation(() => User)
   async updateLoginUser(
     @Args('userId') userId: string,
-    @Args('userEmail') userEmail: string,
+    @Args('email') email: string,
     @Args('password') password: string,
     @Args('updateUserInput') updateUserInput: UpdateUserInput, //
   ) {
     // 1. 로그인 (이메일이 일치하는 유저를 DB에서 찾기)
-    const user = await this.userService.findOneUser({ userEmail });
+    const user = await this.usersService.findOneUser({ email });
 
     // 2. 일치하는 유저가 없으면 에러 던지기
     if (!user) throw new UnprocessableEntityException('이메일이 없습니다.');
@@ -65,20 +65,20 @@ export class UserResolver {
 
     const loginhass = await bcrypt.hash(updateUserInput.password, 10.2);
 
-    return this.userService.update({ userId, updateUserInput, loginhass });
+    return this.usersService.update({ userId, updateUserInput, loginhass });
   }
 
   @Mutation(() => Boolean)
   deleteLoginUser(
     @Args('userId') userId: string, //
   ) {
-    return this.userService.delete({ userId });
+    return this.usersService.delete({ userId });
   }
 
   @Mutation(() => Boolean)
   restoreUser(
     @Args('userId') userId: string, //
   ) {
-    return this.userService.restore({ userId });
+    return this.usersService.restore({ userId });
   }
 }

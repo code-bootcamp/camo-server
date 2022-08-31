@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entites/user.entity';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
@@ -21,9 +21,9 @@ export class UserService {
     });
   }
 
-  async findOneUser({ userEmail }) {
+  async findOneUser({ email }) {
     return await this.usersRepository.findOne({
-      where: { userEmail },
+      where: { email },
     });
   }
 
@@ -33,12 +33,12 @@ export class UserService {
     });
   }
 
-  async create({ userEmail, hashedPassword: password, name, phoneNumber }) {
-    const user = await this.usersRepository.findOne({ where: { userEmail } });
+  async create({ email, hashedPassword: password, name, phoneNumber }) {
+    const user = await this.usersRepository.findOne({ where: { email } });
     if (user) throw new ConflictException('이미 등록된 이메일입니다.');
 
     return await this.usersRepository.save({
-      userEmail,
+      email,
       password,
       name,
       phoneNumber,

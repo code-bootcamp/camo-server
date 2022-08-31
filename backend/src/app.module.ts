@@ -3,14 +3,24 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './apis/user/user.module';
+import { UsersModule } from './apis/users/users.module';
+import { ReviewsModule } from './apis/reviews/reviews.module';
+import { PaymentsModule } from './apis/payments/payments.module';
+import { CafeReservationsMoudule } from './apis/cafeReservations/cafeReservations.module';
+import { CafeOwnersModule } from './apis/cafeOwners/cafeOwners.module';
+import { ReviewsPointsMoudule } from './apis/reviewsPoints/reviewsPoints.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UserModule,
+    UsersModule,
+    ReviewsModule,
+    PaymentsModule,
+    CafeReservationsMoudule,
+    CafeOwnersModule,
+    ReviewsPointsMoudule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',

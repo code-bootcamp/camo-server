@@ -16,7 +16,7 @@ export class User {
 
   @Column()
   @Field(() => String)
-  userEmail: string;
+  email: string;
 
   @Column()
   password: string;
@@ -40,4 +40,8 @@ export class User {
   @DeleteDateColumn({ nullable: true })
   @Field(() => Date, { nullable: true })
   deletedAt: Date;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  favoritCafe: string;
 }

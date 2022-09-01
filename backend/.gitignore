@@ -2,7 +2,7 @@
 /dist
 /node_modules
 .env*
-src/commons/graphql/schema.gql
+/src/commons/graphql/schema.gql
 
 # Logs
 logs

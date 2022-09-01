@@ -10,6 +10,7 @@ import { CafeReservationsMoudule } from './apis/cafeReservations/cafeReservation
 import { CafeOwnersModule } from './apis/cafeOwners/cafeOwners.module';
 import { ReviewsPointsMoudule } from './apis/reviewsPoints/reviewsPoints.module';
 import { Boardmodule } from './apis/boards/board.module';
+import { AuthsModule } from './apis/auths/auths.module';
 
 @Module({
   imports: [
@@ -22,8 +23,10 @@ import { Boardmodule } from './apis/boards/board.module';
     CafeReservationsMoudule,
     CafeOwnersModule,
     ReviewsPointsMoudule,
-    Boardmodule, // 제발 지우기...
+    Boardmodule,
     PaymentsModule,
+    AuthsModule,
+    ReviewsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',

@@ -25,7 +25,15 @@ export class Board {
 
   @Column()
   @Field(() => String)
-  content: string;
+  contents: string;
+
+  @Column()
+  @Field(() => String)
+  adress: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  likeCount: string;
 
   @DeleteDateColumn({ nullable: true })
   @Field(() => Date, { nullable: true })

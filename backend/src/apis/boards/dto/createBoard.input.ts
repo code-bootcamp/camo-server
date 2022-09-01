@@ -1,16 +1,16 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateUserInput {
+export class CreateBoardInput {
   @Field(() => String)
-  email: string;
+  title: string;
 
   @Field(() => String)
-  password: string;
+  contents: string;
 
   @Field(() => String)
-  name: string;
+  adress: string;
 
-  @Field(() => String)
-  phoneNumber: string;
+  @Field(() => [String])
+  tags: string[];
 }

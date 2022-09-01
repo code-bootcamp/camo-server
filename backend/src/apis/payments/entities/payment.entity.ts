@@ -1,8 +1,10 @@
 import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -36,4 +38,8 @@ export class Payment {
   @Column({ type: 'enum', enum: PAYMENT_STATUS_ENUM })
   @Field(() => PAYMENT_STATUS_ENUM)
   status: string;
+
+  @ManyToOne(() => User)
+  @Field(() => User)
+  user: User;
 }

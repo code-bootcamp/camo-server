@@ -47,6 +47,7 @@ type Payment {
   paymentDate: DateTime!
   paymentAmount: Int!
   status: POINT_TRANSACTION_STATUS_ENUM!
+  user: User!
 }
 
 enum POINT_TRANSACTION_STATUS_ENUM {
@@ -94,7 +95,9 @@ type BoardTag {
 type Board {
   id: String!
   title: String!
-  content: String!
+  contents: String!
+  adress: String!
+  likeCount: String
   deletedAt: DateTime
   createdAt: DateTime!
   tag: [BoardTag!]
@@ -105,6 +108,9 @@ type Query {
   fetchUsers: [User!]!
   fetchLoginUser(userId: String!): User!
   fetchUserWithDeleted: [User!]!
+  fetchBoards: [Board!]!
+  fetchBoard(boardId: String!): Board!
+  fetchBoardWithDeleted: [Board!]!
 }
 
 type Mutation {
@@ -112,11 +118,30 @@ type Mutation {
   updateLoginUser(userId: String!, email: String!, password: String!, updateUserInput: UpdateUserInput!): User!
   deleteLoginUser(userId: String!): Boolean!
   restoreUser(userId: String!): Boolean!
+  createPayment(impUid: String!, amount: Int!): Payment!
+  createCancel(impUid: String!, amount: Int!, user: String!): Payment!
+  createBoard(createBoardInput: CreateBoardInput!): Board!
+  updateBoard(boardId: String!, userId: String!, email: String!, updateBoardInput: UpdateBoardInput!): Board!
+  deleteBoard(boardId: String!): Boolean!
 }
 
 input UpdateUserInput {
-  userEmail: String!
+  email: String!
   password: String!
   name: String!
   phoneNumber: String!
+}
+
+input CreateBoardInput {
+  title: String!
+  contents: String!
+  adress: String!
+  tags: [String!]!
+}
+
+input UpdateBoardInput {
+  title: String
+  contents: String
+  adress: String
+  tags: [String!]
 }

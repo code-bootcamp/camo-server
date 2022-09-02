@@ -51,4 +51,9 @@ export class CafeOwner {
   @OneToOne(() => CafeList, { nullable: true })
   @Field(() => CafeList, { nullable: true })
   cafeList: CafeList;
+
+  @JoinColumn()
+  @OneToOne(() => CafeOwner, { nullable: true })
+  @Field(() => CafeOwner, { nullable: true })
+  cafeOwner: CafeOwner;
 }

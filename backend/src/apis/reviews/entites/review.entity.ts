@@ -6,7 +6,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -39,5 +38,5 @@ export class Review {
 
   @ManyToOne(() => CafeReservaion, { nullable: true })
   @Field(() => CafeReservaion, { nullable: true })
-  review: CafeReservaion;
+  cafeReservation: CafeReservaion;
 }

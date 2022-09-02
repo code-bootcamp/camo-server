@@ -1,5 +1,6 @@
-import { UnprocessableEntityException } from '@nestjs/common';
+import { UnprocessableEntityException, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { UsersService } from '../users/users.service';
 import { BoardsService } from './board.service';
 import { CreateBoardInput } from './dto/createBoard.input';
@@ -35,6 +36,7 @@ export class Boardsresolver {
   }
 
   // 게시글 생성 (존맛탱 추가)
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async createBoard(
     @Args('createBoardInput') createBoardInput: CreateBoardInput,
@@ -43,11 +45,12 @@ export class Boardsresolver {
   }
 
   // 게시글 수정 (존맛탱 추가)
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async updateBoard(
     @Args('boardId') boardId: string,
     @Args('userId') userId: string, //
-    @Args('email') email: string,
+    @Args('nickName') nickName: string,
     @Args('updateBoardInput') updateBoardInput: UpdateBoardInput,
   ) {
     const board = await this.boardsService.findBoardOne({ boardId });
@@ -57,12 +60,15 @@ export class Boardsresolver {
 
     const user = await this.usersService.findOne({ userId });
     if (!user)
-      throw new UnprocessableEntityException(`${email}님의 게시글이 아닙니다.`);
+      throw new UnprocessableEntityException(
+        `${nickName}님의 게시글이 아닙니다.`,
+      );
 
     return this.boardsService.update({ boardId, updateBoardInput });
   }
 
   // 게시글 삭제 (존맛탱 추가)
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteBoard(
     @Args('boardId') boardId: string, //

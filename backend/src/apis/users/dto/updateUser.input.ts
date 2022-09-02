@@ -12,5 +12,8 @@ export class UpdateUserInput {
   name: string;
 
   @Field(() => String)
+  nickName: string;
+
+  @Field(() => String)
   phoneNumber: string;
 }

@@ -17,9 +17,10 @@ export class AuthsService {
   ) {}
 
   getAccessToken({ user }) {
+    console.log(user);
     return this.jwtService.sign(
       { email: user.email, sub: user.id }, // payload
-      { secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: '2w' },
+      { secret: String(process.env.ACCESS_TOKEN_SECRET), expiresIn: '2w' },
     );
   }
 
@@ -39,7 +40,7 @@ export class AuthsService {
 
   async getSocialLogin({ req, res }) {
     // 가입 확인
-    let user = await this.usersService.findOne({ email: req.user.email });
+    let user = await this.usersService.findOneUser({ email: req.user.email });
     // 가입 안되어 있으면 회원 가입
     if (!user) user = await this.usersService.create({ ...req.user });
     // 3. 로그인
@@ -57,7 +58,7 @@ export class AuthsService {
   //
 
   async getUserLogin({ email, password, context }) {
-    const user = await this.usersService.findOne({ email });
+    const user = await this.usersService.findOneUser({ email });
     if (!user) throw new UnprocessableEntityException('이메일이 없습니다.');
 
     const isAuth = await bcrypt.compare(password, user.password);

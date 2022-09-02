@@ -5,11 +5,12 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.ACCESS_TOKEN_SECRET,
+      secretOrKey: String(process.env.ACCESS_TOKEN_SECRET),
       passReqToCallback: true,
     });
   }
   validate(payload) {
+    console.log(payload);
     return {
       email: payload.email,
       id: payload.sub,

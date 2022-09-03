@@ -19,6 +19,7 @@ import { ImageModule } from './apis/images/image.module';
 import { BoardTagModule } from './apis/tags/boardtags.module';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
+import { FileModule } from './apis/file/file.module';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import type { RedisClientOptions } from 'redis';
     CommentsModule,
     FavoriteCafesModule,
     FavoriteBoardsModule,
-    // FileModule 추가하기
+    FileModule,
     ImageModule,
     PaymentsModule,
     ReviewsModule,

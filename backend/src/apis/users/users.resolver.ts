@@ -1,4 +1,8 @@
-import { UnprocessableEntityException, UseGuards } from '@nestjs/common';
+import {
+  ConflictException,
+  UnprocessableEntityException,
+  UseGuards,
+} from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, Context } from '@nestjs/graphql';
 import { UpdateUserInput } from './dto/updateUser.input';
 import * as bcrypt from 'bcrypt';
@@ -12,6 +16,12 @@ export class UsersResolver {
   constructor(
     private readonly usersService: UsersService, //
   ) {}
+  /** 모든 유저 조회 로그인 API 테스트용*/
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [User])
+  fetchLoginUsers() {
+    return this.usersService.findAll();
+  }
 
   /** 모든 유저 조회 */
   @Query(() => [User])
@@ -25,6 +35,16 @@ export class UsersResolver {
     @Args('email') email: string, //
   ) {
     return this.usersService.findOneUser({ email });
+  }
+
+  /** 회원가입시 중복 아이디 확인*/
+  @Query(() => Boolean)
+  checkUserEmail(
+    @Args('email') email: string, //
+  ) {
+    const userEmail = this.usersService.findOneUser({ email });
+    if (userEmail) throw new ConflictException('이미 사용되고 있는 ID입니다.');
+    return true;
   }
 
   /** 회원 가입 */

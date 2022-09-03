@@ -1,6 +1,7 @@
 import {
+  CACHE_MANAGER,
   ConflictException,
-  HttpException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,12 +9,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entites/user.entity';
 import * as coolsms from 'coolsms-node-sdk';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   /** 모든 유저 조회 */
@@ -113,29 +118,24 @@ export class UsersService {
     const checkUserPhoneNumber = await this.usersRepository.findOne({
       where: { phoneNumber: phoneNumber },
     });
-    if (checkUserPhoneNumber) {
+    if (checkUserPhoneNumber)
       throw new ConflictException('이미 등록된 번호입니다.');
-    }
 
     try {
       const token = //
         String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
       const mysms = coolsms.default;
       const messageServicae = new mysms(SMS_KEY, SMS_SECRET);
-      const response = await messageServicae.sendOne({
+      await messageServicae.sendOne({
         to: phoneNumber,
         from: SMS_SENDER,
         text: `[Camo] 회원가입 인증번호는 [${token}]입니다.`,
         autoTypeDetect: true,
       });
-      // Redis 장착후 사용
-      //  const myToken = await this.cacheManager.get(phoneNumber);
-      //  if (myToken) {
-      //    await this.cacheManager.del(phoneNumber);
-      //  }
-      //  await this.cacheManager.set(phoneNumber, token, {
-      //    ttl: 180,
-      //  });
+
+      const myToken = await this.cacheManager.get(phoneNumber);
+      if (myToken) await this.cacheManager.del(phoneNumber);
+      await this.cacheManager.set(phoneNumber, token, { ttl: 180 });
       return token;
     } catch (error) {
       if (error) {

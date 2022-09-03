@@ -9,7 +9,18 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe()); // validation을 사용할 수 있도록 등록해주는 부분
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(graphqlUploadExpress());
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: [
+      'Access-Control-Allow-Headers',
+      'Authorization',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+    ],
+    credentials: true,
+  });
   await app.listen(3000);
 }
 bootstrap();
-

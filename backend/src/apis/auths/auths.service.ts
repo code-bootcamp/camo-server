@@ -1,4 +1,7 @@
 import {
+  CACHE_MANAGER,
+  ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
   UnprocessableEntityException,
@@ -14,16 +17,21 @@ export class AuthsService {
   constructor(
     private readonly jwtService: JwtService, //
     private readonly usersService: UsersService,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
+  /** AccessToken 발급 */
   getAccessToken({ user }) {
-    console.log(user);
     return this.jwtService.sign(
-      { email: user.email, sub: user.id }, // payload
+      { email: user.email, sub: user.id },
       { secret: String(process.env.ACCESS_TOKEN_SECRET), expiresIn: '2w' },
     );
+    // 배포시 expireIn: 15Minute 설정
   }
 
+  /** refreshToken 발급 */
   setRefreshToken({ user, res }) {
     const refreshToken = this.jwtService.sign(
       { email: user.email, sub: user.id },
@@ -32,12 +40,7 @@ export class AuthsService {
     res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
   }
 
-  getTTL(token) {
-    const now = new Date().getTime();
-    const tokenTTL = token.exp - Number(String(now).slice(0, -3));
-    return tokenTTL;
-  }
-
+  /** 소셜 회원 로그인 */
   async getSocialLogin({ req, res }) {
     // 가입 확인
     let user = await this.usersService.findOneUser({ email: req.user.email });
@@ -51,12 +54,7 @@ export class AuthsService {
     );
   }
 
-  //
-  //
-  //
-  //
-  //
-
+  /** 일반 유저 로그인 */
   async getUserLogin({ email, password, context }) {
     const user = await this.usersService.findOneUser({ email });
     if (!user) throw new UnprocessableEntityException('이메일이 없습니다.');
@@ -69,6 +67,7 @@ export class AuthsService {
     return this.getAccessToken({ user });
   }
 
+  /** 일반 유저 로그아웃 */
   async getLogout({ context }) {
     try {
       // 토큰 구하기
@@ -89,18 +88,18 @@ export class AuthsService {
       const refreshTokenTTL = this.getTTL(decodedRefreshToken);
 
       // cacheManager 연결 이후에 사용
-      // // 3. chacheManager를 이용해서 두 토큰을 각각 저장하기
-      // await this.cacheManager.set(`accessToken:${accessToken}`, 'accessToken', {
-      //   ttl: accessTokenTTL,
-      // });
+      // 3. chacheManager를 이용해서 두 토큰을 각각 저장하기
+      await this.cacheManager.set(`accessToken:${accessToken}`, 'accessToken', {
+        ttl: accessTokenTTL,
+      });
 
-      // await this.cacheManager.set(
-      //   `refreshToken:${refreshToken}`,
-      //   'refreshToken',
-      //   {
-      //     ttl: refreshTokenTTL,
-      //   },
-      // );
+      await this.cacheManager.set(
+        `refreshToken:${refreshToken}`,
+        'refreshToken',
+        {
+          ttl: refreshTokenTTL,
+        },
+      );
 
       return '로그아웃에 성공했습니다.';
     } catch {
@@ -108,5 +107,20 @@ export class AuthsService {
         if (error) throw new UnauthorizedException('인증 오류 발생');
       };
     }
+  }
+
+  /** 유저 SMS Tken 검증 */
+  async checkSMSTokenValid({ phoneNumber, SMSToken }) {
+    const isSMSToken = await this.cacheManager.get(phoneNumber);
+    if (!isSMSToken) throw new ConflictException('휴대폰 번호를 확인해주세요');
+    if (isSMSToken !== SMSToken)
+      throw new ConflictException('인증번호가 올바르지 않습니다.');
+  }
+
+  /** 로그아웃을 위한 token TTL 구하기  */
+  getTTL(token) {
+    const now = new Date().getTime();
+    const tokenTTL = token.exp - Number(String(now).slice(0, -3));
+    return tokenTTL;
   }
 }

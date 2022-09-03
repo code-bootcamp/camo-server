@@ -1,8 +1,13 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { User } from './entites/user.entity';
+import * as coolsms from 'coolsms-node-sdk';
 
 @Injectable()
 export class UsersService {
@@ -65,13 +70,18 @@ export class UsersService {
 
     const result = this.usersRepository.save({
       ...userList,
-      email,
       ...updateUserInput,
       password: loginhash,
     });
     return result;
   }
 
+  // 관리자용
+  //
+  //
+  //
+  //
+  //
   /** 유저 Delete */
   async delete({ email }) {
     const deleteresult = await this.usersRepository.softDelete({
@@ -84,5 +94,55 @@ export class UsersService {
   async restore({ email }) {
     const result = await this.usersRepository.restore({ email });
     return result.affected ? true : false;
+  }
+
+  //** 랜덤 토큰 생성 */
+  getToken() {
+    const n = 6;
+    const token = String(Math.floor(Math.random() * 10 ** n)).padStart(n, '0');
+    return token;
+  }
+
+  //** SMS 인증문자 전송 */
+  async sendTokenToSMS({ phoneNumber }) {
+    const SMS_KEY = process.env.SMS_KEY;
+    const SMS_SECRET = process.env.SMS_SECRET;
+    const SMS_SENDER = process.env.SMS_SENDER;
+
+    // 이미 등록된 번호인지 검증
+    const checkUserPhoneNumber = await this.usersRepository.findOne({
+      where: { phoneNumber: phoneNumber },
+    });
+    if (checkUserPhoneNumber) {
+      throw new ConflictException('이미 등록된 번호입니다.');
+    }
+
+    try {
+      const token = //
+        String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
+      const mysms = coolsms.default;
+      const messageServicae = new mysms(SMS_KEY, SMS_SECRET);
+      const response = await messageServicae.sendOne({
+        to: phoneNumber,
+        from: SMS_SENDER,
+        text: `[Camo] 회원가입 인증번호는 [${token}]입니다.`,
+        autoTypeDetect: true,
+      });
+      // Redis 장착후 사용
+      //  const myToken = await this.cacheManager.get(phoneNumber);
+      //  if (myToken) {
+      //    await this.cacheManager.del(phoneNumber);
+      //  }
+      //  await this.cacheManager.set(phoneNumber, token, {
+      //    ttl: 180,
+      //  });
+      return token;
+    } catch (error) {
+      if (error) {
+        throw new UnauthorizedException(
+          '오류가 발생하였습니다. 페이지 관리자에게 문의해 주십시오',
+        );
+      }
+    }
   }
 }

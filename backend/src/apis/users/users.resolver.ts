@@ -13,11 +13,13 @@ export class UsersResolver {
     private readonly usersService: UsersService, //
   ) {}
 
+  /** 모든 유저 조회 */
   @Query(() => [User])
   fetchUsers() {
     return this.usersService.findAll();
   }
 
+  /** 개별 유저 조회 */
   @Query(() => User)
   fetchUser(
     @Args('email') email: string, //
@@ -34,10 +36,8 @@ export class UsersResolver {
     @Args('phoneNumber') phoneNumber: string,
     @Args('nickName') nickName: string,
   ) {
-    const hashedPassword = await bcrypt.hash(
-      password,
-      Number(process.env.HASH_SECRET),
-    );
+    const secret = Number(process.env.HASH_SECRET);
+    const hashedPassword = await bcrypt.hash(password, secret);
 
     return this.usersService.create({
       email,
@@ -48,20 +48,16 @@ export class UsersResolver {
     });
   }
 
+  /** 로그인한 회원 정보 수정 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
   async updateLoginUser(
-    // @Args('userId') userId: string,
-    // @Args('email') email: string,
-    @Args('password') password: string,
+    // @Args('password') password: string,
     @Args('updateUserInput') updateUserInput: UpdateUserInput, //
     @Context() context: IContext,
   ) {
-    console.log('context');
-    console.log(context.req.user);
-    console.log('context');
-    console.log('----------------------------------------');
-    const email = '1@1';
+    const password = updateUserInput.password;
+    const email = context.req.user.email;
     // 1. 로그인 (이메일이 일치하는 유저를 DB에서 찾기)
     const user = await this.usersService.findOneUser({ email });
 
@@ -69,21 +65,19 @@ export class UsersResolver {
     if (!user) throw new UnprocessableEntityException('이메일이 없습니다.');
 
     const loginhash = await bcrypt.hash(
-      updateUserInput.password,
+      password,
       Number(process.env.HASH_SECRET),
     );
-    // 3. 일치하는 유저가 있지만 비밀번호가 틀렸다면 에러 던지기
-    const isAuth = await bcrypt.compare(password, user.password);
-    if (!isAuth)
-      throw new UnprocessableEntityException('비밀번호가 틀렸습니다.');
-    // const loginhash = await bcrypt.hash(
-    //   updateUserInput.password,
-    //   process.env.HASH_SECRET,
-    // );
+    // // 3. 일치하는 유저가 있지만 비밀번호가 틀렸다면 에러 던지기
+    // const isAuth = await bcrypt.compare(password, user.password);
+
+    // if (!isAuth)
+    //   throw new UnprocessableEntityException('비밀번호가 틀렸습니다.');
+
     return this.usersService.update({ email, updateUserInput, loginhash });
   }
 
-  /** 유저 삭제 */
+  /** 유저 회원 탈퇴 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteLoginUser(

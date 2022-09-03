@@ -9,8 +9,7 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
       passReqToCallback: true,
     });
   }
-  validate(payload) {
-    console.log(payload);
+  validate(_, payload) {
     return {
       email: payload.email,
       id: payload.sub,

@@ -1,6 +1,8 @@
-// import { Resolver } from '@nestjs/graphql';
+import { Resolver } from '@nestjs/graphql';
 
-// @Resolver()
-// export class Boardresolver {
-//   //   constructor(){},
-// }
+@Resolver()
+export class ImagesResolver {
+  constructor() {
+    //
+  }
+}

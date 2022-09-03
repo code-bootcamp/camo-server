@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from '../comments/comment.entity';
-import { favoriteBoard } from '../favoriteBoards/favoriteBoard.entity';
-import { BoardTag } from '../tags/tag.entity';
+import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
+import { BoardTag } from '../tags/entities/tag.entity';
 import { Board } from './entities/board.entity';
 
 @Injectable()

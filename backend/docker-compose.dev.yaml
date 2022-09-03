@@ -5,18 +5,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # volumes:
-    #   - ./src:/myfolder/src
+    volumes:
+      - ./src:/myfolder/src
     ports:
       - 3000:3000
     env_file:
       - ./.env.dev
 
-  # my-database:
-  #   platform: linux/x86_64
-  #   image: mysql:latest
-  #   environment:
-  #     MYSQL_DATABASE: 'teamdev04'
-  #     MYSQL_ROOT_PASSWORD: '3198'
-  #   ports:
-  #     - 3306:3306
+  my-database:
+    platform: linux/x86_64
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: 'teamdev04'
+      MYSQL_ROOT_PASSWORD: '3198'
+    ports:
+      - 3306:3306

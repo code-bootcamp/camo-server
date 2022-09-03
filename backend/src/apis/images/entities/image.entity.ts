@@ -1,6 +1,6 @@
 import { Field } from '@nestjs/graphql';
 import { Board } from 'src/apis/boards/entities/board.entity';
-import { CafeList } from 'src/apis/cafeLists/entiteis/cafeList.entity';
+import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

@@ -8,7 +8,6 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Cache } from 'cache-manager';
-import * as coolsms from 'coolsms-node-sdk';
 
 @Injectable()
 export class AuthsService {

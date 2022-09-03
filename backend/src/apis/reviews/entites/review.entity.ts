@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CafeOwner } from 'src/apis/cafeOwners/entites/cafeOwner.entity';
-import { CafeReservaion } from 'src/apis/cafeReservations/entites/cafeReservations.entity';
+import { CafeOwner } from 'src/apis/cafeOwners/entities/cafeOwner.entity';
+import { CafeReservaion } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,

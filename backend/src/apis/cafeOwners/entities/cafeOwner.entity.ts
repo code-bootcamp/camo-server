@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CafeList } from 'src/apis/cafeLists/entiteis/cafeList.entity';
+import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import { Review } from 'src/apis/reviews/entites/review.entity';
 import {
   Column,

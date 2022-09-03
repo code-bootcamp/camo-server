@@ -20,4 +20,8 @@ export class Comment {
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
+
+  @ManyToOne(() => CafeList)
+  @Field(() => CafeList)
+  cafeList: CafeList;
 }

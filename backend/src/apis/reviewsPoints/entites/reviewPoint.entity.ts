@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/apis/users/entites/user.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -27,4 +28,8 @@ export class ReviewPoint {
   @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   option5: number;
+
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
+  user: User;
 }

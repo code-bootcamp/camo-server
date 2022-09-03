@@ -1,10 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Comment } from 'src/apis/comments/entites/comment.entity';
 import {
   Column,
   PrimaryGeneratedColumn,
   Entity,
   CreateDateColumn,
   DeleteDateColumn,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm';
 
 @Entity()
@@ -44,4 +47,9 @@ export class User {
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
   favoritCafe: string;
+
+  @JoinTable()
+  @ManyToMany(() => Comment, (comment) => comment.user, { nullable: true })
+  @Field(() => [Comment], { nullable: true })
+  comment: Comment[];
 }

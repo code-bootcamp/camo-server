@@ -20,8 +20,8 @@ export class Image {
   @Field(() => String)
   url: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   isMain: string;
 
   @DeleteDateColumn()

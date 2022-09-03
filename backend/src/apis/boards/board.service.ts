@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Comment } from '../comments/comment.entity';
+import { Comment } from '../comments/entites/comment.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from '../images/entities/image.entity';
 import { BoardTag } from '../tags/entities/tag.entity';
@@ -28,23 +28,23 @@ export class BoardsService {
 
   async findBoardAll() {
     return await this.boardRepository.find({
-      relations: ['tags', 'favoritBoard', 'Comment', 'image'],
+      relations: ['tag', 'favoriteBoard', 'comment', 'image'],
     });
   }
 
   async findBoardOne({ boardId }) {
     return await this.boardRepository.findOne({
       where: { id: boardId },
-      relations: ['tags', 'favoritBoard', 'Comment', 'image'],
+      relations: ['tag', 'favoriteBoard', 'comment', 'image'],
     });
   }
 
   async create({ createBoardInput }) {
-    const { tags, image, ...Board } = createBoardInput;
+    const { tag, image, ...Board } = createBoardInput;
 
     const boardtag = [];
-    for (let i = 0; i < tags.length; i++) {
-      const tagName = tags[i];
+    for (let i = 0; i < tag.length; i++) {
+      const tagName = tag[i];
 
       const prevTag = await this.boardTagRepository.findOne({
         where: { name: tagName },
@@ -56,13 +56,13 @@ export class BoardsService {
         const newTag = await this.boardTagRepository.save({
           name: tagName,
         });
-        tags.push(newTag);
+        tag.push(newTag);
       }
     }
 
     const result = await this.boardRepository.save({
       ...Board,
-      boardTag: tags,
+      boardTag: tag,
     });
 
     await Promise.all(

@@ -6,6 +6,9 @@ import { BoardsService } from './board.service';
 import { CreateBoardInput } from './dto/createBoard.input';
 import { UpdateBoardInput } from './dto/updateBoard.input';
 import { Board } from './entities/board.entity';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER, Inject } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Resolver()
 export class Boardsresolver {
@@ -13,15 +16,45 @@ export class Boardsresolver {
     private readonly boardsService: BoardsService, //
 
     private readonly usersService: UsersService,
+
+    private readonly elasticsearchService: ElasticsearchService,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   // 전체 게시글 조회
   @Query(() => [Board])
-  fetchBoards() {
-    return this.boardsService.findBoardAll();
+  async fetchBoards(@Args({ name: 'search', nullable: true }) search: string) {
+    const checkRedis = await this.cacheManager.get(search);
+
+    if (checkRedis) {
+      return checkRedis;
+    } else {
+      const result = await this.elasticsearchService.search({
+        index: 'search-board',
+        query: {
+          bool: {
+            should: [{ prefix: { title: search.toLowerCase() } }],
+          },
+        },
+      });
+
+      const arrayBoard = result.hits.hits.map((el) => {
+        const obj = {
+          id: el._source['id'],
+          title: el._source['title'],
+          contents: el._source['contentes'],
+        };
+        return obj;
+      });
+      await this.cacheManager.set(search, arrayBoard, { ttl: 3000 });
+
+      return arrayBoard;
+    }
   }
 
-  // 원하는 게시글 조회 (엘라스틱서치 추가)
+  // 원하는 게시글 조회
   @Query(() => Board)
   fetchBoard(
     @Args('boardId') boardId: string, //
@@ -35,7 +68,7 @@ export class Boardsresolver {
     return this.boardsService.WithBoardDelete();
   }
 
-  // 게시글 생성 (존맛탱 추가)
+  // 게시글 생성
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async createBoard(

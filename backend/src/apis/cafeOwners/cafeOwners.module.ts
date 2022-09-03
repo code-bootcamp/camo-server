@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CafeOwnersResolver } from './cafeOwners.resolver';
 import { CafeOwnersService } from './cafeOwners.service';
-import { CafeOwner } from './entites/cafeOwner.entity';
+import { CafeOwner } from './entities/cafeOwner.entity';
 
 @Module({
   imports: [

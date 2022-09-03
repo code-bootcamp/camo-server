@@ -11,28 +11,46 @@ import { CafeOwnersModule } from './apis/cafeOwners/cafeOwners.module';
 import { ReviewsPointsMoudule } from './apis/reviewsPoints/reviewsPoints.module';
 import { Boardmodule } from './apis/boards/board.module';
 import { AuthsModule } from './apis/auths/auths.module';
+import { CafeListsModule } from './apis/cafeLists/cafeLists.module';
+import { CommentsModule } from './apis/comments/comments.module';
+import { FavoriteCafesModule } from './apis/favoreiteCafes/favoriteCafes.module';
+import { FavoriteBoardsModule } from './apis/favoriteBoard/favoriteBoards.module';
+import { ImageModule } from './apis/images/image.module';
+import { BoardTagModule } from './apis/tags/boardtags.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UsersModule,
-    ReviewsModule,
-    PaymentsModule,
-    CafeReservationsMoudule,
-    CafeOwnersModule,
-    ReviewsPointsMoudule,
-    Boardmodule,
-    PaymentsModule,
     AuthsModule,
+    Boardmodule,
+    CafeListsModule,
+    CafeOwnersModule,
+    CafeReservationsMoudule,
+    CommentsModule,
+    FavoriteCafesModule,
+    FavoriteBoardsModule,
+    ImageModule,
+    PaymentsModule,
     ReviewsModule,
+    ReviewsPointsMoudule,
+    BoardTagModule,
+    UsersModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
       cors: {
         Credential: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        allowedHeaders: [
+          'Access-Control-Allow-Headers',
+          'Authorization',
+          'X-Requested-With',
+          'Content-Type',
+          'Accept',
+        ],
         origin: ['http://localhost:3000'],
       },
     }),

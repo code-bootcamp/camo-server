@@ -1,10 +1,10 @@
 import { Field } from '@nestjs/graphql';
-import { CafeList } from 'src/apis/cafeLists/entiteis/cafeList.entity';
+import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Comment {
+export class FavoriteCafe {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;

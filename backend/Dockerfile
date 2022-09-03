@@ -7,3 +7,4 @@ RUN yarn install
 
 COPY . /myfolder/
 CMD yarn start:dev
+

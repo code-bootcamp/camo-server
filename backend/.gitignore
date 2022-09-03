@@ -3,6 +3,7 @@
 /node_modules
 .env*
 /src/commons/graphql/schema.gql
+reflected-jet-360811-402430377c02.json
 
 # Logs
 logs

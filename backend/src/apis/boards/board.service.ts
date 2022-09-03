@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from '../comments/comment.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
+import { Image } from '../images/entities/image.entity';
 import { BoardTag } from '../tags/entities/tag.entity';
 import { Board } from './entities/board.entity';
 
@@ -15,6 +16,9 @@ export class BoardsService {
     @InjectRepository(BoardTag)
     private readonly boardTagRepository: Repository<BoardTag>,
 
+    @InjectRepository(Image)
+    private readonly imageRepository: Repository<Image>,
+
     @InjectRepository(favoriteBoard)
     private readonly favoriteBoardRepository: Repository<favoriteBoard>,
 
@@ -24,19 +28,19 @@ export class BoardsService {
 
   async findBoardAll() {
     return await this.boardRepository.find({
-      relations: ['tags', 'favoritBoard', 'Comment'],
+      relations: ['tags', 'favoritBoard', 'Comment', 'image'],
     });
   }
 
   async findBoardOne({ boardId }) {
     return await this.boardRepository.findOne({
       where: { id: boardId },
-      relations: ['tags', 'favoritBoard', 'Comment'],
+      relations: ['tags', 'favoritBoard', 'Comment', 'image'],
     });
   }
 
   async create({ createBoardInput }) {
-    const { tags, ...Board } = createBoardInput;
+    const { tags, image, ...Board } = createBoardInput;
 
     const boardtag = [];
     for (let i = 0; i < tags.length; i++) {
@@ -61,15 +65,61 @@ export class BoardsService {
       boardTag: tags,
     });
 
+    await Promise.all(
+      image.map(
+        (el) =>
+          new Promise((resolve, reject) => {
+            this.imageRepository.save({
+              url: el,
+              board: { id: result.id },
+            });
+            resolve('이미지 저장 완료');
+            reject('이미지 저장 실패');
+          }),
+      ),
+    );
+
+    await this.imageRepository.save({
+      url: image,
+      board: { id: result.id },
+    });
+
     return result;
   }
 
   async update({ boardId, updateBoardInput }) {
-    const { ...Board } = updateBoardInput;
+    const { image, ...Board } = updateBoardInput;
 
     const boardList = await this.boardRepository.findOne({
       where: { id: boardId },
     });
+
+    const _image = await this.imageRepository.find({
+      where: { id: Board.id },
+    });
+
+    await Promise.all(
+      _image.map(
+        (el) =>
+          new Promise((resolve) => {
+            this.imageRepository.softDelete({ id: el.id });
+            resolve('이미지 삭제 완료');
+          }),
+      ),
+    );
+
+    await Promise.all(
+      _image.map(
+        (el) =>
+          new Promise((resolve) => {
+            this.imageRepository.save({
+              url: el.url,
+              board: { id: boardList.id },
+            });
+            resolve('이미지 저장 완료');
+          }),
+      ),
+    );
 
     const result = this.boardRepository.save({
       ...boardList,

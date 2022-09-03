@@ -44,7 +44,7 @@ export class Boardsresolver {
     return this.boardsService.create({ createBoardInput });
   }
 
-  // 게시글 수정 (존맛탱 추가)
+  // 게시글 수정
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async updateBoard(
@@ -67,7 +67,7 @@ export class Boardsresolver {
     return this.boardsService.update({ boardId, updateBoardInput });
   }
 
-  // 게시글 삭제 (존맛탱 추가)
+  // 게시글 삭제
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteBoard(

@@ -13,4 +13,7 @@ export class CreateBoardInput {
 
   @Field(() => [String])
   tags: string[];
+
+  @Field(() => [String], { nullable: true })
+  image: string[];
 }

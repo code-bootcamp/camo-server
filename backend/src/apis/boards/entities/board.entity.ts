@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
+import { Image } from 'src/apis/images/entities/image.entity';
 import { BoardTag } from 'src/apis/tags/entities/tag.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
@@ -13,6 +14,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -59,4 +61,8 @@ export class Board {
   @OneToOne(() => CafeList, { nullable: true })
   @Field(() => CafeList, { nullable: true })
   cafeList: CafeList;
+
+  @OneToMany(() => Image, (image) => image.board)
+  @Field(() => [Image])
+  image: Image[];
 }

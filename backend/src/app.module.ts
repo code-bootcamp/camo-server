@@ -31,6 +31,10 @@ import { AuthsModule } from './apis/auths/auths.module';
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
+      cors: {
+        Credential: true,
+        origin: ['http://localhost:3000'],
+      },
     }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',

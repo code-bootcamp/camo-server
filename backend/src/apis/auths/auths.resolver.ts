@@ -6,10 +6,14 @@ import {
   GqlAuthRefreshGuard,
 } from 'src/commons/auth/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authsService: AuthsService) {}
+  constructor(
+    private readonly authsService: AuthsService, //
+    private readonly usersService: UsersService,
+  ) {}
 
   @Mutation(() => String)
   async loginUser(
@@ -34,5 +38,12 @@ export class AuthResolver {
     @Context() context: IContext, //
   ) {
     return this.authsService.getAccessToken({ user: context.req.user });
+  }
+
+  @Mutation(() => String)
+  sendTokenToSMS(
+    @Args('phoneNumber') phoneNumber: string, //
+  ) {
+    return this.usersService.sendTokenToSMS({ phoneNumber });
   }
 }

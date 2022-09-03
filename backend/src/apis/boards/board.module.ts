@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Comment } from '../comments/comment.entity';
+import { Comment } from '../comments/entites/comment.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from '../images/entities/image.entity';
 import { ImagesService } from '../images/image.service';
@@ -21,6 +22,9 @@ import { Board } from './entities/board.entity';
       favoriteBoard,
       Image,
     ]),
+    ElasticsearchModule.register({
+      node: 'http://elasticsearch:9200',
+    }),
   ],
   providers: [
     Boardsresolver, //

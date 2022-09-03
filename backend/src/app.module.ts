@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,6 +17,8 @@ import { FavoriteCafesModule } from './apis/favoreiteCafes/favoriteCafes.module'
 import { FavoriteBoardsModule } from './apis/favoriteBoard/favoriteBoards.module';
 import { ImageModule } from './apis/images/image.module';
 import { BoardTagModule } from './apis/tags/boardtags.module';
+import * as redisStore from 'cache-manager-redis-store';
+import type { RedisClientOptions } from 'redis';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { BoardTagModule } from './apis/tags/boardtags.module';
     CommentsModule,
     FavoriteCafesModule,
     FavoriteBoardsModule,
+    // FileModule 추가하기
     ImageModule,
     PaymentsModule,
     ReviewsModule,
@@ -64,6 +67,11 @@ import { BoardTagModule } from './apis/tags/boardtags.module';
       entities: [__dirname + '/apis/**/*.entity.*'], // 모델
       synchronize: true,
       logging: true,
+    }),
+    CacheModule.register<RedisClientOptions>({
+      store: redisStore,
+      url: 'redis://my-redis:6379',
+      isGlobal: true,
     }),
   ],
 })

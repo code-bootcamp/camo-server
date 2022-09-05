@@ -14,15 +14,15 @@ services:
     # enviroment:
     #   - TZ=Asia/Seoul
 
-  my-database:
-    platform: linux/x86_64
-    image: mysql:latest
-    environment:
-      MYSQL_DATABASE: 'teamcloud'
-      MYSQL_ROOT_PASSWORD: '3198'
-      # TZ: Asia/Seoul
-    ports:
-      - 3306:3306
+  # my-database:
+  #   platform: linux/x86_64
+  #   image: mysql:latest
+  #   environment:
+  #     MYSQL_DATABASE: 'teamcloud04'
+  #     MYSQL_ROOT_PASSWORD: '3198'
+  #     # TZ: Asia/Seoul
+  #   ports:
+  #     - 3306:3306
 
   my-redis:
     image: redis:latest

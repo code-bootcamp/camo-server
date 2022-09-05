@@ -18,7 +18,7 @@ services:
     platform: linux/x86_64
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'teamdev04'
+      MYSQL_DATABASE: 'teamcloud'
       MYSQL_ROOT_PASSWORD: '3198'
       # TZ: Asia/Seoul
     ports:
@@ -31,7 +31,7 @@ services:
     # enviroment:
     #   - TZ=Asia/Seoul
 
-  elasticsearc:
+  elasticsearch:
     image: elasticsearch:7.17.0
     environment:
       discovery.type: single-node

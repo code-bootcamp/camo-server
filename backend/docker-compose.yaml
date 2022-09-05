@@ -16,7 +16,7 @@ services:
     platform: linux/x86_64
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'teamdocker04'
+      MYSQL_DATABASE: 'teamcloud04'
       MYSQL_ROOT_PASSWORD: '3198'
     ports:
       - 3306:3306

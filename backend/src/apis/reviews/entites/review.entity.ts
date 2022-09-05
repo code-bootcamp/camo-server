@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeOwner } from 'src/apis/cafeOwners/entities/cafeOwner.entity';
-import { CafeReservaion } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
+import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,
@@ -36,7 +36,7 @@ export class Review {
   @Field(() => CafeOwner, { nullable: true })
   cafeOwner: CafeOwner;
 
-  @ManyToOne(() => CafeReservaion, { nullable: true })
-  @Field(() => CafeReservaion, { nullable: true })
-  cafeReservation: CafeReservaion;
+  @ManyToOne(() => CafeReservation, { nullable: true })
+  @Field(() => CafeReservation, { nullable: true })
+  cafeReservation: CafeReservation;
 }

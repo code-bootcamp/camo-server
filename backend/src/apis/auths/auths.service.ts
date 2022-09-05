@@ -5,12 +5,15 @@ import {
   Injectable,
   UnauthorizedException,
   UnprocessableEntityException,
+  UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Cache } from 'cache-manager';
+import { JwtAdminStrategy } from 'src/commons/auth/jwt-admin.strategy';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 
 @Injectable()
 export class AuthsService {
@@ -26,7 +29,7 @@ export class AuthsService {
   getAccessToken({ user }) {
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { secret: String(process.env.ACCESS_TOKEN_SECRET), expiresIn: '2w' },
+      { secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: '2w' },
     );
     // 배포시 expireIn: 15Minute 설정
   }

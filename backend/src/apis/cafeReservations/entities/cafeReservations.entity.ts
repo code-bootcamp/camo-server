@@ -15,7 +15,7 @@ import {
 
 @Entity()
 @ObjectType()
-export class CafeReservaion {
+export class CafeReservation {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;

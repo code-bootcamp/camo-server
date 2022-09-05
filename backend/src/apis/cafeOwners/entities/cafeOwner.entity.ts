@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
+import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { Review } from 'src/apis/reviews/entites/review.entity';
 import {
   Column,
@@ -34,6 +35,10 @@ export class CafeOwner {
   @Field(() => String)
   phoneNumber: string;
 
+  @Column()
+  @Field(() => String)
+  cafeName: string;
+
   @CreateDateColumn()
   @Field(() => Date)
   signupDate: Date;
@@ -53,7 +58,7 @@ export class CafeOwner {
   cafeList: CafeList;
 
   @JoinColumn()
-  @OneToOne(() => CafeOwner, { nullable: true })
-  @Field(() => CafeOwner, { nullable: true })
-  cafeOwner: CafeOwner;
+  @OneToOne(() => CafeReservation, { nullable: true })
+  @Field(() => CafeReservation, { nullable: true })
+  cafeReservation: CafeReservation;
 }

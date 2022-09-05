@@ -3,6 +3,7 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from '../comments/entites/comment.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
+import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { Image } from '../images/entities/image.entity';
 import { ImagesService } from '../images/image.service';
 import { BoardTag } from '../tags/entities/tag.entity';
@@ -31,6 +32,7 @@ import { Board } from './entities/board.entity';
     BoardsService,
     UsersService,
     ImagesService,
+    FavoriteBoardsService,
   ],
 })
 export class Boardmodule {}

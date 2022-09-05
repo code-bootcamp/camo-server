@@ -5,6 +5,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,11 +35,13 @@ export class Comment {
   @Field(() => Date)
   deletedAt: Date;
 
-  @ManyToMany(() => Board, (board) => board.comment) // nullable 추가? 왜?
+  // @ManyToMany(() => Board, (board) => board.comment) // nullable 추가? 왜?
+  @ManyToOne(() => Board)
   @Field(() => Board)
   board: Board;
 
-  @ManyToMany(() => User, (user) => user.comment)
+  // @ManyToMany(() => User, (user) => user.comment)
+  @ManyToOne(() => User)
   @Field(() => User)
   user: User;
 }

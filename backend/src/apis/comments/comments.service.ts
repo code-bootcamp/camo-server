@@ -17,6 +17,19 @@ export class CommentsService {
     @InjectRepository(Board)
     private readonly boardRepository: Repository<Board>,
   ) {}
+  async find({ boardId }) {
+    console.log(
+      await this.boardRepository.find({
+        where: { id: boardId },
+        relations: ['comment'],
+      }),
+    );
+
+    return await this.boardRepository.find({
+      where: { id: boardId },
+      relations: ['comment'],
+    });
+  }
 
   async create({ createCommentInput }) {
     const { userId, boardId, comment } = createCommentInput;

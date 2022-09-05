@@ -64,25 +64,26 @@ export class BoardsService {
       ...Board,
       boardTag: tag,
     });
+    if (image) {
+      await Promise.all(
+        image.map(
+          (el) =>
+            new Promise((resolve, reject) => {
+              this.imageRepository.save({
+                url: el,
+                board: { id: result.id },
+              });
+              resolve('이미지 저장 완료');
+              reject('이미지 저장 실패');
+            }),
+        ),
+      );
 
-    await Promise.all(
-      image.map(
-        (el) =>
-          new Promise((resolve, reject) => {
-            this.imageRepository.save({
-              url: el,
-              board: { id: result.id },
-            });
-            resolve('이미지 저장 완료');
-            reject('이미지 저장 실패');
-          }),
-      ),
-    );
-
-    await this.imageRepository.save({
-      url: image,
-      board: { id: result.id },
-    });
+      await this.imageRepository.save({
+        url: image,
+        board: { id: result.id },
+      });
+    }
 
     return result;
   }

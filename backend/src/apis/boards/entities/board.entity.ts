@@ -37,7 +37,7 @@ export class Board {
 
   @Column()
   @Field(() => String)
-  adress: string;
+  address: string;
 
   @Column({ nullable: true })
   @Field(() => Number, { nullable: true })
@@ -60,13 +60,11 @@ export class Board {
   @Field(() => [BoardTag], { nullable: true })
   tag: BoardTag[];
 
-  // @OneToMany(
-  //   () => favoriteBoard,
-  //   (favoriteBoard) => favoriteBoard.board,
-  //   { nullable: true }, //
-  // )
-  // @Field(() => [favoriteBoard], { nullable: true })
-  // favoriteBoard: favoriteBoard[];
+  @OneToMany(() => favoriteBoard, (favoriteBoard) => favoriteBoard.board, {
+    nullable: true,
+  })
+  @Field(() => [favoriteBoard], { nullable: true })
+  favoriteBoard: favoriteBoard[];
 
   @JoinTable()
   @ManyToMany(() => Comment, (comment) => comment.board, { nullable: true })

@@ -34,9 +34,7 @@ export class Boardsresolver {
       const result = await this.elasticsearchService.search({
         index: 'search-board',
         query: {
-          bool: {
-            should: [{ prefix: { title: search.toLowerCase() } }],
-          },
+          term: { name: search },
         },
       });
 
@@ -44,10 +42,11 @@ export class Boardsresolver {
         const obj = {
           id: el._source['id'],
           title: el._source['title'],
-          contents: el._source['contentes'],
+          contents: el._source['contents'],
         };
         return obj;
       });
+
       await this.cacheManager.set(search, arrayBoard, { ttl: 3000 });
 
       return arrayBoard;
@@ -67,6 +66,43 @@ export class Boardsresolver {
   fetchBoardWithDeleted() {
     return this.boardsService.WithBoardDelete();
   }
+
+  // 로그인한 본인 게시글만 조회
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => Board)
+  async fetchMyBoards(
+    @Args({ name: 'search', nullable: true }) search: string, //
+  ) {
+    const checkRedis = await this.cacheManager.get(search);
+
+    if (checkRedis) {
+      return checkRedis;
+    } else {
+      const result = await this.elasticsearchService.search({
+        index: 'search-board',
+        query: {
+          term: { name: search },
+        },
+      });
+
+      const arrayBoard = result.hits.hits.map((el) => {
+        const obj = {
+          id: el._source['id'],
+          title: el._source['title'],
+          contents: el._source['contents'],
+        };
+        return obj;
+      });
+
+      await this.cacheManager.set(search, arrayBoard, { ttl: 3000 });
+
+      return arrayBoard;
+    }
+  }
+
+  // 한 유저의 게시글만 조회
+
+  // 태그로 조회
 
   // 게시글 생성
   @UseGuards(GqlAuthAccessGuard)

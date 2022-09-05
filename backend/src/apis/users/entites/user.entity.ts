@@ -8,6 +8,8 @@ import {
   DeleteDateColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -52,4 +54,12 @@ export class User {
   @ManyToMany(() => Comment, (comment) => comment.user, { nullable: true })
   @Field(() => [Comment], { nullable: true })
   comment: Comment[];
+
+  // @OneToMany(
+  //   () => favoriteBoard,
+  //   (favoriteBoard) => favoriteBoard.board,
+  //   { nullable: true }, //
+  // )
+  // @Field(() => [favoriteBoard], { nullable: true })
+  // favoriteBoard: favoriteBoard[];
 }

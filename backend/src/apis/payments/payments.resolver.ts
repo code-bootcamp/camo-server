@@ -1,8 +1,10 @@
 import {
   ConflictException,
   UnprocessableEntityException,
+  UseGuards,
 } from '@nestjs/common';
 import { Args, Context, Int, Mutation, Resolver } from '@nestjs/graphql';
+import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
 import { IamportService } from '../iamport/iamport.service';
 import { Payment } from './entities/payment.entity';
@@ -15,6 +17,7 @@ export class PaymentsResolver {
     private readonly iamportsService: IamportService,
   ) {}
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Payment)
   async createPayment(
     @Args('impUid') impUid: string,
@@ -36,6 +39,7 @@ export class PaymentsResolver {
     return this.paymentsService.create({ impUid, paymentAmount, user });
   }
 
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Payment)
   async createCancel(
     @Args('impUid') impUid: string,

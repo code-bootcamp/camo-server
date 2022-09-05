@@ -31,7 +31,7 @@ export class CommentsService {
 
     return await this.commentRepository.save({
       user: checkUser,
-      checkBoard,
+      board: checkBoard,
       comment,
     });
   }
@@ -52,7 +52,7 @@ export class CommentsService {
   }
 
   async delete({ commentId }) {
-    const result = await this.commentRepository.delete({
+    const result = await this.commentRepository.softDelete({
       id: commentId,
     });
 

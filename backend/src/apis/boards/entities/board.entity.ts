@@ -17,6 +17,7 @@ import {
   JoinColumn,
   OneToOne,
   OneToMany,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -39,12 +40,16 @@ export class Board {
   adress: string;
 
   @Column({ nullable: true })
-  @Field(() => String, { nullable: true })
-  likeCount: string;
+  @Field(() => Number, { nullable: true })
+  likeCount: number;
 
   @DeleteDateColumn({ nullable: true })
   @Field(() => Date, { nullable: true })
   deletedAt: Date;
+
+  @UpdateDateColumn({ nullable: true })
+  @Field(() => Date, { nullable: true })
+  updatedAt: Date;
 
   @CreateDateColumn()
   @Field(() => Date)
@@ -55,14 +60,13 @@ export class Board {
   @Field(() => [BoardTag], { nullable: true })
   tag: BoardTag[];
 
-  @JoinTable()
-  @ManyToMany(
-    () => favoriteBoard,
-    (favoriteBoard) => favoriteBoard.board,
-    { nullable: true }, //
-  )
-  @Field(() => [favoriteBoard], { nullable: true })
-  favoriteBoard: favoriteBoard[];
+  // @OneToMany(
+  //   () => favoriteBoard,
+  //   (favoriteBoard) => favoriteBoard.board,
+  //   { nullable: true }, //
+  // )
+  // @Field(() => [favoriteBoard], { nullable: true })
+  // favoriteBoard: favoriteBoard[];
 
   @JoinTable()
   @ManyToMany(() => Comment, (comment) => comment.board, { nullable: true })

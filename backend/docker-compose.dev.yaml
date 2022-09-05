@@ -11,8 +11,8 @@ services:
       - 3000:3000
     env_file:
       - ./.env.dev
-    enviroment:
-      - TZ=Asia/Seoul
+    # enviroment:
+    #   - TZ=Asia/Seoul
 
   my-database:
     platform: linux/x86_64
@@ -20,7 +20,7 @@ services:
     environment:
       MYSQL_DATABASE: 'teamdev04'
       MYSQL_ROOT_PASSWORD: '3198'
-      TZ: Asia/Seoul
+      # TZ: Asia/Seoul
     ports:
       - 3306:3306
 
@@ -28,8 +28,8 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
-    enviroment:
-      - TZ=Asia/Seoul
+    # enviroment:
+    #   - TZ=Asia/Seoul
 
   elasticsearc:
     image: elasticsearch:7.17.0

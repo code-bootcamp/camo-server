@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Board } from '../../boards/entities/board.entity';
 import { User } from '../../users/entites/user.entity';
 
@@ -10,11 +10,15 @@ export class favoriteBoard {
   @Field(() => String)
   id: string;
 
+  @Column({ default: false })
+  @Field(() => Boolean, { defaultValue: false })
+  isLike: boolean;
+
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
 
-  @ManyToMany(() => Board, (board) => board.favoriteBoard)
+  @ManyToOne(() => Board)
   @Field(() => Board)
   board: Board;
 }

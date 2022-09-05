@@ -9,7 +9,7 @@ export class CreateBoardInput {
   contents: string;
 
   @Field(() => String)
-  adress: string;
+  address: string;
 
   @Field(() => [String])
   tag: string[];

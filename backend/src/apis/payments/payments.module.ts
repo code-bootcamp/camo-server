@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CafeReservaion } from '../cafeReservations/entities/cafeReservations.entity';
+import { CafeReservation } from '../cafeReservations/entities/cafeReservations.entity';
 import { IamportService } from '../iamport/iamport.service';
 import { User } from '../users/entites/user.entity';
 import { Payment } from './entities/payment.entity';
@@ -12,7 +12,7 @@ import { PaymentsService } from './payments.service';
     TypeOrmModule.forFeature([
       Payment, //
       User,
-      CafeReservaion,
+      CafeReservation,
     ]),
   ],
   providers: [

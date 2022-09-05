@@ -9,6 +9,7 @@ import { Board } from './entities/board.entity';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 
 @Resolver()
 export class Boardsresolver {
@@ -18,6 +19,8 @@ export class Boardsresolver {
     private readonly usersService: UsersService,
 
     private readonly elasticsearchService: ElasticsearchService,
+
+    private readonly favoriteBoardsService: FavoriteBoardsService,
 
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
@@ -143,5 +146,13 @@ export class Boardsresolver {
     @Args('boardId') boardId: string, //
   ) {
     return this.boardsService.delete({ boardId });
+  }
+
+  /** like 갯수 조회 */
+  @Query(() => Board)
+  fetchLike(
+    @Args('boardId') boardId: string, //
+  ) {
+    return this.favoriteBoardsService.findLike({ boardId });
   }
 }

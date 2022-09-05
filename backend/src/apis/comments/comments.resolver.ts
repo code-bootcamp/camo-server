@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { CommentsService } from './comments.service';
 import { CreateCommentInput } from './dto/createComment.input';
@@ -34,7 +34,17 @@ export class CommentsResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteComment(@Args('commentId') commentId: string) {
+  deleteComment(
+    @Args('commentId') commentId: string, //
+  ) {
     return this.commentService.delete({ commentId });
+  }
+
+  // @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [Comment])
+  fetchComments(
+    @Args('boardId') boardId: string, //
+  ) {
+    return this.commentService.find({ boardId });
   }
 }

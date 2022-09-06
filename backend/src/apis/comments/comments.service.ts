@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from '../boards/entities/board.entity';
@@ -17,18 +17,25 @@ export class CommentsService {
     @InjectRepository(Board)
     private readonly boardRepository: Repository<Board>,
   ) {}
-  async find({ boardId }) {
-    console.log(
-      await this.boardRepository.find({
-        where: { id: boardId },
-        relations: ['comment'],
-      }),
-    );
 
-    return await this.boardRepository.find({
-      where: { id: boardId },
-      relations: ['comment'],
+  /** 댓글 개별 조회 */
+  async find({ commentId }) {
+    const result = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: ['board', 'user'],
     });
+    return result;
+  }
+
+  /** 댓글 모두 조회 */
+  async findAll({ boardId }) {
+    const result = await this.commentRepository.find({
+      where: {
+        board: { id: boardId },
+      },
+      relations: ['board', 'user'],
+    });
+    return result;
   }
 
   async create({ createCommentInput }) {
@@ -70,5 +77,14 @@ export class CommentsService {
     });
 
     return result.affected ? true : false;
+  }
+
+  async deleteComment({ context, commentId }) {
+    const userId = context.req.user.id;
+    const comment = await this.find({ commentId });
+    const commentUserId = comment.user['id'];
+    if (commentUserId !== userId)
+      throw new ConflictException('본인이 작성한 댓글만 지울 수 있습니다.');
+    return this.delete({ commentId });
   }
 }

@@ -938,10 +938,10 @@
   resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-9.0.0.tgz#0571bb08f8043456bc6df44cd4f59ca5f10c9b9f"
   integrity sha512-Gnh8n1wzFPOLSS/94X1sUP4IRAoXTgG4odl7/AO5h+uwscEGXxJFercrZfqdAwkWhqkKWbsntM3j5mRy/6ZQDA==
 
-"@nestjs/platform-express@^9.0.0":
-  version "9.0.4"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-9.0.4.tgz#7327322afb16d95b1cab4779d1a9c9fc98361232"
-  integrity sha512-jUru88otFCI1fOBbPescMJuULvHlg/YbNQkXPYUenGV9iN/isohXYepXqFEZDkbH64LnZo8jjUT87D0cMweTdg==
+"@nestjs/platform-express@^9.0.11":
+  version "9.0.11"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-9.0.11.tgz#49110e02944f3ea4b14936b3ffaa1060230e642e"
+  integrity sha512-Up1Ps08n2Y07AYakTKKU5uofGQoAQoUaRyfXdH0G54OnICCUiqcFH0QveNYLCkHoMP4iFs6vMr3xhvO6y91NBQ==
   dependencies:
     body-parser "1.20.0"
     cors "2.8.5"
@@ -1549,12 +1549,12 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
-"@types/socket.io-redis@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/socket.io-redis/-/socket.io-redis-3.0.0.tgz#3273953eb873345743bac0e870b2f1f46cbcfbc9"
-  integrity sha512-AFINYd5w7LwUqUDZAfmv4AEhXOJ0YsXCQf11RRDok+Zq7cCyhTMgFAbWSwUScP/JEYD4KF6+4O4SiussjrKbmQ==
+"@types/socket.io@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/socket.io/-/socket.io-3.0.2.tgz#606c9639e3f93bb8454cba8f5f0a283d47917759"
+  integrity sha512-pu0sN9m5VjCxBZVK8hW37ZcMe8rjn4HHggBN5CbaRTvFwv5jOmuIRZEuddsBPa9Th0ts0SIo3Niukq+95cMBbQ==
   dependencies:
-    socket.io-redis "*"
+    socket.io "*"
 
 "@types/stack-utils@^2.0.0":
   version "2.0.1"
@@ -1575,11 +1575,6 @@
   integrity sha512-X3HPWTwXRerBZS7Mo1k6vMVR1Z6zmJcDVn5O/31whe0tnjE4te6ZJSJGq1RiqHPjzPdMTfjCFogDJmwng9xHaQ==
   dependencies:
     "@types/superagent" "*"
-
-"@types/uuid@8.3.4":
-  version "8.3.4"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.4.tgz#bd86a43617df0594787d38b735f55c805becf1bc"
-  integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
 
 "@types/yargs-parser@*":
   version "21.0.0"
@@ -5862,7 +5857,7 @@ socket.io-parser@~4.2.0:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
 
-socket.io-redis@*, socket.io-redis@^6.1.1:
+socket.io-redis@^6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/socket.io-redis/-/socket.io-redis-6.1.1.tgz#2361029a6c0b25c602d1422e1beb41907fd0e8bf"
   integrity sha512-jeaXe3TGKC20GMSlPHEdwTUIWUpay/L7m5+S9TQcOf22p9Llx44/RkpJV08+buXTZ8E+aivOotj2RdeFJJWJJQ==
@@ -5872,6 +5867,18 @@ socket.io-redis@*, socket.io-redis@^6.1.1:
     redis "^3.0.0"
     socket.io-adapter "~2.2.0"
     uid2 "0.0.3"
+
+socket.io@*, socket.io@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-4.5.2.tgz#1eb25fd380ab3d63470aa8279f8e48d922d443ac"
+  integrity sha512-6fCnk4ARMPZN448+SQcnn1u8OHUC72puJcNtSgg2xS34Cu7br1gQ09YKkO1PFfDn/wyUE9ZgMAwosJed003+NQ==
+  dependencies:
+    accepts "~1.3.4"
+    base64id "~2.0.0"
+    debug "~4.3.2"
+    engine.io "~6.2.0"
+    socket.io-adapter "~2.4.0"
+    socket.io-parser "~4.2.0"
 
 socket.io@4.5.1:
   version "4.5.1"
@@ -5884,18 +5891,6 @@ socket.io@4.5.1:
     engine.io "~6.2.0"
     socket.io-adapter "~2.4.0"
     socket.io-parser "~4.0.4"
-
-socket.io@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-4.5.2.tgz#1eb25fd380ab3d63470aa8279f8e48d922d443ac"
-  integrity sha512-6fCnk4ARMPZN448+SQcnn1u8OHUC72puJcNtSgg2xS34Cu7br1gQ09YKkO1PFfDn/wyUE9ZgMAwosJed003+NQ==
-  dependencies:
-    accepts "~1.3.4"
-    base64id "~2.0.0"
-    debug "~4.3.2"
-    engine.io "~6.2.0"
-    socket.io-adapter "~2.4.0"
-    socket.io-parser "~4.2.0"
 
 source-map-support@0.5.13:
   version "0.5.13"
@@ -6497,14 +6492,6 @@ uuid@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
   integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
-
-uuidv4@^6.2.13:
-  version "6.2.13"
-  resolved "https://registry.yarnpkg.com/uuidv4/-/uuidv4-6.2.13.tgz#8f95ec5ef22d1f92c8e5d4c70b735d1c89572cb7"
-  integrity sha512-AXyzMjazYB3ovL3q051VLH06Ixj//Knx7QnUSi1T//Ie3io6CpsPu9nVMOx5MoLWh6xV0B9J0hIaxungxXUbPQ==
-  dependencies:
-    "@types/uuid" "8.3.4"
-    uuid "8.3.2"
 
 v8-compile-cache-lib@^3.0.1:
   version "3.0.1"

@@ -23,6 +23,14 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
 
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => User)
+  fetchLoginUser(
+    @Context() context: any, //
+  ) {
+    return this.usersService.findOneUser({ email: context.email });
+  }
+
   /** 모든 유저 조회 */
   @Query(() => [User])
   fetchUsers() {
@@ -39,10 +47,10 @@ export class UsersResolver {
 
   /** 회원가입시 중복 아이디 확인*/
   @Query(() => Boolean)
-  checkUserEmail(
+  async checkUserEmail(
     @Args('email') email: string, //
   ) {
-    const userEmail = this.usersService.findOneUser({ email });
+    const userEmail = await this.usersService.findOneUser({ email });
     if (userEmail) throw new ConflictException('이미 사용되고 있는 ID입니다.');
     return true;
   }

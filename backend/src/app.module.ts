@@ -20,6 +20,7 @@ import { BoardTagModule } from './apis/tags/boardtags.module';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 import { FileModule } from './apis/file/file.module';
+import { ChatModule } from './apis/chat/chat.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { FileModule } from './apis/file/file.module';
     ReviewsPointsMoudule,
     BoardTagModule,
     UsersModule,
+    ChatModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/commons/graphql/schema.gql',

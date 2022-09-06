@@ -58,6 +58,7 @@ import { ChatModule } from './apis/chat/chat.module';
           'Accept',
         ],
         origin: ['http://localhost:3000'],
+        exposedHeaders: ['Set-Cookie', 'Cookie'],
       },
     }),
     TypeOrmModule.forRoot({

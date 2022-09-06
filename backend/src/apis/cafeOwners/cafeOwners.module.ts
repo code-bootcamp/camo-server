@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CafeOwnersResolver } from './cafeOwners.resolver';
-import { CafeOwnersService } from './cafeOwners.service';
+// import { CafeOwnersResolver } from './cafeOwners.resolver';
+// import { CafeOwnersService } from './cafeOwners.service';
 import { CafeOwner } from './entities/cafeOwner.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      CafeOwner, //
+      // CafeOwner, //
     ]),
   ],
   providers: [
-    CafeOwnersResolver, //
-    CafeOwnersService,
+    // CafeOwnersResolver, //
+    // CafeOwnersService,
   ],
 })
 export class CafeOwnersModule {}

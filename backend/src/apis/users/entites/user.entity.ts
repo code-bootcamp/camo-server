@@ -34,9 +34,13 @@ export class User {
   @Field(() => String)
   phoneNumber: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   nickName: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  cafeName: string;
 
   @CreateDateColumn()
   @Field(() => Date)

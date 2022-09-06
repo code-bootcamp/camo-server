@@ -20,45 +20,45 @@ export class CafeOwner {
   @Field(() => String)
   id: string;
 
-  @Column()
-  @Field(() => String)
-  email: string;
+  // @Column()
+  // @Field(() => String)
+  // email: string;
 
-  @Column()
-  password: string;
+  // @Column()
+  // password: string;
 
-  @Column()
-  @Field(() => String)
-  name: string;
+  // @Column()
+  // @Field(() => String)
+  // name: string;
 
-  @Column()
-  @Field(() => String)
-  phoneNumber: string;
+  // @Column()
+  // @Field(() => String)
+  // phoneNumber: string;
 
-  @Column()
-  @Field(() => String)
-  cafeName: string;
+  // @Column()
+  // @Field(() => String)
+  // cafeName: string;
 
-  @CreateDateColumn()
-  @Field(() => Date)
-  signupDate: Date;
+  // @CreateDateColumn()
+  // @Field(() => Date)
+  // signupDate: Date;
 
-  @DeleteDateColumn({ nullable: true })
-  @Field(() => Date, { nullable: true })
-  deletedAt: Date;
+  // @DeleteDateColumn({ nullable: true })
+  // @Field(() => Date, { nullable: true })
+  // deletedAt: Date;
 
-  @JoinTable()
-  @OneToOne(() => Review, { nullable: true })
-  @Field(() => Review, { nullable: true })
-  review: Review;
+  // @JoinTable()
+  // @OneToOne(() => Review, { nullable: true })
+  // @Field(() => Review, { nullable: true })
+  // review: Review;
 
-  @JoinColumn()
-  @OneToOne(() => CafeList, { nullable: true })
-  @Field(() => CafeList, { nullable: true })
-  cafeList: CafeList;
+  // @JoinColumn()
+  // @OneToOne(() => CafeList, { nullable: true })
+  // @Field(() => CafeList, { nullable: true })
+  // cafeList: CafeList;
 
-  @JoinColumn()
-  @OneToOne(() => CafeReservation, { nullable: true })
-  @Field(() => CafeReservation, { nullable: true })
-  cafeReservation: CafeReservation;
+  // @JoinColumn()
+  // @OneToOne(() => CafeReservation, { nullable: true })
+  // @Field(() => CafeReservation, { nullable: true })
+  // cafeReservation: CafeReservation;
 }

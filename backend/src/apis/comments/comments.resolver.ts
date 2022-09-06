@@ -1,6 +1,7 @@
-import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { ConflictException, UseGuards } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { IContext } from 'src/commons/type/context';
 import { CommentsService } from './comments.service';
 import { CreateCommentInput } from './dto/createComment.input';
 import { UpdateCommentInput } from './dto/updateComment.input';
@@ -21,10 +22,12 @@ export class CommentsResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   updateComment(
+    // @Context() context: IContext, // 개발 완료후 변경
     @Args('userId') userId: string,
     @Args('commentId') commentId: string,
     @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
   ) {
+    // const userId = context.req.user.id // 개발 완료 후 변경
     return this.commentService.update({
       commentId,
       userId,
@@ -32,19 +35,21 @@ export class CommentsResolver {
     });
   }
 
+  /** 댓글 삭제 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteComment(
+  async deleteComment(
     @Args('commentId') commentId: string, //
+    @Context() context: IContext,
   ) {
-    return this.commentService.delete({ commentId });
+    return this.commentService.deleteComment({ context, commentId });
   }
 
-  // @UseGuards(GqlAuthAccessGuard)
+  /** 댓글 조회하기 */
   @Query(() => [Comment])
-  fetchComments(
+  async fetchComments(
     @Args('boardId') boardId: string, //
   ) {
-    return this.commentService.find({ boardId });
+    return await this.commentService.findAll({ boardId });
   }
 }

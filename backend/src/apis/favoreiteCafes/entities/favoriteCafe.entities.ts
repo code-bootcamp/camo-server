@@ -20,8 +20,4 @@ export class FavoriteCafe {
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
-
-  @ManyToOne(() => CafeList)
-  @Field(() => CafeList)
-  cafeList: CafeList;
 }

@@ -2,7 +2,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import { CafeOwner } from 'src/apis/cafeOwners/entities/cafeOwner.entity';
 import { Payment } from 'src/apis/payments/entities/payment.entity';
-import { ReviewPoint } from 'src/apis/reviewsPoints/entites/reviewPoint.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Entity,
@@ -43,19 +42,4 @@ export class CafeReservation {
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
-
-  @JoinColumn()
-  @OneToOne(() => CafeOwner)
-  @Field(() => CafeOwner)
-  cafeOwner: CafeOwner;
-
-  @JoinColumn()
-  @OneToOne(() => Payment)
-  @Field(() => Payment)
-  payment: Payment;
-
-  @JoinColumn()
-  @OneToOne(() => ReviewPoint, { nullable: true })
-  @Field(() => ReviewPoint, { nullable: true })
-  reviewPoint: ReviewPoint;
 }

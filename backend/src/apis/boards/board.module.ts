@@ -6,7 +6,7 @@ import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { Image } from '../images/entities/image.entity';
 import { ImagesService } from '../images/image.service';
-import { BoardTag } from '../tags/entities/tag.entity';
+import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersService } from '../users/users.service';
 import { Boardsresolver } from './board.resolver';
@@ -17,7 +17,7 @@ import { Board } from './entities/board.entity';
   imports: [
     TypeOrmModule.forFeature([
       Board, //
-      BoardTag,
+      Tag,
       User,
       Comment,
       favoriteBoard,

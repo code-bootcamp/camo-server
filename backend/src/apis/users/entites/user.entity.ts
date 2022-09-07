@@ -30,7 +30,7 @@ export class User {
   @Field(() => String)
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true }) // 소셜 로그인 때문에
   @Field(() => String, { nullable: true })
   phoneNumber: string;
 
@@ -52,12 +52,12 @@ export class User {
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
-  favoritCafe: string;
+  status: string;
 
-  @JoinTable()
-  @ManyToMany(() => Comment, (comment) => comment.user, { nullable: true })
-  @Field(() => [Comment], { nullable: true })
-  comment: Comment[];
+  // @JoinTable()
+  // @ManyToMany(() => Comment, (comment) => comment.user, { nullable: true })
+  // @Field(() => [Comment], { nullable: true })
+  // comment: Comment[];
 
   // @OneToMany(
   //   () => favoriteBoard,

@@ -12,6 +12,7 @@ import { JwtGoogleStrategy } from 'src/commons/auth/jwt-social-google.strategy';
 import { JwtNaverStrategy } from 'src/commons/auth/jwt-social-naver.strategy';
 import { jwtKakaoStrategy } from 'src/commons/auth/jwt-social-kakao.strategy';
 import { JwtAdminStrategy } from 'src/commons/auth/jwt-admin.strategy';
+import { JwtRefreshStrategy } from 'src/commons/auth/jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { JwtAdminStrategy } from 'src/commons/auth/jwt-admin.strategy';
     JwtService,
     JwtModule,
     HttpExceptionFilter,
+    JwtRefreshStrategy,
   ],
   controllers: [
     AuthsController,

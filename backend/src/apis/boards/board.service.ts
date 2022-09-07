@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Comment } from '../comments/entites/comment.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from '../images/entities/image.entity';
-import { BoardTag } from '../tags/entities/tag.entity';
+import { Tag } from '../tags/entities/tag.entity';
 import { Board } from './entities/board.entity';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class BoardsService {
     @InjectRepository(Board)
     private readonly boardRepository: Repository<Board>,
 
-    @InjectRepository(BoardTag)
-    private readonly boardTagRepository: Repository<BoardTag>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
 
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>,
@@ -46,14 +46,14 @@ export class BoardsService {
     for (let i = 0; i < tag.length; i++) {
       const tagName = tag[i];
 
-      const prevTag = await this.boardTagRepository.findOne({
+      const prevTag = await this.tagRepository.findOne({
         where: { name: tagName },
       });
 
       if (prevTag) {
         boardtag.push(prevTag);
       } else {
-        const newTag = await this.boardTagRepository.save({
+        const newTag = await this.tagRepository.save({
           name: tagName,
         });
         tag.push(newTag);

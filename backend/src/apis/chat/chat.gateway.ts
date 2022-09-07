@@ -13,9 +13,10 @@ import { User } from '../users/entites/user.entity';
 import { ChatMessage } from './entities/chatMessage.entity';
 import { ChatRoom } from './entities/chatRoom.entity';
 
-@WebSocketGateway({
+// 소켓 81번 포트에서 열어 줌
+@WebSocketGateway(81, {
   namespace: 'chat',
-  cors: { origin: '*' },
+  cors: { origin: 'http://localhost:3000' },
 })
 @Injectable()
 export class ChatGateway {
@@ -30,6 +31,7 @@ export class ChatGateway {
     private readonly usersRepository: Repository<User>,
   ) {}
 
+  // 서버 인스턴스에 접근
   @WebSocketServer()
   server: Server;
 

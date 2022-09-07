@@ -8,7 +8,6 @@ import { ReviewsModule } from './apis/reviews/reviews.module';
 import { PaymentsModule } from './apis/payments/payments.module';
 import { CafeReservationsMoudule } from './apis/cafeReservations/cafeReservations.module';
 import { CafeOwnersModule } from './apis/cafeOwners/cafeOwners.module';
-import { ReviewsPointsMoudule } from './apis/reviewsPoints/reviewsPoints.module';
 import { Boardmodule } from './apis/boards/board.module';
 import { AuthsModule } from './apis/auths/auths.module';
 import { CafeListsModule } from './apis/cafeLists/cafeLists.module';
@@ -16,10 +15,10 @@ import { CommentsModule } from './apis/comments/comments.module';
 import { FavoriteCafesModule } from './apis/favoreiteCafes/favoriteCafes.module';
 import { FavoriteBoardsModule } from './apis/favoriteBoard/favoriteBoards.module';
 import { ImageModule } from './apis/images/image.module';
-import { BoardTagModule } from './apis/tags/boardtags.module';
+import { TagsModule } from './apis/tags/tags.module';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
-import { FileModule } from './apis/file/file.module';
+import { FileModule } from './apis/files/file.module';
 import { ChatModule } from './apis/chat/chat.module';
 
 @Module({
@@ -39,8 +38,7 @@ import { ChatModule } from './apis/chat/chat.module';
     ImageModule,
     PaymentsModule,
     ReviewsModule,
-    ReviewsPointsMoudule,
-    BoardTagModule,
+    TagsModule,
     UsersModule,
     ChatModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({

@@ -1,12 +1,12 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Review } from 'src/apis/reviews/entites/review.entity';
+import { Tag } from 'src/apis/tags/entities/tag.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -24,6 +24,10 @@ export class CafeList {
   @Column()
   @Field(() => String)
   address: string;
+
+  @Column()
+  @Field(() => String)
+  postalNumber: string;
 
   @Column()
   @Field(() => String)
@@ -53,8 +57,8 @@ export class CafeList {
   @Field(() => User)
   user: User;
 
-  @JoinColumn()
-  @OneToOne(() => Review, { nullable: true })
-  @Field(() => Review, { nullable: true })
-  review: Review;
+  @JoinTable()
+  @ManyToMany(() => Tag, (Tag) => Tag.cafeList)
+  @Field(() => [Tag])
+  tag: Tag[];
 }

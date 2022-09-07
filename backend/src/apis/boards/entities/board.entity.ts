@@ -3,7 +3,7 @@ import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import { Comment } from 'src/apis/comments/entites/comment.entity';
 import { favoriteBoard } from 'src/apis/favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from 'src/apis/images/entities/image.entity';
-import { BoardTag } from 'src/apis/tags/entities/tag.entity';
+import { Tag } from 'src/apis/tags/entities/tag.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,
@@ -35,13 +35,13 @@ export class Board {
   @Field(() => String)
   contents: string;
 
-  @Column()
-  @Field(() => String)
-  address: string;
-
   @Column({ nullable: true })
   @Field(() => Number, { nullable: true })
   likeCount: number;
+
+  @CreateDateColumn()
+  @Field(() => Date)
+  createdAt: Date;
 
   @DeleteDateColumn({ nullable: true })
   @Field(() => Date, { nullable: true })
@@ -51,32 +51,22 @@ export class Board {
   @Field(() => Date, { nullable: true })
   updatedAt: Date;
 
-  @CreateDateColumn()
-  @Field(() => Date)
-  createdAt: Date;
-
   @JoinTable()
-  @ManyToMany(() => BoardTag, (boardTag) => boardTag.board, { nullable: true })
-  @Field(() => [BoardTag], { nullable: true })
-  tag: BoardTag[];
+  @ManyToMany(() => Tag, (Tag) => Tag.board, { nullable: true })
+  @Field(() => [Tag], { nullable: true })
+  tag: Tag[];
 
-  @OneToMany(() => favoriteBoard, (favoriteBoard) => favoriteBoard.board, {
-    nullable: true,
-  })
-  @Field(() => [favoriteBoard], { nullable: true })
-  favoriteBoard: favoriteBoard[];
-
-  @JoinTable()
-  @ManyToMany(() => Comment, (comment) => comment.board, { nullable: true })
-  @Field(() => [Comment], { nullable: true })
-  comment: Comment[];
+  // @OneToMany(() => favoriteBoard, (favoriteBoard) => favoriteBoard.board, {
+  //   nullable: true,
+  // })
+  // @Field(() => [favoriteBoard], { nullable: true })
+  // favoriteBoard: favoriteBoard[];
 
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
 
-  @JoinColumn()
-  @OneToOne(() => CafeList, { nullable: true })
+  @ManyToOne(() => CafeList, { nullable: true })
   @Field(() => CafeList, { nullable: true })
   cafeList: CafeList;
 

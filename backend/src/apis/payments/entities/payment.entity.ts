@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,
@@ -42,4 +43,8 @@ export class Payment {
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
+
+  @ManyToOne(() => CafeReservation)
+  @Field(() => CafeReservation)
+  cafeReservation: CafeReservation;
 }

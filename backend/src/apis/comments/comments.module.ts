@@ -4,8 +4,8 @@ import { BoardsService } from '../boards/board.service';
 import { Board } from '../boards/entities/board.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from '../images/entities/image.entity';
-import { BoardTagsService } from '../tags/boardtags.service';
-import { BoardTag } from '../tags/entities/tag.entity';
+import { TagsService } from '../tags/tags.service';
+import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersService } from '../users/users.service';
 import { CommentsResolver } from './comments.resolver';
@@ -18,7 +18,7 @@ import { Comment } from './entites/comment.entity';
       Comment, //
       Board,
       User,
-      BoardTag,
+      Tag,
       Image,
       favoriteBoard,
     ]),
@@ -28,7 +28,7 @@ import { Comment } from './entites/comment.entity';
     CommentsService,
     UsersService,
     BoardsService,
-    BoardTagsService,
+    TagsService,
   ],
 })
 export class CommentsModule {}

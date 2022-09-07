@@ -30,8 +30,8 @@ export class User {
   @Field(() => String)
   name: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   phoneNumber: string;
 
   @Column({ nullable: true })

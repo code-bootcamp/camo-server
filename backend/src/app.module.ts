@@ -46,7 +46,7 @@ import { ChatModule } from './apis/chat/chat.module';
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
       cors: {
-        Credential: true,
+        credential: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowedHeaders: [
           'Access-Control-Allow-Headers',

@@ -5,15 +5,12 @@ import {
   Injectable,
   UnauthorizedException,
   UnprocessableEntityException,
-  UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Cache } from 'cache-manager';
-import { JwtAdminStrategy } from 'src/commons/auth/jwt-admin.strategy';
-import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 
 @Injectable()
 export class AuthsService {

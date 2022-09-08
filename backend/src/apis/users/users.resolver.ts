@@ -10,6 +10,7 @@ import { UsersService } from './users.service';
 import { User } from './entites/user.entity';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
+import { Console } from 'console';
 
 @Resolver()
 export class UsersResolver {
@@ -18,17 +19,13 @@ export class UsersResolver {
   ) {}
   /** 모든 유저 조회 로그인 API 테스트용*/
   @UseGuards(GqlAuthAccessGuard)
-  @Query(() => [User])
-  fetchLoginUsers() {
-    return this.usersService.findAll();
-  }
-
-  @UseGuards(GqlAuthAccessGuard)
   @Query(() => User)
-  fetchLoginUser(
-    @Context() context: any, //
+  async fetchLoginedUser(
+    @Context() context: IContext, //
   ) {
-    return this.usersService.findOneUser({ email: context.email });
+    const userId = context.req.user.id;
+    const result = await this.usersService.findOne({ userId });
+    return result;
   }
 
   /** 모든 유저 조회 */

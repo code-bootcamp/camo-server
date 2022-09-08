@@ -12,7 +12,7 @@ export class CreateBoardInput {
   address: string;
 
   @Field(() => [String])
-  tag: string[];
+  tags: string[];
 
   @Field(() => [String], { nullable: true })
   image: string[];

@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Board } from 'src/apis/boards/entities/board.entity';
 import { Comment } from 'src/apis/comments/entites/comment.entity';
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   Entity,
   CreateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()

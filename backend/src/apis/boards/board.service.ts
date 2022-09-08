@@ -29,6 +29,8 @@ export class BoardsService {
   async findBoardAll() {
     return await this.boardRepository.find({
       relations: ['tag', 'favoriteBoard', 'comment', 'image'],
+      // take: 12,
+      // skip: page ? (page - 1) * 10 : 0, // 무한스크롤
     });
   }
 

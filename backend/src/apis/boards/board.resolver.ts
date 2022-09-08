@@ -26,9 +26,9 @@ export class Boardsresolver {
     private readonly cacheManager: Cache,
   ) {}
 
-  // 전체 게시글 조회
+  // 전체 게시글 조회 엘라스틱서치
   @Query(() => [Board])
-  async fetchBoards(@Args({ name: 'search', nullable: true }) search: string) {
+  async searchBoards(@Args({ name: 'search', nullable: true }) search: string) {
     const checkRedis = await this.cacheManager.get(search);
 
     if (checkRedis) {
@@ -54,6 +54,12 @@ export class Boardsresolver {
 
       return arrayBoard;
     }
+  }
+
+  // 전체 게시글 조회
+  @Query(() => [Board])
+  fetchBoards() {
+    return this.boardsService.findBoardAll();
   }
 
   // 원하는 게시글 조회
@@ -102,8 +108,6 @@ export class Boardsresolver {
       return arrayBoard;
     }
   }
-
-  // 한 유저의 게시글만 조회
 
   // 태그로 조회
 

@@ -11,7 +11,7 @@ export class favoriteBoard {
   id: string;
 
   @Column({ default: false })
-  @Field(() => Boolean, { defaultValue: false })
+  @Field(() => Boolean)
   isLike: boolean;
 
   @ManyToOne(() => User)

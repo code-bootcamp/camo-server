@@ -6,10 +6,6 @@ import {
   Entity,
   CreateDateColumn,
   DeleteDateColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
 } from 'typeorm';
 
 @Entity()

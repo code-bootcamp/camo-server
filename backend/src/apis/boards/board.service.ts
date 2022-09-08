@@ -28,10 +28,14 @@ export class BoardsService {
 
   async findBoardAll() {
     return await this.boardRepository.find({
-      relations: ['tag', 'favoriteBoard', 'comment', 'image'],
+      relations: ['tag', 'comment', 'image'],
       // take: 12,
       // skip: page ? (page - 1) * 10 : 0, // 무한스크롤
     });
+  }
+
+  async findBoardAll2() {
+    return await this.boardRepository.find({});
   }
 
   async findBoardOne({ boardId }) {

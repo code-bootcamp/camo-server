@@ -51,7 +51,8 @@ export class BoardsService {
   async findBoardOne({ boardId }) {
     return await this.boardRepository.findOne({
       where: { id: boardId },
-      relations: ['tags', 'comment', 'image'],
+      // relations: ['tags', 'comment', 'image'],
+      relations: ['favoriteBoard', 'tags', 'comment'],
     });
   }
 

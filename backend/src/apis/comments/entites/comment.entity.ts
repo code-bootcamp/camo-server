@@ -4,7 +4,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -40,12 +39,12 @@ export class Comment {
   // status: string;
 
   // @ManyToMany(() => Board, (board) => board.comment) // nullable 추가? 왜?
-  @ManyToOne(() => Board)
-  @Field(() => Board)
+  @ManyToOne(() => Board, { nullable: true })
+  @Field(() => Board, { nullable: true })
   board: Board;
 
   // @ManyToMany(() => User, (user) => user.comment)
-  @ManyToOne(() => User)
-  @Field(() => User)
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
   user: User;
 }

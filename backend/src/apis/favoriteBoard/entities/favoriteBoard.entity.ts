@@ -14,11 +14,11 @@ export class favoriteBoard {
   @Field(() => Boolean)
   isLike: boolean;
 
-  @ManyToOne(() => User)
-  @Field(() => User)
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
   user: User;
 
-  @ManyToOne(() => Board)
-  @Field(() => Board)
+  @ManyToOne(() => Board, { nullable: true })
+  @Field(() => Board, { nullable: true })
   board: Board;
 }

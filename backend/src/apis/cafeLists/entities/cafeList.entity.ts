@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Tag } from 'src/apis/tags/entities/tag.entity';
 import { User } from 'src/apis/users/entites/user.entity';
+import { CafeListTag } from 'src/apis/cafeListTags/entities/cafeListTag.entity';
 import {
   Column,
   Entity,
@@ -58,7 +58,7 @@ export class CafeList {
   user: User;
 
   @JoinTable()
-  @ManyToMany(() => Tag, (Tag) => Tag.cafeList)
-  @Field(() => [Tag])
-  tag: Tag[];
+  @ManyToMany(() => CafeListTag, (cafeListTag) => cafeListTag.cafeList)
+  @Field(() => [CafeListTag])
+  cafeListTag: CafeList[];
 }

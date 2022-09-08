@@ -1,5 +1,4 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Board } from 'src/apis/boards/entities/board.entity';
 import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import {
   Column,
@@ -11,7 +10,7 @@ import {
 
 @Entity()
 @ObjectType()
-export class Image {
+export class CafeListImage {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -27,7 +26,7 @@ export class Image {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => Board, (board) => board.image)
-  @Field(() => Board)
-  board: Board;
+  @ManyToOne(() => CafeList, { nullable: true })
+  @Field(() => CafeList, { nullable: true })
+  cafeList: CafeList;
 }

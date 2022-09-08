@@ -4,6 +4,7 @@
 .env*
 /src/commons/graphql/schema.gql
 reflected-jet-360811-402430377c02.json
+/src/el/logstash/logstash.dev.conf
 
 # Logs
 logs

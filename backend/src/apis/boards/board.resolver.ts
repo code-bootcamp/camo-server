@@ -1,5 +1,5 @@
 import { UnprocessableEntityException, UseGuards } from '@nestjs/common';
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { UsersService } from '../users/users.service';
 import { BoardsService } from './board.service';
@@ -10,6 +10,7 @@ import { Cache } from 'cache-manager';
 import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
+import { IContext } from 'src/commons/type/context';
 
 @Resolver()
 export class Boardsresolver {
@@ -121,9 +122,11 @@ export class Boardsresolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async createBoard(
+    @Context() context: IContext,
     @Args('createBoardInput') createBoardInput: CreateBoardInput,
   ) {
-    return this.boardsService.create({ createBoardInput });
+    const userId = context.req.user.id;
+    return await this.boardsService.create({ userId, createBoardInput });
   }
 
   // 게시글 수정

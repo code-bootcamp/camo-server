@@ -5,6 +5,8 @@ import { Comment } from '../comments/entites/comment.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from '../images/entities/image.entity';
 import { Tag } from '../tags/entities/tag.entity';
+import { User } from '../users/entites/user.entity';
+import { UsersService } from '../users/users.service';
 import { Board } from './entities/board.entity';
 
 @Injectable()
@@ -24,33 +26,45 @@ export class BoardsService {
 
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+
+    private readonly userService: UsersService,
   ) {}
 
   async findBoardAll() {
     return await this.boardRepository.find({
-      relations: ['tag', 'comment', 'image'],
+      relations: ['tags', 'comment', 'image'],
       // take: 12,
-      // skip: page ? (page - 1) * 10 : 0, // 무한스크롤
+      // skip: page ? (page - 1) * 12 : 0, // 무한스크롤
     });
   }
 
   async findBoardAll2() {
-    return await this.boardRepository.find({});
+    const user = await this.boardRepository.find({
+      relations: ['user', 'image'],
+    });
+    return user;
   }
 
   async findBoardOne({ boardId }) {
     return await this.boardRepository.findOne({
       where: { id: boardId },
-      relations: ['tag', 'favoriteBoard', 'comment', 'image'],
+      relations: ['tags', 'comment', 'image'],
     });
   }
 
-  async create({ createBoardInput }) {
-    const { tag, image, ...Board } = createBoardInput;
+  async create({ userId, createBoardInput }) {
+    const { tags, image, ...Board } = createBoardInput;
+
+    const user = await this.userRepository.find({
+      where: { id: userId },
+    });
 
     const boardtag = [];
-    for (let i = 0; i < tag.length; i++) {
-      const tagName = tag[i];
+    for (let i = 0; i < tags.length; i++) {
+      const tagName = tags[i].replace('#', '');
 
       const prevTag = await this.tagRepository.findOne({
         where: { name: tagName },
@@ -62,14 +76,15 @@ export class BoardsService {
         const newTag = await this.tagRepository.save({
           name: tagName,
         });
-        tag.push(newTag);
+        boardtag.push(newTag);
       }
     }
-
     const result = await this.boardRepository.save({
       ...Board,
-      boardTag: tag,
+      tags: boardtag,
+      user: userId,
     });
+
     if (image) {
       await Promise.all(
         image.map(

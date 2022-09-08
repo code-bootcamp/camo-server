@@ -1,7 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
-import { Comment } from 'src/apis/comments/entites/comment.entity';
-import { favoriteBoard } from 'src/apis/favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from 'src/apis/images/entities/image.entity';
 import { Tag } from 'src/apis/tags/entities/tag.entity';
 import { User } from 'src/apis/users/entites/user.entity';
@@ -14,8 +12,6 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  JoinColumn,
-  OneToOne,
   OneToMany,
   UpdateDateColumn,
 } from 'typeorm';
@@ -52,9 +48,9 @@ export class Board {
   updatedAt: Date;
 
   @JoinTable()
-  @ManyToMany(() => Tag, (Tag) => Tag.board, { nullable: true })
+  @ManyToMany(() => Tag, (tags) => tags.boards, { nullable: true })
   @Field(() => [Tag], { nullable: true })
-  tag: Tag[];
+  tags: Tag[];
 
   // @OneToMany(() => favoriteBoard, (favoriteBoard) => favoriteBoard.board, {
   //   nullable: true,

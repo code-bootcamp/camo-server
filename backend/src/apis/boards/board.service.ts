@@ -33,11 +33,12 @@ export class BoardsService {
     private readonly userService: UsersService,
   ) {}
 
-  async findBoardAll() {
+  async findBoardAll({ page }) {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'image'],
-      // take: 12,
-      // skip: page ? (page - 1) * 12 : 0, // 무한스크롤
+      order: { createdAt: 'DESC' },
+      take: 10,
+      skip: page ? (page - 1) * 10 : 0,
     });
   }
 
@@ -51,7 +52,6 @@ export class BoardsService {
   async findBoardOne({ boardId }) {
     return await this.boardRepository.findOne({
       where: { id: boardId },
-      // relations: ['tags', 'comment', 'image'],
       relations: ['favoriteBoard', 'tags', 'comment'],
     });
   }
@@ -62,6 +62,7 @@ export class BoardsService {
     const user = await this.userRepository.find({
       where: { id: userId },
     });
+    console.log(user);
 
     const boardtag = [];
     for (let i = 0; i < tags.length; i++) {
@@ -83,7 +84,7 @@ export class BoardsService {
     const result = await this.boardRepository.save({
       ...Board,
       tags: boardtag,
-      user: userId,
+      userId: userId,
     });
 
     if (image) {

@@ -59,8 +59,10 @@ export class Boardsresolver {
 
   // 전체 게시글 조회
   @Query(() => [Board])
-  fetchBoards() {
-    return this.boardsService.findBoardAll();
+  fetchBoards(
+    @Args('page', { defaultValue: 1 }) page: number, //
+  ) {
+    return this.boardsService.findBoardAll({ page });
   }
 
   // 전체 게시글 조회 테스트용

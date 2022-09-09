@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { DefaultValuePipe, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
@@ -19,7 +19,10 @@ export class CafeListsResolver {
   }
 
   @Query(() => [CafeList])
-  fetchCafeLists() {
+  async fetchCafeLists(
+    @Args('page', { defaultValue: 1 }) page: number, //
+  ) {
+    const result = await this.cafeListsService.findAll({ page });
     return true;
   }
 
@@ -39,14 +42,18 @@ export class CafeListsResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeList)
-  updateCafeList(
+  async updateCafeList(
     @Args('cafeListId') cafeListId: string,
     @Args('updateCafeListInput') updateCafeListInput: UpdateCafeListInput,
     @Context() context: IContext,
   ) {
     const userId = context.req.user.id;
-
-    return true;
+    const result = await this.cafeListsService.update({
+      userId,
+      cafeListId,
+      updateCafeListInput,
+    });
+    return result;
   }
 
   @UseGuards(GqlAuthAccessGuard)

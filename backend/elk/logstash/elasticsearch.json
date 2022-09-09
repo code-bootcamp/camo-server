@@ -34,7 +34,7 @@
       "type": {
         "type": "text"
       },
-      "name": {
+      "title": {
         "type": "text",
         "analyzer": "my_analyzer",
         "search_analyzer": "standard"

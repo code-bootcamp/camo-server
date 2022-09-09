@@ -49,6 +49,18 @@ export class Board {
   @Field(() => Date, { nullable: true })
   updatedAt: Date;
 
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  zipcode: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  address: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  addressDetail: string;
+
   @JoinTable()
   @ManyToMany(() => Tag, (tags) => tags.boards, { nullable: true })
   @Field(() => [Tag], { nullable: true })

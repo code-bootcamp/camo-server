@@ -8,8 +8,14 @@ export class CreateBoardInput {
   @Field(() => String)
   contents: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  zipcode: string;
+
+  @Field(() => String, { nullable: true })
   address: string;
+
+  @Field(() => String, { nullable: true })
+  addressDetail: string;
 
   @Field(() => [String])
   tags: string[];

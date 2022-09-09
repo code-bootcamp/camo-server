@@ -23,11 +23,14 @@ export class CafeListsService {
       relations: ['cafeListImage', 'reviews', 'cafeListTag'],
     });
     return result;
+    // 12개 기준
   }
 
-  async find() {
+  async findAll({ page }) {
     const result = await this.cafeListRepository.find({
       relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+      take: 10,
+      skip: (page - 1) * 10,
     });
 
     return result;
@@ -80,9 +83,48 @@ export class CafeListsService {
   }
 
   async update({ userId, cafeListId, updateCafeListInput }) {
-    const cafeList = await this.cafeListRepository.findOne({
+    const { image, ...updatecafeList } = updateCafeListInput;
+
+    const newCafeList = await this.cafeListRepository.findOne({
+      where: { id: cafeListId },
+      relations: ['user'],
+    });
+    console.log(userId);
+    console.log(newCafeList.user.id);
+    if (userId !== newCafeList.user.id)
+      throw new ConflictException('권한이 없습니다.');
+
+    const _image = await this.cafeListImageRepository.find({
       where: { id: cafeListId },
     });
+    await Promise.all(
+      _image.map(
+        (el) =>
+          new Promise((resolve) => {
+            this.cafeListImageRepository.softDelete({ id: el.id });
+            resolve('이미지 삭제 완료');
+          }),
+      ),
+    );
+
+    await Promise.all(
+      _image.map(
+        (el) =>
+          new Promise((resolve) => {
+            this.cafeListImageRepository.save({
+              url: el.url,
+              cafeList: { id: cafeListId },
+            });
+            resolve('이미지 저장 완료');
+          }),
+      ),
+    );
+
+    const result = this.cafeListRepository.save({
+      ...newCafeList,
+      ...updatecafeList,
+    });
+    return result;
   }
 
   async delete({ userId, cafeListId }) {

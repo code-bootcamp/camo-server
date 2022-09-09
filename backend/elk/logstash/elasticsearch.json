@@ -9,7 +9,8 @@
       "analyzer": {
         "my_analyzer": {
           "type": "custom",
-          "tokenizer": "my_tokenizer"
+          "tokenizer": "my_tokenizer",
+          "filter": ["my_words_filter", "lowercase"]
         }
       },
       "tokenizer": {
@@ -17,6 +18,13 @@
           "type": "nGram",
           "min_gram": "1",
           "max_gram": "10"
+        }
+      },
+      "filter": {
+        "my_words_filter": {
+          "type": "stop",
+          "ignore_case": true,
+          "stopwords": ["and", "is", "the", "_cjk_", "는", "은", "이다"]
         }
       }
     }

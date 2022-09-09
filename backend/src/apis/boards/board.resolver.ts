@@ -1,4 +1,8 @@
-import { UnprocessableEntityException, UseGuards } from '@nestjs/common';
+import {
+  ConflictException,
+  UnprocessableEntityException,
+  UseGuards,
+} from '@nestjs/common';
 import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { UsersService } from '../users/users.service';
@@ -81,8 +85,8 @@ export class Boardsresolver {
 
   // 로그인한 본인 게시글만 조회
   @UseGuards(GqlAuthAccessGuard)
-  @Query(() => Board)
-  async fetchMyBoards(
+  @Query(() => [Board])
+  async searchMyBoards(
     @Args({ name: 'search', nullable: true }) search: string, //
   ) {
     const checkRedis = await this.cacheManager.get(search);
@@ -106,7 +110,7 @@ export class Boardsresolver {
         return obj;
       });
 
-      await this.cacheManager.set(search, arrayBoard, { ttl: 3000 });
+      await this.cacheManager.set(search, arrayBoard, { ttl: 20 });
 
       return arrayBoard;
     }
@@ -129,21 +133,19 @@ export class Boardsresolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async updateBoard(
+    @Context() context: IContext,
     @Args('boardId') boardId: string,
-    @Args('userId') userId: string, //
     @Args('nickName') nickName: string,
     @Args('updateBoardInput') updateBoardInput: UpdateBoardInput,
   ) {
     const board = await this.boardsService.findBoardOne({ boardId });
+    const user = context.req.user.id;
 
     if (!board)
       throw new UnprocessableEntityException('등록된 게시글이 없습니다.');
 
-    const user = await this.usersService.findOne({ userId });
     if (!user)
-      throw new UnprocessableEntityException(
-        `${nickName}님의 게시글이 아닙니다.`,
-      );
+      throw new ConflictException(`${nickName}님의 게시글이 아닙니다.`);
 
     return this.boardsService.update({ boardId, updateBoardInput });
   }

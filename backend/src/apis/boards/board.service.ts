@@ -35,7 +35,7 @@ export class BoardsService {
 
   async findBoardAll({ page }) {
     return await this.boardRepository.find({
-      relations: ['favoriteBoard', 'tags', 'comment', 'images'],
+      relations: ['tags', 'comment', 'images', 'user'],
       order: { createdAt: 'DESC' },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
@@ -45,7 +45,7 @@ export class BoardsService {
   async findBoardOne({ boardId }) {
     return await this.boardRepository.findOne({
       where: { id: boardId },
-      relations: ['favoriteBoard', 'tags', 'comment', 'images'],
+      relations: ['tags', 'comment', 'images', 'user'],
     });
   }
 

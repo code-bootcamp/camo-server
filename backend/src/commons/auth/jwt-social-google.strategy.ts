@@ -6,16 +6,15 @@ export class JwtGoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      callbackURL: 'http://localhost:3000/login/google',
       scope: ['email', 'profile'],
     });
   }
-  validate(accessToken, refreshToken, profile: Profile) {
+  validate(_, __, profile: any) {
     return {
       email: profile.emails[0].value,
       hashedPassword: '1',
       name: profile.displayName,
-      age: 0,
     };
   }
 }

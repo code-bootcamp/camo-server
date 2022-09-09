@@ -32,15 +32,21 @@ export class AuthsService {
   }
 
   /** refreshToken 발급 */
-  setRefreshToken({ user, res }) {
+  setRefreshToken({ user, res, req }) {
     const refreshToken = this.jwtService.sign(
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
     );
+
+    const alloweOrigins = ['http://localhost:3000'];
+    const origin = req.headers.origin;
+
+    if (alloweOrigins.indexOf(origin) > -1) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
     // 개발환경
     // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
-
     // 배포환경
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -59,8 +65,9 @@ export class AuthsService {
   async getSocialLogin({ req, res }) {
     let user = await this.usersService.findOneUser({ email: req.user.email });
     if (!user) user = await this.usersService.create({ ...req.user });
-    this.setRefreshToken({ user, res });
-    res.redirect('http://localhost:3000');
+    this.setRefreshToken({ user, res, req });
+    // res.redirect('http://localhost:3000/graphql');
+    res.redirect('http://localhost:5500/frontend/login/index.html');
   }
 
   /** 일반 유저 로그인 */
@@ -71,7 +78,7 @@ export class AuthsService {
     const isAuth = await bcrypt.compare(password, user.password);
     if (!isAuth) throw new UnprocessableEntityException('암호가 틀렸습니다.');
 
-    this.setRefreshToken({ user, res: context.res });
+    this.setRefreshToken({ user, res: context.res, req: context.req });
 
     return this.getAccessToken({ user });
   }

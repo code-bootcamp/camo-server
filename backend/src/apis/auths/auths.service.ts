@@ -57,16 +57,10 @@ export class AuthsService {
 
   /** 소셜 회원 로그인 */
   async getSocialLogin({ req, res }) {
-    // 가입 확인
     let user = await this.usersService.findOneUser({ email: req.user.email });
-    // 가입 안되어 있으면 회원 가입
     if (!user) user = await this.usersService.create({ ...req.user });
-    // 3. 로그인
     this.setRefreshToken({ user, res });
-    // redirect
-    res.redirect(
-      'http://localhost:5501/codecamp-backend-04/homework/main-project/frontend/login/index.html',
-    );
+    res.redirect('http://localhost:3000');
   }
 
   /** 일반 유저 로그인 */

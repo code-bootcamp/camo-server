@@ -14,8 +14,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Review } from 'src/apis/reviews/entites/review.entity';
-import { FavoriteCafe } from 'src/apis/favoreiteCafes/entities/favoriteCafe.entity';
 import { CafeListImage } from 'src/apis/cafeListImage/entities/cafeListImage.entity';
+import { FavoriteCafe } from 'src/apis/favoreiteCafes/entities/favoriteCafe.entity';
 
 @Entity()
 @ObjectType()

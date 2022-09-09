@@ -17,6 +17,7 @@ export class CafeListsService {
     @InjectRepository(CafeListTag)
     private readonly cafeListTagRepository: Repository<CafeListTag>,
   ) {}
+
   async findOne({ cafeListId }) {
     const result = await this.cafeListRepository.findOne({
       where: { id: cafeListId },

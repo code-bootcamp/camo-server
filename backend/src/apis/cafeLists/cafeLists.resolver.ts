@@ -13,17 +13,20 @@ export class CafeListsResolver {
     private readonly cafeListsService: CafeListsService, //
   ) {}
 
+  /** 카페게시글 하나 조회 */
   @Query(() => CafeList)
-  fetchCafeList() {
-    return true;
+  fetchCafeList(
+    @Args('cafeListId') cafeListId: string, //
+  ) {
+    return this.cafeListsService.findOne({ cafeListId });
   }
 
+  /** 카페 게시글 전체 조회 */
   @Query(() => [CafeList])
   async fetchCafeLists(
     @Args('page', { defaultValue: 1 }) page: number, //
   ) {
-    const result = await this.cafeListsService.findAll({ page });
-    return true;
+    return this.cafeListsService.findAll({ page });
   }
 
   @UseGuards(GqlAuthAccessGuard)

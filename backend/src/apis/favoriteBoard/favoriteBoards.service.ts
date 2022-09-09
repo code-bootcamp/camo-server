@@ -24,13 +24,13 @@ export class FavoriteBoardsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async like({ email, boardId }): Promise<boolean> {
+  async like({ userId, boardId }): Promise<boolean> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction('REPEATABLE READ');
     try {
       const user = await this.usersRepository.findOne({
-        where: { email },
+        where: { id: userId },
       });
 
       const board = await queryRunner.manager.findOne(Board, {

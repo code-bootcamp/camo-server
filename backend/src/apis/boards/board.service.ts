@@ -35,24 +35,17 @@ export class BoardsService {
 
   async findBoardAll({ page }) {
     return await this.boardRepository.find({
-      relations: ['tags', 'comment', 'image'],
+      relations: ['favoriteBoard', 'tags', 'comment', 'images'],
       order: { createdAt: 'DESC' },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
     });
   }
 
-  async findBoardAll2() {
-    const user = await this.boardRepository.find({
-      relations: ['user', 'image'],
-    });
-    return user;
-  }
-
   async findBoardOne({ boardId }) {
     return await this.boardRepository.findOne({
       where: { id: boardId },
-      relations: ['favoriteBoard', 'tags', 'comment'],
+      relations: ['favoriteBoard', 'tags', 'comment', 'images'],
     });
   }
 
@@ -102,10 +95,11 @@ export class BoardsService {
         ),
       );
 
-      await this.imageRepository.save({
+      const imageresult = await this.imageRepository.save({
         url: image,
         board: { id: result.id },
       });
+      console.log(imageresult);
     }
 
     return result;

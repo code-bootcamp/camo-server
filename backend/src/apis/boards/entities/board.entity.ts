@@ -80,9 +80,10 @@ export class Board {
   @Field(() => CafeList, { nullable: true })
   cafeList: CafeList;
 
+  @JoinTable()
   @OneToMany(() => Image, (image) => image.board, { nullable: true })
   @Field(() => [Image], { nullable: true })
-  image: Image[];
+  images: Image[];
 
   @JoinTable()
   @OneToMany(() => Comment, (comment) => comment.board, { nullable: true })

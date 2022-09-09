@@ -16,16 +16,16 @@ export class FavoriteCafe {
   @Field(() => String)
   id: string;
 
-  @Column()
-  @Field(() => String)
-  status: string;
+  @Column({ default: false })
+  @Field(() => Boolean)
+  isLike: boolean;
+
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
+  user: User;
 
   @JoinTable()
-  @ManyToOne(() => CafeList)
-  @Field(() => CafeList)
+  @ManyToOne(() => CafeList, { nullable: true })
+  @Field(() => CafeList, { nullable: true })
   cafeList: CafeList;
-
-  @ManyToOne(() => User)
-  @Field(() => User)
-  user: User;
 }

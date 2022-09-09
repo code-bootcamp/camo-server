@@ -35,11 +35,9 @@ export class UsersService {
 
   /** 개별 유저 조회 */
   async findOne({ userId }) {
-    console.log(userId);
     const result = await this.usersRepository.findOne({
       where: { id: userId },
     });
-    console.log(result);
     return result;
   }
 

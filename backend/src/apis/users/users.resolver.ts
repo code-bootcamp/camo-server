@@ -19,12 +19,11 @@ export class UsersResolver {
   /** 모든 유저 조회 로그인 API 테스트용*/
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => User)
-  async fetchLoginedUser(
+  fetchLoginedUser(
     @Context() context: IContext, //
   ) {
     const userId = context.req.user.id;
-    const result = await this.usersService.findOne({ userId });
-    return result;
+    return this.usersService.findOne({ userId });
   }
 
   /** 모든 유저 조회 */

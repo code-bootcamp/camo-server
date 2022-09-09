@@ -65,12 +65,6 @@ export class Boardsresolver {
     return this.boardsService.findBoardAll({ page });
   }
 
-  // 전체 게시글 조회 테스트용
-  @Query(() => [Board])
-  fetchBoardsTest() {
-    return this.boardsService.findBoardAll2();
-  }
-
   // 원하는 게시글 조회
   @Query(() => Board)
   fetchBoard(

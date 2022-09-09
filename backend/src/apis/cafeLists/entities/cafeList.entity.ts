@@ -68,6 +68,10 @@ export class CafeList {
   @Field(() => User)
   user: User;
 
+  @Column({ nullable: true })
+  @Field(() => Number, { nullable: true })
+  favoriteCafeCount: number;
+
   @CreateDateColumn()
   @Field(() => Date)
   createdAt: Date;

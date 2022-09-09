@@ -23,7 +23,8 @@ export class CafeListImage {
   @Field(() => String, { nullable: true })
   isMain: string;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ nullable: true })
+  @Field(() => String, { nullable: true })
   deletedAt: Date;
 
   @ManyToOne(() => CafeList, { nullable: true })

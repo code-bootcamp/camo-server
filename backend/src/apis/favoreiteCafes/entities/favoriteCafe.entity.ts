@@ -1,9 +1,16 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import { User } from 'src/apis/users/entites/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
+@ObjectType()
 export class FavoriteCafe {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
@@ -13,9 +20,10 @@ export class FavoriteCafe {
   @Field(() => String)
   status: string;
 
+  @JoinTable()
   @ManyToOne(() => CafeList)
   @Field(() => CafeList)
-  board: CafeList;
+  cafeList: CafeList;
 
   @ManyToOne(() => User)
   @Field(() => User)

@@ -20,7 +20,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 import { FileModule } from './apis/files/file.module';
 import { ChatModule } from './apis/chat/chat.module';
-import { CafeListImageModule } from './apis/cafeListImage/cafeListImage.module';
+import { CafeListImageModule } from './apis/cafeListImage/cafeListImages.module';
 import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
 
 @Module({
@@ -73,6 +73,7 @@ import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
       entities: [__dirname + '/apis/**/*.entity.*'], // 모델
       synchronize: true,
       logging: true,
+      retryAttempts: 20,
     }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,

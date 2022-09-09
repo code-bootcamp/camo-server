@@ -3,12 +3,19 @@ import { User } from 'src/apis/users/entites/user.entity';
 import { CafeListTag } from 'src/apis/cafeListTags/entities/cafeListTag.entity';
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+import { Review } from 'src/apis/reviews/entites/review.entity';
+import { FavoriteCafe } from 'src/apis/favoreiteCafes/entities/favoriteCafe.entity';
+import { CafeListImage } from 'src/apis/cafeListImage/entities/cafeListImage.entity';
 
 @Entity()
 @ObjectType()
@@ -19,46 +26,82 @@ export class CafeList {
 
   @Column()
   @Field(() => String)
-  name: string;
+  title: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  zipcode: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   address: string;
 
-  @Column()
-  @Field(() => String)
-  postalNumber: string;
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  addressDetail: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   phone: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   startTime: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   endTime: string;
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
   homepage: string;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   deposit: number;
 
   @Column()
   @Field(() => String)
-  introduction: string;
+  contents: string;
 
   @ManyToOne(() => User)
   @Field(() => User)
   user: User;
 
+  @CreateDateColumn()
+  @Field(() => Date)
+  createdAt: Date;
+
+  @DeleteDateColumn({ nullable: true })
+  @Field(() => Date, { nullable: true })
+  deletedAt: Date;
+
+  @UpdateDateColumn({ nullable: true })
+  @Field(() => Date, { nullable: true })
+  updatedAt: Date;
+
   @JoinTable()
-  @ManyToMany(() => CafeListTag, (cafeListTag) => cafeListTag.cafeList)
-  @Field(() => [CafeListTag])
-  cafeListTag: CafeList[];
+  @ManyToMany(() => CafeListTag, (cafeListTag) => cafeListTag.cafeList, {
+    nullable: true,
+  })
+  @Field(() => [CafeListTag], { nullable: true })
+  cafeListTag: CafeListTag[];
+
+  @OneToMany(() => Review, (review) => review.cafeList, { nullable: true })
+  @Field(() => [Review], { nullable: true })
+  reviews: Review[];
+
+  @JoinTable()
+  @OneToMany(() => FavoriteCafe, (favoriteCafe) => favoriteCafe.cafeList, {
+    nullable: true,
+  })
+  @Field(() => [FavoriteCafe], { nullable: true })
+  favoriteCafe: FavoriteCafe[];
+
+  @JoinTable()
+  @OneToMany(() => CafeListImage, (cafeListImage) => cafeListImage.cafeList, {
+    nullable: true,
+  })
+  @Field(() => [CafeListImage], { nullable: true })
+  cafeListImage: CafeListImage[];
 }

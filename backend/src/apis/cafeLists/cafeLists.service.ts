@@ -1,8 +1,99 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
+import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
+import { CafeList } from './entities/cafeList.entity';
 
 @Injectable()
 export class CafeListsService {
-  constructor() {
-    //
+  constructor(
+    @InjectRepository(CafeList)
+    private readonly cafeListRepository: Repository<CafeList>,
+
+    @InjectRepository(CafeListImage)
+    private readonly cafeListImageRepository: Repository<CafeListImage>,
+
+    @InjectRepository(CafeListTag)
+    private readonly cafeListTagRepository: Repository<CafeListTag>,
+  ) {}
+  async findOne({ cafeListId }) {
+    const result = await this.cafeListRepository.findOne({
+      where: { id: cafeListId },
+      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+    });
+    return result;
+  }
+
+  async find() {
+    const result = await this.cafeListRepository.find({
+      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+    });
+
+    return result;
+  }
+
+  async create({ userId, createCafeListInput }) {
+    const { tags, images, ...cafeList } = createCafeListInput;
+    console.log(tags);
+    const cafeListTag = [];
+    for (let i = 0; i < tags.length; i++) {
+      const tagName = tags[i].replace('#', '');
+
+      const prevTag = await this.cafeListTagRepository.findOne({
+        where: { name: tagName },
+      });
+
+      if (prevTag) {
+        cafeListTag.push(prevTag);
+      } else {
+        const newTag = await this.cafeListTagRepository.save({
+          name: tagName,
+        });
+        cafeListTag.push(newTag);
+      }
+    }
+
+    const result = await this.cafeListRepository.save({
+      ...createCafeListInput,
+      user: { id: userId },
+      cafeListTag: cafeListTag,
+    });
+
+    if (images) {
+      await Promise.all(
+        images.map(
+          (el) =>
+            new Promise((resolve, reject) => {
+              this.cafeListImageRepository.save({
+                url: el,
+                cafeList: { id: result.id },
+              });
+              resolve('이미지 저장 완료');
+              reject('이미지 저장 실패');
+            }),
+        ),
+      );
+    }
+
+    return result;
+  }
+
+  async update({ userId, cafeListId, updateCafeListInput }) {
+    const cafeList = await this.cafeListRepository.findOne({
+      where: { id: cafeListId },
+    });
+  }
+
+  async delete({ userId, cafeListId }) {
+    const cafeList = await this.cafeListRepository.findOne({
+      where: { id: cafeListId },
+      relations: ['user'],
+    });
+    if (cafeList.user.id !== userId)
+      throw new ConflictException('삭제 권한이 없습니다.');
+
+    const result = await this.cafeListRepository.softDelete({ id: cafeListId });
+    return result.affected ? true : false;
   }
 }

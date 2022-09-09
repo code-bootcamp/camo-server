@@ -10,7 +10,6 @@ import { UsersService } from './users.service';
 import { User } from './entites/user.entity';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
-import { Console } from 'console';
 
 @Resolver()
 export class UsersResolver {

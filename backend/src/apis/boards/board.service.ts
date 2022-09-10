@@ -53,13 +53,12 @@ export class BoardsService {
     });
   }
 
-  async create({ userId, createBoardInput }) {
+  async create({ user, createBoardInput }) {
     const { tags, image, ...Board } = createBoardInput;
 
-    const user = await this.userRepository.find({
-      where: { id: userId },
+    const _user = await this.userRepository.findOne({
+      where: { email: user },
     });
-    console.log(user);
 
     const boardtag = [];
     for (let i = 0; i < tags.length; i++) {
@@ -81,7 +80,7 @@ export class BoardsService {
     const result = await this.boardRepository.save({
       ...Board,
       tags: boardtag,
-      userId: userId,
+      user: _user,
     });
 
     if (image) {

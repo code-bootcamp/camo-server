@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
-import { UsersService } from '../users/users.service';
 import { BoardsService } from './board.service';
 import { CreateBoardInput } from './dto/createBoard.input';
 import { UpdateBoardInput } from './dto/updateBoard.input';
@@ -16,24 +15,26 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { IContext } from 'src/commons/type/context';
 
+/**
+ * Board GraphQL API Resolver
+ * @APIs `searchBoards`, `fetchBoards`, 'fetchBoardsASC', `fetchBoard`, `fetchBoardWithDeleted`,
+ * `searchMyBoards`, 'createBoard', 'updateBoard', 'deleteBoard', 'restoreBoard'
+ */
 @Resolver()
 export class Boardsresolver {
   constructor(
     private readonly boardsService: BoardsService, //
-
-    private readonly usersService: UsersService,
-
     private readonly elasticsearchService: ElasticsearchService,
-
     private readonly favoriteBoardsService: FavoriteBoardsService,
-
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
 
-  // 전체 게시글 조회 엘라스틱서치
+  /** 게시글을 검색어로 조회 */
   @Query(() => [Board])
-  async searchBoards(@Args({ name: 'search', nullable: true }) search: string) {
+  async searchBoards(
+    @Args({ name: 'search', nullable: true }) search: string, //
+  ) {
     const checkRedis = await this.cacheManager.get(search);
 
     if (checkRedis) {
@@ -61,7 +62,7 @@ export class Boardsresolver {
     }
   }
 
-  // 전체 게시글 조회
+  /** 게시글 전체 조회 내림차순 */
   @Query(() => [Board])
   fetchBoards(
     @Args('page', { defaultValue: 1 }) page: number, //
@@ -69,7 +70,37 @@ export class Boardsresolver {
     return this.boardsService.findBoardAll({ page });
   }
 
-  // 원하는 게시글 조회
+  /** 게시글 생성일 기준 조회
+   * @Params page : 조회할 페이지 (ex 1, 2, 3)
+   * @Params sortBy : 정렬기준 (ex ASC, DESC)
+   */
+  @Query(() => [Board])
+  fetchBoardsCreatedAt(
+    @Args('page', { defaultValue: 1 }) page: number, //
+    @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
+  ) {
+    return this.boardsService.findBoardsCreatedAt({
+      page,
+      sortBy,
+    });
+  }
+
+  /** 게시글 좋아요 기준 조회
+   * @Params page : 조회할 페이지 (ex 1, 2, 3)
+   * @Params sortBy : 정렬기준 (ex ASC, DESC)
+   */
+  @Query(() => [Board])
+  fetchBoardsLikeCount(
+    @Args('page', { defaultValue: 1 }) page: number, //
+    @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
+  ) {
+    return this.boardsService.findBoardsLikeCount({
+      page,
+      sortBy,
+    });
+  }
+
+  /** 게시글 하나 조회 */
   @Query(() => Board)
   fetchBoard(
     @Args('boardId') boardId: string, //
@@ -77,13 +108,13 @@ export class Boardsresolver {
     return this.boardsService.findBoardOne({ boardId });
   }
 
-  // 삭제된 게시글 조회
+  /** 삭제된 게시글 조회 */
   @Query(() => [Board])
   fetchBoardWithDeleted() {
     return this.boardsService.WithBoardDelete();
   }
 
-  // 로그인한 본인 게시글만 조회
+  /** 로그인한 본인 게시글만 조회 */
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Board])
   async searchMyBoards(
@@ -129,7 +160,7 @@ export class Boardsresolver {
     return await this.boardsService.create({ userId, createBoardInput });
   }
 
-  // 게시글 수정
+  /** 게시글 수정 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async updateBoard(
@@ -150,7 +181,7 @@ export class Boardsresolver {
     return this.boardsService.update({ boardId, updateBoardInput });
   }
 
-  // 게시글 삭제
+  /** 게시글 삭제 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteBoard(
@@ -159,11 +190,12 @@ export class Boardsresolver {
     return this.boardsService.delete({ boardId });
   }
 
-  /** like 갯수 조회 */
-  @Query(() => Board)
-  fetchLike(
+  /** 게시글 복구 */
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => Boolean)
+  restoreBoard(
     @Args('boardId') boardId: string, //
   ) {
-    return this.favoriteBoardsService.findLike({ boardId });
+    return this.boardsService.restore({ boardId });
   }
 }

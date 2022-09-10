@@ -102,16 +102,4 @@ export class FavoriteBoardsService {
       await queryRunner.release();
     }
   }
-
-  async findLike({ boardId }) {
-    console.log(
-      await this.boardsRepository.find({
-        where: { id: boardId },
-      }),
-    );
-    const board = await this.boardsRepository.find({
-      where: { id: boardId },
-    });
-    return board[0];
-  }
 }

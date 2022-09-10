@@ -11,10 +11,8 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   ) {
     super({
       jwtFromRequest: (req) => {
-        const cookie = req.headers.cookie; // refreshToken="123haksd;fajdsklm;"
-        console.log('cookiecookiecookiecookiecookiecookiecookiecookie', cookie);
+        const cookie = req.headers.cookie;
         const refreshToken = cookie.replace('refreshToken=', '');
-        console.log('refreshrefreshrefreshrefreshrefreshrefresh', refreshToken);
         return refreshToken;
       },
       secretOrKey: process.env.REFRESH_TOKEN_SECRET,
@@ -30,7 +28,6 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
     if (redisRefreshToken) {
       throw new UnauthorizedException('만료된 리프레시 토큰입니다.');
     }
-    // console.log(payload); // { email: c@c.com, sub: asdfjio-123jj9sd }
     return {
       email: payload.email,
       id: payload.sub,

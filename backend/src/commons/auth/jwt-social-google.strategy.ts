@@ -1,19 +1,20 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, Profile } from 'passport-google-oauth20';
+import { Strategy } from 'passport-google-oauth20';
+import * as bcrypt from 'bcrypt';
 
 export class JwtGoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3000/login/google',
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
       scope: ['email', 'profile'],
     });
   }
   validate(_, __, profile: any) {
     return {
       email: profile.emails[0].value,
-      hashedPassword: '1',
+      hashedPassword: process.env.DEFAULT_PASSWORD,
       name: profile.displayName,
     };
   }

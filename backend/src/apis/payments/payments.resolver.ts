@@ -10,6 +10,9 @@ import { IamportService } from '../iamport/iamport.service';
 import { Payment } from './entities/payment.entity';
 import { PaymentsService } from './payments.service';
 
+/** Payment Graphql API Resolver
+ *  APIs 'createPayment', 'createCancel'
+ */
 @Resolver()
 export class PaymentsResolver {
   constructor(
@@ -25,7 +28,6 @@ export class PaymentsResolver {
     @Context() context: IContext,
   ) {
     const user = context.req.user;
-
     const access_Token = await this.iamportsService.getToken();
 
     await this.iamportsService.getPaymentData({

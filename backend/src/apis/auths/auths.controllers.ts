@@ -4,6 +4,10 @@ import { AuthsService } from './auths.service';
 import { Request, Response } from 'express';
 import { IOAuthUser } from 'src/commons/type/context';
 
+/**
+ * Authorization Restful API Controller
+ * @APIs 'loginGoogle', 'loginNaver', 'loginKakao'
+ */
 @Controller()
 export class AuthsController {
   constructor(private readonly authsService: AuthsService) {}

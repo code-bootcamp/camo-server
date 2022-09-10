@@ -157,8 +157,8 @@ export class Boardsresolver {
     @Context() context: IContext,
     @Args('createBoardInput') createBoardInput: CreateBoardInput,
   ) {
-    const userId = context.req.user.id;
-    return await this.boardsService.create({ userId, createBoardInput });
+    const user = context.req.user.email;
+    return await this.boardsService.create({ user, createBoardInput });
   }
 
   /** 게시글 수정 */

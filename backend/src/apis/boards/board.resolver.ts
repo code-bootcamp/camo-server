@@ -45,6 +45,7 @@ export class Boardsresolver {
         query: {
           term: { name: search },
         },
+        fields: ['title'],
       });
 
       const arrayBoard = result.hits.hits.map((el) => {
@@ -56,7 +57,7 @@ export class Boardsresolver {
         return obj;
       });
 
-      await this.cacheManager.set(search, arrayBoard, { ttl: 3000 });
+      await this.cacheManager.set(search, arrayBoard, { ttl: 20 });
 
       return arrayBoard;
     }

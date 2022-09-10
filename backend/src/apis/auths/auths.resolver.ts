@@ -8,6 +8,10 @@ import {
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 
+/**
+ * Authorization GraphQL API Resolver
+ * @APIs `loginUser`, `logoutUser`, `restoreAccessToken`, `sendTokenToSMS`, `checkSMSTokenValid`
+ */
 @Resolver()
 export class AuthResolver {
   constructor(
@@ -15,9 +19,9 @@ export class AuthResolver {
     private readonly usersService: UsersService,
   ) {}
 
-  /** 일반 유저 로그인 */
+  /** 로그인 */
   @Mutation(() => String)
-  async loginUser(
+  loginUser(
     @Args('email') email: string, //
     @Args('password') password: string,
     @Context() context: IContext,
@@ -25,10 +29,10 @@ export class AuthResolver {
     return this.authsService.getUserLogin({ email, password, context });
   }
 
-  /** 일반 유저 로그아웃 */
+  /** 로그아웃 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => String)
-  async logoutUser(
+  logoutUser(
     @Context() context: IContext, //
   ) {
     return this.authsService.getLogout({ context });
@@ -51,13 +55,12 @@ export class AuthResolver {
     return this.usersService.sendTokenToSMS({ phoneNumber });
   }
 
-  /** 인증 번호 검증 */
+  /** 핸드폰 인증 번호 검증 */
   @Mutation(() => Boolean)
-  async checkSMSTokenValid(
+  checkSMSTokenValid(
     @Args('phoneNumber') phoneNumber: string, //
     @Args('SMSToken') SMSToken: string,
   ) {
-    this.authsService.checkSMSTokenValid({ phoneNumber, SMSToken });
-    return true;
+    return this.authsService.checkSMSTokenValid({ phoneNumber, SMSToken });
   }
 }

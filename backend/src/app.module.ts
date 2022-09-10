@@ -7,7 +7,6 @@ import { UsersModule } from './apis/users/users.module';
 import { ReviewsModule } from './apis/reviews/reviews.module';
 import { PaymentsModule } from './apis/payments/payments.module';
 import { CafeReservationsMoudule } from './apis/cafeReservations/cafeReservations.module';
-import { CafeOwnersModule } from './apis/cafeOwners/cafeOwners.module';
 import { Boardmodule } from './apis/boards/board.module';
 import { AuthsModule } from './apis/auths/auths.module';
 import { CafeListsModule } from './apis/cafeLists/cafeLists.module';
@@ -31,7 +30,6 @@ import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
     AuthsModule,
     Boardmodule,
     CafeListsModule,
-    CafeOwnersModule,
     CafeReservationsMoudule,
     CafeListImageModule,
     CafeListTagsModule,

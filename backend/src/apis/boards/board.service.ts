@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Comment } from '../comments/entites/comment.entity';
-import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from '../images/entities/image.entity';
 import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entites/user.entity';
-import { UsersService } from '../users/users.service';
 import { Board } from './entities/board.entity';
 
 @Injectable()
@@ -14,29 +11,36 @@ export class BoardsService {
   constructor(
     @InjectRepository(Board)
     private readonly boardRepository: Repository<Board>,
-
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
-
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>,
-
-    @InjectRepository(favoriteBoard)
-    private readonly favoriteBoardRepository: Repository<favoriteBoard>,
-
-    @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>,
-
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
-    private readonly userService: UsersService,
   ) {}
 
   async findBoardAll({ page }) {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'images', 'user'],
       order: { createdAt: 'DESC' },
+      take: 10,
+      skip: page ? (page - 1) * 10 : 0,
+    });
+  }
+
+  async findBoardsCreatedAt({ page, sortBy }) {
+    return await this.boardRepository.find({
+      relations: ['tags', 'comment', 'images', 'user'],
+      order: { createdAt: sortBy },
+      take: 10,
+      skip: page ? (page - 1) * 10 : 0,
+    });
+  }
+
+  async findBoardsLikeCount({ page, sortBy }) {
+    return await this.boardRepository.find({
+      relations: ['tags', 'comment', 'images', 'user'],
+      order: { likeCount: sortBy },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
     });
@@ -159,5 +163,10 @@ export class BoardsService {
       relations: ['boardTag', 'favoritBoard', 'Comment'],
       withDeleted: true,
     });
+  }
+
+  async restore({ boardId }) {
+    const restoreResult = await this.boardRepository.restore({ id: boardId });
+    return restoreResult.affected ? true : false;
   }
 }

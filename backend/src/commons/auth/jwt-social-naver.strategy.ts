@@ -16,12 +16,10 @@ export class JwtNaverStrategy extends PassportStrategy(Strategy, 'naver') {
     refreshToken: string,
     profile: Profile,
   ) {
-    console.log(profile);
     return {
       email: profile.emails[0].value,
-      hashedPassword: '1',
+      hashedPassword: process.env.DEFAULT_PASSWORD,
       name: profile.displayName,
-      age: 0,
     };
   }
 }

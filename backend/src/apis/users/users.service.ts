@@ -16,7 +16,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
@@ -35,16 +34,8 @@ export class UsersService {
 
   /** 개별 유저 조회 */
   async findOne({ userId }) {
-    const result = await this.usersRepository.findOne({
+    return await this.usersRepository.findOne({
       where: { id: userId },
-    });
-    return result;
-  }
-
-  /** 삭제된 유저 조회 */
-  async WithDelete() {
-    return await this.usersRepository.find({
-      withDeleted: true,
     });
   }
 
@@ -104,9 +95,7 @@ export class UsersService {
 
   //** 랜덤 토큰 생성 */
   getToken() {
-    const n = 6;
-    const token = String(Math.floor(Math.random() * 10 ** n)).padStart(n, '0');
-    return token;
+    return String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
   }
 
   //** SMS 인증문자 전송 */
@@ -115,7 +104,6 @@ export class UsersService {
     const SMS_SECRET = process.env.SMS_SECRET;
     const SMS_SENDER = process.env.SMS_SENDER;
 
-    // 이미 등록된 번호인지 검증
     const checkUserPhoneNumber = await this.usersRepository.findOne({
       where: { phoneNumber: phoneNumber },
     });
@@ -123,8 +111,7 @@ export class UsersService {
       throw new ConflictException('이미 등록된 번호입니다.');
 
     try {
-      const token = //
-        String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
+      const token = this.getToken();
       const mysms = coolsms.default;
       const messageServicae = new mysms(SMS_KEY, SMS_SECRET);
       await messageServicae.sendOne({
@@ -136,6 +123,7 @@ export class UsersService {
 
       const myToken = await this.cacheManager.get(phoneNumber);
       if (myToken) await this.cacheManager.del(phoneNumber);
+
       await this.cacheManager.set(phoneNumber, token, { ttl: 180 });
       return token;
     } catch (error) {
@@ -145,5 +133,12 @@ export class UsersService {
         );
       }
     }
+  }
+
+  /** 삭제된 유저 조회 Admin */
+  async WithDelete() {
+    return await this.usersRepository.find({
+      withDeleted: true,
+    });
   }
 }

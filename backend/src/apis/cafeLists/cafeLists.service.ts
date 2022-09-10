@@ -10,10 +10,8 @@ export class CafeListsService {
   constructor(
     @InjectRepository(CafeList)
     private readonly cafeListRepository: Repository<CafeList>,
-
     @InjectRepository(CafeListImage)
     private readonly cafeListImageRepository: Repository<CafeListImage>,
-
     @InjectRepository(CafeListTag)
     private readonly cafeListTagRepository: Repository<CafeListTag>,
   ) {}
@@ -27,13 +25,30 @@ export class CafeListsService {
     // 12개 기준
   }
 
+  async findByCreatedAt({ page, sortBy }) {
+    return await this.cafeListRepository.find({
+      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+      order: { createdAt: sortBy },
+      take: 10,
+      skip: page ? (page - 1) * 10 : 0,
+    });
+  }
+
+  async findByfavoriteCafeCount({ page, sortBy }) {
+    return await this.cafeListRepository.find({
+      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+      order: { favoriteCafeCount: sortBy },
+      take: 10,
+      skip: page ? (page - 1) * 10 : 0,
+    });
+  }
+
   async findAll({ page }) {
     const result = await this.cafeListRepository.find({
       relations: ['cafeListImage', 'reviews', 'cafeListTag'],
       take: 10,
       skip: (page - 1) * 10,
     });
-
     return result;
   }
 
@@ -90,8 +105,6 @@ export class CafeListsService {
       where: { id: cafeListId },
       relations: ['user'],
     });
-    console.log(userId);
-    console.log(newCafeList.user.id);
     if (userId !== newCafeList.user.id)
       throw new ConflictException('권한이 없습니다.');
 
@@ -138,5 +151,12 @@ export class CafeListsService {
 
     const result = await this.cafeListRepository.softDelete({ id: cafeListId });
     return result.affected ? true : false;
+  }
+
+  async restore({ cafeListId }) {
+    const restoreResult = await this.cafeListRepository.restore({
+      id: cafeListId,
+    });
+    return restoreResult.affected ? true : false;
   }
 }

@@ -36,8 +36,7 @@ import { JwtRefreshStrategy } from 'src/commons/auth/jwt-refresh.strategy';
     JwtRefreshStrategy,
   ],
   controllers: [
-    AuthsController,
-    //
+    AuthsController, //
   ],
 })
 export class AuthsModule {}

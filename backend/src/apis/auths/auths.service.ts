@@ -17,7 +17,6 @@ export class AuthsService {
   constructor(
     private readonly jwtService: JwtService, //
     private readonly usersService: UsersService,
-
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
@@ -37,7 +36,6 @@ export class AuthsService {
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
     );
-
     const alloweOrigins = ['http://localhost:3000'];
     const origin = req.headers.origin;
 
@@ -91,11 +89,11 @@ export class AuthsService {
       const refreshToken = context.req.headers['cookie'].split('=')[1];
 
       // 2. jsonwebtoken 라이브러리를 이용해서 두 토큰을 검증하기.
-      const decodedAccessToken: any = jwt.verify(
+      const decodedAccessToken = jwt.verify(
         accessToken,
         process.env.ACCESS_TOKEN_SECRET,
       );
-      const decodedRefreshToken: any = jwt.verify(
+      const decodedRefreshToken = jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
       );
@@ -116,7 +114,6 @@ export class AuthsService {
           ttl: refreshTokenTTL,
         },
       );
-
       return '로그아웃에 성공했습니다.';
     } catch {
       (error) => {
@@ -131,6 +128,7 @@ export class AuthsService {
     if (!isSMSToken) throw new ConflictException('휴대폰 번호를 확인해주세요');
     if (isSMSToken !== SMSToken)
       throw new ConflictException('인증번호가 올바르지 않습니다.');
+    return true;
   }
 
   /** 로그아웃을 위한 token TTL 구하기  */

@@ -16,6 +16,7 @@ export class UsersResolver {
   constructor(
     private readonly usersService: UsersService, //
   ) {}
+
   /** 모든 유저 조회 로그인 API 테스트용*/
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => User)
@@ -75,28 +76,19 @@ export class UsersResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
   async updateLoginUser(
-    // @Args('password') password: string,
     @Args('updateUserInput') updateUserInput: UpdateUserInput, //
     @Context() context: IContext,
   ) {
     const password = updateUserInput.password;
     const email = context.req.user.email;
-    // 1. 로그인 (이메일이 일치하는 유저를 DB에서 찾기)
-    const user = await this.usersService.findOneUser({ email });
 
-    // 2. 일치하는 유저가 없으면 에러 던지기
+    const user = await this.usersService.findOneUser({ email });
     if (!user) throw new UnprocessableEntityException('이메일이 없습니다.');
 
     const loginhash = await bcrypt.hash(
       password,
       Number(process.env.HASH_SECRET),
     );
-    // // 3. 일치하는 유저가 있지만 비밀번호가 틀렸다면 에러 던지기
-    // const isAuth = await bcrypt.compare(password, user.password);
-
-    // if (!isAuth)
-    //   throw new UnprocessableEntityException('비밀번호가 틀렸습니다.');
-
     return this.usersService.update({ email, updateUserInput, loginhash });
   }
 

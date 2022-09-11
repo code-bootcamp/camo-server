@@ -96,9 +96,11 @@ export class UsersResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteLoginUser(
-    @Args('email') email: string, //
+    @Args('password') password: string, //
+    @Context() context: IContext,
   ) {
-    return this.usersService.delete({ email });
+    const userId = context.req.user.id;
+    return this.usersService.delete({ password, userId });
   }
 
   //----------------------------------------------------------------------

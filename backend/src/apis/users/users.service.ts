@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entites/user.entity';
 import * as coolsms from 'coolsms-node-sdk';
+import * as bcrypt from 'bcrypt';
 import { Cache } from 'cache-manager';
 
 @Injectable()
@@ -80,9 +81,15 @@ export class UsersService {
   //
   //
   /** 유저 Delete */
-  async delete({ email }) {
+  async delete({ password, userId }) {
+    const user = await this.findOne({ userId });
+    const userPassword = user.password;
+    const isAuth = await bcrypt.compare(password, userPassword);
+    if (isAuth === false)
+      throw new UnauthorizedException('비밀번호를 확인해주세요');
+
     const deleteresult = await this.usersRepository.softDelete({
-      email: email,
+      id: user.id,
     });
     return deleteresult.affected ? true : false;
   }

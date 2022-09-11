@@ -1,6 +1,5 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-google-oauth20';
-import * as bcrypt from 'bcrypt';
 
 export class JwtGoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {

@@ -54,7 +54,7 @@ export class CafeListsService {
 
   async create({ userId, createCafeListInput }) {
     const { tags, images, ...cafeList } = createCafeListInput;
-    console.log(tags);
+
     const cafeListTag = [];
     for (let i = 0; i < tags.length; i++) {
       const tagName = tags[i].replace('#', '');
@@ -74,9 +74,9 @@ export class CafeListsService {
     }
 
     const result = await this.cafeListRepository.save({
-      ...createCafeListInput,
-      user: { id: userId },
+      ...cafeList,
       cafeListTag: cafeListTag,
+      user: userId,
     });
 
     if (images) {

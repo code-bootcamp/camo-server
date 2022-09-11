@@ -83,11 +83,10 @@ export class CafeListsResolver {
     @Context() context: IContext,
   ) {
     const userId = context.req.user.id;
-    const result = await this.cafeListsService.create({
+    return await this.cafeListsService.create({
       userId,
       createCafeListInput,
     });
-    return result;
   }
 
   /** 카페 소개글 업데이트 */

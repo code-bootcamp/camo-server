@@ -47,16 +47,14 @@ export class Boardsresolver {
     @Args({ name: 'search', nullable: true }) search: string, //
   ) {
     const checkRedis = await this.cacheManager.get(search);
-
     if (checkRedis) {
       return checkRedis;
     } else {
       const result = await this.elasticsearchService.search({
         index: 'search-board',
         query: {
-          term: { name: search },
+          term: { title: search },
         },
-        fields: ['title'],
       });
 
       const arrayBoard = result.hits.hits.map((el) => {

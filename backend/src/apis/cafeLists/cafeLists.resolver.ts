@@ -1,7 +1,9 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { InjectRepository } from '@nestjs/typeorm';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
+import { Repository } from 'typeorm';
 import { CafeListsService } from './cafeLists.service';
 import { CreateCafeListInput } from './dto/createCafeList.input';
 import { UpdateCafeListInput } from './dto/updateCafeList.input';
@@ -9,14 +11,23 @@ import { CafeList } from './entities/cafeList.entity';
 
 /**
  * CafeList(카페 소개글) GrqphQL API Resolver
- * @APIs 'fetchCafeList', 'fetchCafeLists', 'fetchCafeListsCreatedAt', 'fetchCafeListsFavoriteCafe', 'createCafeList', 'updateCafeList',
+ * @APIs 'fetchCafeListNumber', 'fetchCafeList', 'fetchCafeLists', 'fetchCafeListsCreatedAt', 'fetchCafeListsFavoriteCafe', 'createCafeList', 'updateCafeList',
  * 'deleteCafeList', 'restoreCafeList'
  */
 @Resolver()
 export class CafeListsResolver {
   constructor(
     private readonly cafeListsService: CafeListsService, //
+    @InjectRepository(CafeList)
+    private readonly cafeListRepository: Repository<CafeList>,
   ) {}
+
+  /** 카페 소개글 개수 조회 */
+  @Query(() => Int)
+  async fetchCafeListNumber() {
+    const result = await this.cafeListRepository.find({});
+    return result.length;
+  }
 
   /** 카페게시글 하나 조회 */
   @Query(() => CafeList)

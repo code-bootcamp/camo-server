@@ -3,7 +3,7 @@ import {
   UnprocessableEntityException,
   UseGuards,
 } from '@nestjs/common';
-import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context, Int } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { BoardsService } from './board.service';
 import { CreateBoardInput } from './dto/createBoard.input';
@@ -14,10 +14,12 @@ import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { IContext } from 'src/commons/type/context';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 /**
  * Board GraphQL API Resolver
- * @APIs `searchBoards`, `fetchBoards`, 'fetchBoardsASC', `fetchBoard`, `fetchBoardWithDeleted`,
+ * @APIs 'fetchBoardsNumber', `searchBoards`, `fetchBoards`, 'fetchBoardsASC', `fetchBoard`, `fetchBoardWithDeleted`,
  * `searchMyBoards`, 'createBoard', 'updateBoard', 'deleteBoard', 'restoreBoard'
  */
 @Resolver()
@@ -26,9 +28,18 @@ export class Boardsresolver {
     private readonly boardsService: BoardsService, //
     private readonly elasticsearchService: ElasticsearchService,
     private readonly favoriteBoardsService: FavoriteBoardsService,
+    @InjectRepository(Board)
+    private readonly boardRepository: Repository<Board>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
+
+  /** 게시글 개수 조회 */
+  @Query(() => Int)
+  async fetchBoardsNumber() {
+    const result = await this.boardRepository.find({});
+    return result.length;
+  }
 
   /** 게시글을 검색어로 조회 */
   @Query(() => [Board])

@@ -56,7 +56,7 @@ import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
           'Content-Type',
           'Accept',
         ],
-        origin: ['http://localhost:3000'],
+        origin: ['http://localhost:3000', 'https://cafemoment.site'],
         exposedHeaders: ['Set-Cookie', 'Cookie'],
       },
     }),

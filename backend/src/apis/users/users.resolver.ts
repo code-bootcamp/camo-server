@@ -10,6 +10,8 @@ import { UsersService } from './users.service';
 import { User } from './entites/user.entity';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
+import { Roles } from 'src/commons/auth/roles.decorator';
+import { RolesGuard } from 'src/commons/auth/roles.guard';
 
 @Resolver()
 export class UsersResolver {
@@ -117,5 +119,33 @@ export class UsersResolver {
   @Query(() => [User])
   fetchUserWithDeleted() {
     return this.usersService.WithDelete();
+  }
+
+  // Role Guard 테스트실
+  @UseGuards(RolesGuard)
+  @Roles('user')
+  @Query(() => User)
+  async roleGuardUser(
+    @Args('userId') userId: string, //
+  ) {
+    return await this.usersService.findOne({ userId });
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('cafeOwner')
+  @Query(() => User)
+  async roleGuardCafeOwner(
+    @Args('userId') userId: string, //
+  ) {
+    return await this.usersService.findOne({ userId });
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  @Query(() => User)
+  async roleGuardAdmin(
+    @Args('userId') userId: string, //
+  ) {
+    return await this.usersService.findOne({ userId });
   }
 }

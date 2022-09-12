@@ -1,9 +1,11 @@
 import {
   CACHE_MANAGER,
   ConflictException,
+  Controller,
   Inject,
   Injectable,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +13,8 @@ import { User } from './entites/user.entity';
 import * as coolsms from 'coolsms-node-sdk';
 import * as bcrypt from 'bcrypt';
 import { Cache } from 'cache-manager';
+import { RolesGuard } from 'src/commons/auth/roles.guard';
+import { Roles } from 'src/commons/auth/roles.decorator';
 
 @Injectable()
 export class UsersService {

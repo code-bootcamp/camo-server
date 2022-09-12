@@ -36,7 +36,7 @@ export class AuthsService {
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
     );
-    const alloweOrigins = ['http://localhost:3000'];
+    const alloweOrigins = ['https://cafemoment.site'];
     const origin = req.headers.origin;
 
     if (alloweOrigins.indexOf(origin) > -1) {
@@ -46,7 +46,7 @@ export class AuthsService {
     // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
     // 배포환경
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'https://cafemoment.site');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
     res.setHeader(

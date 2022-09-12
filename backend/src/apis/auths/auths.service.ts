@@ -65,7 +65,7 @@ export class AuthsService {
     if (!user) user = await this.usersService.create({ ...req.user });
     this.setRefreshToken({ user, res, req });
     // res.redirect('http://localhost:3000/graphql');
-    res.redirect('http://localhost:5500/frontend/login/index.html');
+    res.redirect('https://cafemoment.site');
   }
 
   /** 일반 유저 로그인 */

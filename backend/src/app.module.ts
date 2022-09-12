@@ -37,7 +37,6 @@ import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
     FavoriteCafesModule,
     FavoriteBoardsModule,
     FileModule,
-    ImageModule,
     PaymentsModule,
     ReviewsModule,
     TagsModule,

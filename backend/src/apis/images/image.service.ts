@@ -7,7 +7,7 @@ import { Image } from './entities/image.entity';
 export class ImagesService {
   constructor(
     @InjectRepository(Image)
-    private readonly ImagesRepository: Repository<Image>,
+    private readonly ImagesRepository: Repository<Image>, //
   ) {}
   async createImage({ image, board }) {
     const result = await Promise.all(
@@ -26,10 +26,6 @@ export class ImagesService {
   }
 
   async updateImage({ image, board }) {
-    const findBoardId = await this.ImagesRepository.find({
-      where: { board: { id: board.id } },
-    });
-
     await this.ImagesRepository.delete({
       board: { id: board.id },
     });

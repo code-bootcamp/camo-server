@@ -8,7 +8,7 @@ export class FileService {
 
     const waitedFiles = await Promise.all(files);
 
-    const bucket = 'team04-stotage';
+    const bucket = 'team04-storage';
     const storage = new Storage({
       projectId: process.env.PROJECT_ID,
       keyFilename: 'reflected-jet-360811-402430377c02.json',

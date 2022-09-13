@@ -22,11 +22,12 @@ export class AuthsService {
   ) {}
 
   /** AccessToken 발급 */
-  getAccessToken({ user }) {
-    return this.jwtService.sign(
+  async getAccessToken({ user }) {
+    const result = this.jwtService.sign(
       { email: user.email, sub: user.id },
       { secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: '2w' },
     );
+    return result;
     // 배포시 expireIn: 15Minute 설정
   }
 
@@ -81,7 +82,7 @@ export class AuthsService {
 
     this.setRefreshToken({ user, res: context.res, req: context.req });
 
-    return this.getAccessToken({ user });
+    return await this.getAccessToken({ user });
   }
 
   /** 일반 유저 로그아웃 */

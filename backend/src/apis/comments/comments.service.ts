@@ -38,11 +38,11 @@ export class CommentsService {
     return result;
   }
 
-  async create({ createCommentInput }) {
-    const { userId, boardId, comment } = createCommentInput;
+  async create({ user, createCommentInput }) {
+    const { boardId, comment } = createCommentInput;
 
     const checkUser = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { email: user },
     });
 
     const checkBoard = await this.boardRepository.findOne({
@@ -80,11 +80,14 @@ export class CommentsService {
   }
 
   async deleteComment({ context, commentId }) {
-    const userId = context.req.user.id;
+    const userEmail = context.req.user.email;
     const comment = await this.find({ commentId });
-    const commentUserId = comment.user['id'];
-    if (commentUserId !== userId)
+    const commentUserEmail = comment.user['email'];
+
+    if (commentUserEmail !== userEmail)
       throw new ConflictException('본인이 작성한 댓글만 지울 수 있습니다.');
-    return this.delete({ commentId });
+    const result = await this.commentRepository.softDelete({ id: commentId });
+
+    return result.affected ? true : false;
   }
 }

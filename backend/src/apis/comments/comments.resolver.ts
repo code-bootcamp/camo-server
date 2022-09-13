@@ -14,9 +14,11 @@ export class CommentsResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   createComment(
+    @Context() context: IContext,
     @Args('createCommentInput') createCommentInput: CreateCommentInput,
   ) {
-    return this.commentService.create({ createCommentInput });
+    const user = context.req.user.email;
+    return this.commentService.create({ user, createCommentInput });
   }
 
   @UseGuards(GqlAuthAccessGuard)

@@ -46,7 +46,10 @@ export class AuthsService {
     // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
     // 배포환경
-    res.setHeader('Access-Control-Allow-Origin', 'https://cafemoment.site');
+    res.setHeader('Access-Control-Allow-Origin', [
+      'https://cafemoment.site',
+      'http://localhost:3000',
+    ]);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
     res.setHeader(
@@ -84,11 +87,11 @@ export class AuthsService {
   /** 일반 유저 로그아웃 */
   async getLogout({ context }) {
     try {
-      // 토큰 구하기
+      /** 토큰 확인 */
       const accessToken = context.req.headers['authorization'].split(' ')[1];
       const refreshToken = context.req.headers['cookie'].split('=')[1];
 
-      // 2. jsonwebtoken 라이브러리를 이용해서 두 토큰을 검증하기.
+      /** 토큰 검증 */
       const decodedAccessToken = jwt.verify(
         accessToken,
         process.env.ACCESS_TOKEN_SECRET,
@@ -97,15 +100,18 @@ export class AuthsService {
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
       );
-      // 토큰 만료시간 구하기
+      /** 토큰 만료시간 확인 */
       const accessTokenTTL = this.getTTL(decodedAccessToken);
       const refreshTokenTTL = this.getTTL(decodedRefreshToken);
 
-      // cacheManager 연결 이후에 사용
-      // 3. chacheManager를 이용해서 두 토큰을 각각 저장하기
-      await this.cacheManager.set(`accessToken:${accessToken}`, 'accessToken', {
-        ttl: accessTokenTTL,
-      });
+      /** 토큰 캐시 매니저에 저장 */
+      await this.cacheManager.set(
+        `accessToken:${accessToken}`, //
+        'accessToken',
+        {
+          ttl: accessTokenTTL,
+        },
+      );
 
       await this.cacheManager.set(
         `refreshToken:${refreshToken}`,
@@ -125,8 +131,6 @@ export class AuthsService {
   /** 유저 SMS Token 검증 */
   async checkSMSTokenValid({ phoneNumber, SMSToken }) {
     const isSMSToken = await this.cacheManager.get(phoneNumber);
-    // if (!isSMSToken) throw new ConflictException('휴대폰 번호를 확인해주세요');
-    // 배포시에는 추가할것
     if (isSMSToken !== SMSToken)
       throw new ConflictException('인증번호가 올바르지 않습니다.');
     return true;

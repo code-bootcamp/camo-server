@@ -22,9 +22,9 @@ import { JwtRefreshStrategy } from 'src/commons/auth/jwt-refresh.strategy';
     ]),
   ],
   providers: [
-    AuthResolver, //
+    AuthResolver,
     AuthsService,
-    UsersService,
+    HttpExceptionFilter,
     JwtGoogleStrategy,
     JwtNaverStrategy,
     jwtKakaoStrategy,
@@ -32,8 +32,8 @@ import { JwtRefreshStrategy } from 'src/commons/auth/jwt-refresh.strategy';
     JwtAdminStrategy,
     JwtService,
     JwtModule,
-    HttpExceptionFilter,
     JwtRefreshStrategy,
+    UsersService,
   ],
   controllers: [
     AuthsController, //

@@ -162,8 +162,8 @@ export class Boardsresolver {
   // 태그로 조회
 
   // 게시글 생성
-  // @UseGuards(RolesGuard)
-  // @Roles('CAFEOWNER')
+  @UseGuards(RolesGuard)
+  @Roles('USER', 'CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async createBoard(
@@ -171,12 +171,13 @@ export class Boardsresolver {
     @Args('createBoardInput') createBoardInput: CreateBoardInput,
   ) {
     const user = context.req.user.email;
+    const userId = context.req.user.id;
     return await this.boardsService.create({ user, createBoardInput });
   }
 
   /** 게시글 수정 */
-  // @UseGuards(RolesGuard)
-  // @Roles('CAFEOWNER')
+  @UseGuards(RolesGuard)
+  @Roles('CAFEOWNER', 'CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async updateBoard(
@@ -198,6 +199,8 @@ export class Boardsresolver {
   }
 
   /** 게시글 삭제 */
+  @UseGuards(RolesGuard)
+  @Roles('USER', 'CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteBoard(

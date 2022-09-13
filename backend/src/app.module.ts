@@ -81,11 +81,5 @@ import { APP_GUARD } from '@nestjs/core';
       isGlobal: true,
     }),
   ],
-  // providers: [
-  //   {
-  //     provide: APP_GUARD,
-  //     useClass: RolesGuard,
-  //   },
-  // ],
 })
 export class AppModule {}

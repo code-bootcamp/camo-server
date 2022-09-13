@@ -78,8 +78,8 @@ export class CafeListsResolver {
   }
 
   /** 카페 소개글 생성 */
-  // @UseGuards(RolesGuard)
-  // @Roles('CAFEOWNER', 'ADMIN')
+  @UseGuards(RolesGuard)
+  @Roles('CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeList)
   async createCafeList(
@@ -95,8 +95,8 @@ export class CafeListsResolver {
   }
 
   /** 카페 소개글 업데이트 */
-  // @UseGuards(RolesGuard)
-  // @Roles('CAFEOWNER', 'ADMIN')
+  @UseGuards(RolesGuard)
+  @Roles('CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeList)
   async updateCafeList(
@@ -114,8 +114,8 @@ export class CafeListsResolver {
   }
 
   /** 카페 소개글 삭제 */
-  // @UseGuards(RolesGuard)
-  // @Roles('CAFEOWNER')
+  @UseGuards(RolesGuard)
+  @Roles('CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteCafeList(

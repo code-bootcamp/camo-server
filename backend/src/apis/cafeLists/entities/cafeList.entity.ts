@@ -64,8 +64,8 @@ export class CafeList {
   @Field(() => String)
   contents: string;
 
-  @ManyToOne(() => User)
-  @Field(() => User)
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
   user: User;
 
   @Column({ nullable: true })

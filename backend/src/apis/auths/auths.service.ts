@@ -122,10 +122,11 @@ export class AuthsService {
     }
   }
 
-  /** 유저 SMS Tken 검증 */
+  /** 유저 SMS Token 검증 */
   async checkSMSTokenValid({ phoneNumber, SMSToken }) {
     const isSMSToken = await this.cacheManager.get(phoneNumber);
-    if (!isSMSToken) throw new ConflictException('휴대폰 번호를 확인해주세요');
+    // if (!isSMSToken) throw new ConflictException('휴대폰 번호를 확인해주세요');
+    // 배포시에는 추가할것
     if (isSMSToken !== SMSToken)
       throw new ConflictException('인증번호가 올바르지 않습니다.');
     return true;

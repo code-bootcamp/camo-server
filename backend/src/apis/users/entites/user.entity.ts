@@ -1,14 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Board } from 'src/apis/boards/entities/board.entity';
-import { Comment } from 'src/apis/comments/entites/comment.entity';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { USER_ROLE } from 'src/commons/type/user';
 import {
   Column,
   PrimaryGeneratedColumn,
   Entity,
   CreateDateColumn,
   DeleteDateColumn,
-  OneToMany,
 } from 'typeorm';
+
+registerEnumType(USER_ROLE, {
+  name: 'USER_ROLE_ENUM',
+});
 
 @Entity()
 @ObjectType()
@@ -48,20 +50,7 @@ export class User {
   @Field(() => Date, { nullable: true })
   deletedAt: Date;
 
-  @Column({ nullable: true })
-  @Field(() => String, { nullable: true })
-  status: string;
-
-  // @JoinTable()
-  // @ManyToMany(() => Comment, (comment) => comment.user, { nullable: true })
-  // @Field(() => [Comment], { nullable: true })
-  // comment: Comment[];
-
-  // @OneToMany(
-  //   () => favoriteBoard,
-  //   (favoriteBoard) => favoriteBoard.board,
-  //   { nullable: true }, //
-  // )
-  // @Field(() => [favoriteBoard], { nullable: true })
-  // favoriteBoard: favoriteBoard[];
+  @Column({ type: 'enum', enum: USER_ROLE, nullable: true })
+  @Field(() => USER_ROLE, { nullable: true })
+  role: string;
 }

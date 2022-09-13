@@ -8,6 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Board } from '../boards/entities/board.entity';
 import { CafeList } from '../cafeLists/entities/cafeList.entity';
 import { User } from '../users/entites/user.entity';
+import { UsersService } from '../users/users.service';
 import { FavoriteCafe } from './entities/favoriteCafe.entity';
 
 @Injectable()
@@ -23,6 +24,8 @@ export class FavoriteCafesService {
     private readonly usersRepository: Repository<User>,
 
     private readonly dataSource: DataSource,
+
+    private readonly usersService: UsersService,
   ) {}
 
   async like({ userId, cafeListId }): Promise<boolean> {
@@ -113,5 +116,14 @@ export class FavoriteCafesService {
       where: { id: boardId },
     });
     return board[0];
+  }
+
+  async findUserLike({ userId }) {
+    const userInf = await this.favoriteCafeRepository.findOne({
+      where: { user: userId },
+      relations: ['user'],
+    });
+    console.log(userInf);
+    return userInf;
   }
 }

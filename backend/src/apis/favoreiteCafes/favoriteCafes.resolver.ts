@@ -19,4 +19,13 @@ export class FavoriteCafesResolver {
     const userId = context.req.user.id;
     return this.favoriteCafesService.like({ userId, cafeListId });
   }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => Boolean)
+  fetchUserFavoriteCafe(
+    @Context() context: IContext, //
+  ) {
+    const userId = context.req.user.id;
+    return this.favoriteCafesService.findUserLike({ userId });
+  }
 }

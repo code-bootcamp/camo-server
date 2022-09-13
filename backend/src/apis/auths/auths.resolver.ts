@@ -21,12 +21,12 @@ export class AuthResolver {
 
   /** 로그인 */
   @Mutation(() => String)
-  loginUser(
+  async loginUser(
     @Args('email') email: string, //
     @Args('password') password: string,
     @Context() context: IContext,
   ) {
-    return this.authsService.getUserLogin({ email, password, context });
+    return await this.authsService.getUserLogin({ email, password, context });
   }
 
   /** 로그아웃 */

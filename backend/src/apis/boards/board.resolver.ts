@@ -16,6 +16,8 @@ import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { IContext } from 'src/commons/type/context';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RolesGuard } from 'src/commons/auth/roles.guard';
+import { Roles } from 'src/commons/auth/roles.decorator';
 
 /**
  * Board GraphQL API Resolver
@@ -160,6 +162,8 @@ export class Boardsresolver {
   // 태그로 조회
 
   // 게시글 생성
+  // @UseGuards(RolesGuard)
+  // @Roles('CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async createBoard(
@@ -171,6 +175,8 @@ export class Boardsresolver {
   }
 
   /** 게시글 수정 */
+  // @UseGuards(RolesGuard)
+  // @Roles('CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async updateBoard(

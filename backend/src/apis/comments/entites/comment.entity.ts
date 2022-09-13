@@ -34,16 +34,10 @@ export class Comment {
   @Field(() => Date)
   deletedAt: Date;
 
-  // @Column()
-  // @Field(() => String)
-  // status: string;
-
-  // @ManyToMany(() => Board, (board) => board.comment) // nullable 추가? 왜?
   @ManyToOne(() => Board, { nullable: true })
   @Field(() => Board, { nullable: true })
   board: Board;
 
-  // @ManyToMany(() => User, (user) => user.comment)
   @ManyToOne(() => User, { nullable: true })
   @Field(() => User, { nullable: true })
   user: User;

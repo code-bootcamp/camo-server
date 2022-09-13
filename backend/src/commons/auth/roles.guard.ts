@@ -2,10 +2,6 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UsersService } from 'src/apis/users/users.service';
 
-// const matchRoles = (roles: string[], userRoles: string) => {
-//   return roles.some((role) => role === userRoles);
-// };
-
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
@@ -15,30 +11,17 @@ export class RolesGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    const request = context.switchToHttp().getRequest();
-
-    if (request?.user) {
-      const userId = request.user.id;
-      const user = await this.userService.findOne({ userId });
-      return roles.includes(user.role);
+    const userId = context.switchToHttp()['args'][1].userId;
+    console.log(context.switchToHttp().getRequest());
+    // console.log(context.switchToHttp()['args'][2]);
+    // console.log('12312312312', context.switchToHttp().getRequest() as any);
+    // console.log(userId);
+    const user = await this.userService.findOne({ userId });
+    console.log(user.role);
+    console.log(roles);
+    if (!roles.includes(user.role)) {
+      return false;
     }
-
-    return false;
-
-    // const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [
-    //   context.getHandler(),
-    //   context.getClass(),
-    // ]);
-    //     if (!requiredRoles) {
-    //       return true;
-    //     }
-
-    //     const req = context.switchToHttp().getRequest() as any;
-    //     const user = req.user;
-    //     if (!user) {
-    //       throw new ForbiddenException('User does not exist');
-    //     }
-    //     return matchRoles(requiredRoles, user.role);
-    //   }
+    return true;
   }
 }

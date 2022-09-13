@@ -2,6 +2,8 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
+import { Roles } from 'src/commons/auth/roles.decorator';
+import { RolesGuard } from 'src/commons/auth/roles.guard';
 import { IContext } from 'src/commons/type/context';
 import { Repository } from 'typeorm';
 import { CafeListsService } from './cafeLists.service';
@@ -76,6 +78,8 @@ export class CafeListsResolver {
   }
 
   /** 카페 소개글 생성 */
+  // @UseGuards(RolesGuard)
+  // @Roles('CAFEOWNER', 'ADMIN')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeList)
   async createCafeList(
@@ -83,6 +87,7 @@ export class CafeListsResolver {
     @Context() context: IContext,
   ) {
     const userId = context.req.user.id;
+    console.log(userId);
     return await this.cafeListsService.create({
       userId,
       createCafeListInput,
@@ -90,6 +95,8 @@ export class CafeListsResolver {
   }
 
   /** 카페 소개글 업데이트 */
+  // @UseGuards(RolesGuard)
+  // @Roles('CAFEOWNER', 'ADMIN')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeList)
   async updateCafeList(
@@ -107,6 +114,8 @@ export class CafeListsResolver {
   }
 
   /** 카페 소개글 삭제 */
+  // @UseGuards(RolesGuard)
+  // @Roles('CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteCafeList(

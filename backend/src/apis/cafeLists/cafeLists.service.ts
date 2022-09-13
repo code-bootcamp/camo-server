@@ -72,13 +72,13 @@ export class CafeListsService {
         cafeListTag.push(newTag);
       }
     }
-
     const result = await this.cafeListRepository.save({
       ...cafeList,
       cafeListTag: cafeListTag,
       user: userId,
     });
 
+    console.log('여기까지 확인2');
     if (images) {
       await Promise.all(
         images.map(

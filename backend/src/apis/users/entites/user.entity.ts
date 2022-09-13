@@ -1,5 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { UserRole, USER_ROLE } from 'src/commons/type/user';
+import { USER_ROLE } from 'src/commons/type/user';
 import {
   Column,
   PrimaryGeneratedColumn,
@@ -53,17 +53,4 @@ export class User {
   @Column({ type: 'enum', enum: USER_ROLE, nullable: true })
   @Field(() => USER_ROLE, { nullable: true })
   role: string;
-
-  // @JoinTable()
-  // @ManyToMany(() => Comment, (comment) => comment.user, { nullable: true })
-  // @Field(() => [Comment], { nullable: true })
-  // comment: Comment[];
-
-  // @OneToMany(
-  //   () => favoriteBoard,
-  //   (favoriteBoard) => favoriteBoard.board,
-  //   { nullable: true }, //
-  // )
-  // @Field(() => [favoriteBoard], { nullable: true })
-  // favoriteBoard: favoriteBoard[];
 }

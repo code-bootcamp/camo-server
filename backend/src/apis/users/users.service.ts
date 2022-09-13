@@ -1,11 +1,10 @@
 import {
   CACHE_MANAGER,
   ConflictException,
-  Controller,
   Inject,
   Injectable,
   UnauthorizedException,
-  UseGuards,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,8 +12,6 @@ import { User } from './entites/user.entity';
 import * as coolsms from 'coolsms-node-sdk';
 import * as bcrypt from 'bcrypt';
 import { Cache } from 'cache-manager';
-import { RolesGuard } from 'src/commons/auth/roles.guard';
-import { Roles } from 'src/commons/auth/roles.decorator';
 
 @Injectable()
 export class UsersService {
@@ -37,6 +34,13 @@ export class UsersService {
     });
   }
 
+  /** 유저 핸드폰 번호로 찾기 */
+  async findUserByPhoneNumber({ phoneNumber }) {
+    return await this.usersRepository.findOne({
+      where: { phoneNumber },
+    });
+  }
+
   /** 개별 유저 조회 */
   async findOne({ userId }) {
     return await this.usersRepository.findOne({
@@ -45,23 +49,36 @@ export class UsersService {
   }
 
   /** 일반 유저 생성 */
-  async create({
-    email,
-    hashedPassword: password,
-    name,
-    phoneNumber,
-    nickName,
-  }) {
+  async create({ role, ...createUserInput }) {
+    const { password, email } = createUserInput;
+    const hashedPassword = await bcrypt.hash(
+      password,
+      Number(process.env.HASH_SECRET),
+    );
+    console.log(hashedPassword);
     const user = await this.usersRepository.findOne({ where: { email } });
     if (user) throw new ConflictException('이미 등록된 이메일입니다.');
 
     return await this.usersRepository.save({
-      email,
-      password,
-      name,
-      phoneNumber,
-      nickName,
+      ...createUserInput,
+      password: hashedPassword,
+      role,
     });
+  }
+
+  async updatePassword({ email, password }) {
+    const user = await this.usersRepository.findOne({
+      where: { email },
+    });
+    const hashedPassword = await bcrypt.hash(
+      password,
+      Number(process.env.HASH_SECRET),
+    );
+    const result = await this.usersRepository.save({
+      ...user,
+      password: hashedPassword,
+    });
+    return result;
   }
 
   async update({ email, updateUserInput, loginhash }) {
@@ -76,6 +93,19 @@ export class UsersService {
       password: loginhash,
     });
     return result;
+  }
+
+  async updateUser({ email, ...updateUserInput }) {
+    const password = updateUserInput.password;
+
+    const user = await this.findOneUser({ email });
+    if (!user) throw new UnprocessableEntityException('이메일이 없습니다.');
+
+    const loginhash = await bcrypt.hash(
+      password,
+      Number(process.env.HASH_SECRET),
+    );
+    return await this.update({ email, updateUserInput, loginhash });
   }
 
   // 관리자용

@@ -21,12 +21,15 @@ import { FileModule } from './apis/files/file.module';
 import { ChatModule } from './apis/chat/chat.module';
 import { CafeListImageModule } from './apis/cafeListImage/cafeListImages.module';
 import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
+import { RolesGuard } from './commons/auth/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
     AuthsModule,
     Boardmodule,
     CafeListsModule,
@@ -79,5 +82,11 @@ import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
       isGlobal: true,
     }),
   ],
+  // providers: [
+  //   {
+  //     provide: APP_GUARD,
+  //     useClass: RolesGuard,
+  //   },
+  // ],
 })
 export class AppModule {}

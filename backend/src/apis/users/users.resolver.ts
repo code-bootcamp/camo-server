@@ -95,6 +95,7 @@ export class UsersResolver {
     return this.usersService.updateUser({ email, ...updateUserInput });
   }
 
+  /** 회원 비밀번호 찾기 */
   @Mutation(() => User)
   updateUserPassword(
     @Args('email') email: string, // 1번째 페이지(가지고 있다가)
@@ -124,7 +125,7 @@ export class UsersResolver {
     return this.usersService.restore({ email });
   }
 
-  /** for Admin 삭제된 유저 조회 */
+  /** for Admin 삭제12된 유저 조회 */
   @Query(() => [User])
   fetchUserWithDeleted() {
     return this.usersService.WithDelete();

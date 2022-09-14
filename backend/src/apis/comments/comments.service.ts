@@ -40,52 +40,49 @@ export class CommentsService {
 
   async create({ user, createCommentInput }) {
     const { boardId, comment } = createCommentInput;
-
     const checkUser = await this.userRepository.findOne({
       where: { email: user },
     });
-
     const checkBoard = await this.boardRepository.findOne({
       where: { id: boardId },
     });
 
     return await this.commentRepository.save({
-      user: checkUser,
-      board: checkBoard,
+      user: { id: checkUser.id },
+      board: { id: checkBoard.id },
       comment,
     });
   }
 
   async update({ commentId, userId, updateCommentInput }) {
-    const result = await this.commentRepository.findOne({
+    const checkComment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
+
+    if (!checkComment)
+      throw new ConflictException('해당 댓글을 찾을 수 없습니다.');
+
     const checkUser = await this.userRepository.findOne({
       where: { id: userId },
     });
 
+    if (checkUser.id !== userId)
+      throw new ConflictException('댓글 작성자만 접근이 가능합니다.');
+
     return await this.commentRepository.save({
-      ...result,
+      ...checkComment,
       user: checkUser,
       ...updateCommentInput,
     });
   }
 
-  async delete({ commentId }) {
-    const result = await this.commentRepository.softDelete({
-      id: commentId,
-    });
-
-    return result.affected ? true : false;
-  }
-
   async deleteComment({ context, commentId }) {
-    const userEmail = context.req.user.email;
+    const email = context.req.user.email;
     const comment = await this.find({ commentId });
-    const commentUserEmail = comment.user['email'];
+    const commentUserEmail = comment.user.email;
 
-    if (commentUserEmail !== userEmail)
-      throw new ConflictException('본인이 작성한 댓글만 지울 수 있습니다.');
+    if (commentUserEmail !== email)
+      throw new ConflictException('본인이 작성한 댓글만 접근이 가능합니다.');
     const result = await this.commentRepository.softDelete({ id: commentId });
 
     return result.affected ? true : false;

@@ -1,7 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Board } from '../boards/entities/board.entity';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
 import { CafeList } from './entities/cafeList.entity';
@@ -78,21 +77,8 @@ export class CafeListsService {
       cafeListTag: cafeListTag,
       user: userId,
     });
-
     if (images) {
-      await Promise.all(
-        images.map(
-          (el) =>
-            new Promise((resolve, reject) => {
-              this.cafeListImageRepository.save({
-                url: el,
-                cafeList: { id: result.id },
-              });
-              resolve('이미지 저장 완료');
-              reject('이미지 저장 실패');
-            }),
-        ),
-      );
+      this.saveImage({ images, result });
     }
 
     return result;
@@ -159,5 +145,21 @@ export class CafeListsService {
       id: cafeListId,
     });
     return restoreResult.affected ? true : false;
+  }
+
+  async saveImage({ images, result }) {
+    await Promise.all(
+      images.map(
+        (el) =>
+          new Promise((resolve, reject) => {
+            this.cafeListImageRepository.save({
+              url: el,
+              cafeList: { id: result.id },
+            });
+            resolve('이미지 저장 완료');
+            reject('이미지 저장 실패');
+          }),
+      ),
+    );
   }
 }

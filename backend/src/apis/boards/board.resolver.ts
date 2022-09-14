@@ -16,8 +16,6 @@ import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { IContext } from 'src/commons/type/context';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RolesGuard } from 'src/commons/auth/roles.guard';
-import { Roles } from 'src/commons/auth/roles.decorator';
 
 /**
  * Board GraphQL API Resolver
@@ -54,8 +52,13 @@ export class Boardsresolver {
     } else {
       const result = await this.elasticsearchService.search({
         index: 'search-board',
-        query: {
-          term: { title: search },
+        body: {
+          query: {
+            multi_match: {
+              query: search,
+              fields: ['title', 'contents'],
+            },
+          },
         },
       });
 
@@ -139,8 +142,13 @@ export class Boardsresolver {
     } else {
       const result = await this.elasticsearchService.search({
         index: 'search-board',
-        query: {
-          term: { name: search },
+        body: {
+          query: {
+            multi_match: {
+              query: search,
+              fields: ['title', 'contents'],
+            },
+          },
         },
       });
 

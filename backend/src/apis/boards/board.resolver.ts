@@ -122,7 +122,7 @@ export class Boardsresolver {
 
   /** 삭제된 게시글 조회 */
   @Query(() => [Board])
-  fetchBoardWithDeleted() {
+  fetchBoardWithDeleted(z) {
     return this.boardsService.WithBoardDelete();
   }
 

@@ -34,7 +34,11 @@ export class Comment {
   @Field(() => Date)
   deletedAt: Date;
 
-  @ManyToOne(() => Board, { nullable: true })
+  @ManyToOne(() => Board, {
+    nullable: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @Field(() => Board, { nullable: true })
   board: Board;
 

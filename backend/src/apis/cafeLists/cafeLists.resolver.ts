@@ -80,15 +80,14 @@ export class CafeListsResolver {
   /** 카페 소개글 생성 */
 
   // @UseGuards(RolesGuard)
-  @UseGuards(GqlAuthAccessGuard)
   // @Roles('CAFEOWNER')
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeList)
   async createCafeList(
     @Args('createCafeListInput') createCafeListInput: CreateCafeListInput,
     @Context() context: IContext,
   ) {
     const userId = context.req.user.id;
-    console.log(userId);
     return await this.cafeListsService.create({
       userId,
       createCafeListInput,

@@ -11,6 +11,8 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Cache } from 'cache-manager';
+import { User } from '../users/entites/user.entity';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthsService {
@@ -22,17 +24,24 @@ export class AuthsService {
   ) {}
 
   /** AccessToken 발급 */
-  async getAccessToken({ user }) {
-    const result = this.jwtService.sign(
+  getAccessToken({ user }) {
+    return this.jwtService.sign(
       { email: user.email, sub: user.id },
       { secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: '2w' },
     );
-    return result;
     // 배포시 expireIn: 15Minute 설정
   }
 
   /** refreshToken 발급 */
-  setRefreshToken({ user, res, req }) {
+  setRefreshToken({
+    user,
+    res,
+    req,
+  }: {
+    user: User;
+    res: Response;
+    req: Request;
+  }) {
     const refreshToken = this.jwtService.sign(
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
@@ -82,7 +91,7 @@ export class AuthsService {
 
     this.setRefreshToken({ user, res: context.res, req: context.req });
 
-    return await this.getAccessToken({ user });
+    return this.getAccessToken({ user });
   }
 
   /** 일반 유저 로그아웃 */

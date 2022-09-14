@@ -105,6 +105,7 @@ export class CafeList {
   @JoinTable()
   @OneToMany(() => CafeListImage, (cafeListImage) => cafeListImage.cafeList, {
     nullable: true,
+    // cascade: ['soft-remove', 'update', 'recover'],
   })
   @Field(() => [CafeListImage], { nullable: true })
   cafeListImage: CafeListImage[];

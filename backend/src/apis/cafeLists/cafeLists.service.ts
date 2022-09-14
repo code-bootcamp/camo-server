@@ -1,6 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Board } from '../boards/entities/board.entity';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
 import { CafeList } from './entities/cafeList.entity';
@@ -78,7 +79,6 @@ export class CafeListsService {
       user: userId,
     });
 
-    console.log('여기까지 확인2');
     if (images) {
       await Promise.all(
         images.map(
@@ -141,15 +141,16 @@ export class CafeListsService {
     return result;
   }
 
-  async delete({ userId, cafeListId }) {
+  async delete({ userId, cafeListId }: { userId: string; cafeListId: string }) {
     const cafeList = await this.cafeListRepository.findOne({
       where: { id: cafeListId },
       relations: ['user'],
     });
     if (cafeList.user.id !== userId)
-      throw new ConflictException('삭제 권한이 없습니다.');
+      throw new ConflictException('게시물의 작성자만 삭제할 수 있습니다.');
 
     const result = await this.cafeListRepository.softDelete({ id: cafeListId });
+    this.cafeListImageRepository.delete({ cafeList: { id: cafeList.id } });
     return result.affected ? true : false;
   }
 

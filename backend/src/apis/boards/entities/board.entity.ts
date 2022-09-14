@@ -83,7 +83,7 @@ export class Board {
   @JoinTable()
   @OneToMany(() => Image, (image) => image.board, {
     nullable: true,
-    cascade: ['soft-remove'],
+    cascade: true,
   })
   @Field(() => [Image], { nullable: true })
   images: Image[];
@@ -91,7 +91,7 @@ export class Board {
   @JoinTable()
   @OneToMany(() => Comment, (comment) => comment.board, {
     nullable: true,
-    cascade: ['soft-remove'],
+    cascade: true,
   })
   @Field(() => [Comment], { nullable: true })
   comment: Comment[];

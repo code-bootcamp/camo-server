@@ -97,14 +97,7 @@ export class BoardsService {
             }),
         ),
       );
-
-      const imageresult = await this.imageRepository.save({
-        url: image,
-        board: { id: result.id },
-      });
-      console.log(imageresult);
     }
-
     return result;
   }
 

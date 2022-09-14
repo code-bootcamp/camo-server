@@ -27,7 +27,10 @@ export class CafeListImage {
   @Field(() => String, { nullable: true })
   deletedAt: Date;
 
-  @ManyToOne(() => CafeList, { nullable: true })
+  @ManyToOne(() => CafeList, {
+    nullable: true,
+    orphanedRowAction: 'soft-delete',
+  })
   @Field(() => CafeList, { nullable: true })
   cafeList: CafeList;
 }

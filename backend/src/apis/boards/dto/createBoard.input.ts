@@ -17,7 +17,7 @@ export class CreateBoardInput {
   @Field(() => String, { nullable: true })
   addressDetail: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   tags: string[];
 
   @Field(() => [String], { nullable: true })

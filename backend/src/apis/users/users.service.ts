@@ -145,11 +145,11 @@ export class UsersService {
     const SMS_SECRET = process.env.SMS_SECRET;
     const SMS_SENDER = process.env.SMS_SENDER;
 
-    const checkUserPhoneNumber = await this.usersRepository.findOne({
-      where: { phoneNumber: phoneNumber },
-    });
-    if (checkUserPhoneNumber)
-      throw new ConflictException('이미 등록된 번호입니다.');
+    // const checkUserPhoneNumber = await this.usersRepository.findOne({
+    //   where: { phoneNumber: phoneNumber },
+    // });
+    // if (checkUserPhoneNumber)
+    //   throw new ConflictException('이미 등록된 번호입니다.');
 
     try {
       const token = this.getToken();

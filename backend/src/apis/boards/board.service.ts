@@ -59,46 +59,67 @@ export class BoardsService {
     const _user = await this.userRepository.findOne({
       where: { email: user },
     });
+    if (tags) {
+      const boardtag = [];
+      for (let i = 0; i < tags.length; i++) {
+        const tagName = tags[i].replace('#', '');
 
-    const boardtag = [];
-    for (let i = 0; i < tags.length; i++) {
-      const tagName = tags[i].replace('#', '');
-
-      const prevTag = await this.tagRepository.findOne({
-        where: { name: tagName },
+        const prevTag = await this.tagRepository.findOne({
+          where: { name: tagName },
+        });
+        if (prevTag) {
+          boardtag.push(prevTag);
+        } else {
+          const newTag = await this.tagRepository.save({
+            name: tagName,
+          });
+          boardtag.push(newTag);
+        }
+      }
+      const result = await this.boardRepository.save({
+        ...Board,
+        tags: boardtag,
+        user: _user,
       });
 
-      if (prevTag) {
-        boardtag.push(prevTag);
-      } else {
-        const newTag = await this.tagRepository.save({
-          name: tagName,
-        });
-        boardtag.push(newTag);
+      if (image) {
+        await Promise.all(
+          image.map(
+            (el) =>
+              new Promise((resolve, reject) => {
+                this.imageRepository.save({
+                  url: el,
+                  board: { id: result.id },
+                });
+                resolve('이미지 저장 완료');
+                reject('이미지 저장 실패');
+              }),
+          ),
+        );
       }
+      return result;
+    } else {
+      const result = await this.boardRepository.save({
+        ...Board,
+        user: _user,
+      });
+      if (image) {
+        await Promise.all(
+          image.map(
+            (el) =>
+              new Promise((resolve, reject) => {
+                this.imageRepository.save({
+                  url: el,
+                  board: { id: result.id },
+                });
+                resolve('이미지 저장 완료');
+                reject('이미지 저장 실패');
+              }),
+          ),
+        );
+      }
+      return result;
     }
-    const result = await this.boardRepository.save({
-      ...Board,
-      tags: boardtag,
-      user: _user,
-    });
-
-    if (image) {
-      await Promise.all(
-        image.map(
-          (el) =>
-            new Promise((resolve, reject) => {
-              this.imageRepository.save({
-                url: el,
-                board: { id: result.id },
-              });
-              resolve('이미지 저장 완료');
-              reject('이미지 저장 실패');
-            }),
-        ),
-      );
-    }
-    return result;
   }
 
   async update({ boardId, updateBoardInput }) {

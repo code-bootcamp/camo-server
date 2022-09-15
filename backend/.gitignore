@@ -5,6 +5,9 @@
 /src/commons/graphql/schema.gql
 reflected-jet-360811-402430377c02.json
 logstash.conf
+/elk/logstash/cafeList_template.json
+/elk/logstash/cafeList.conf
+/elk/logstash/pipelines.yml
 
 # Logs
 logs

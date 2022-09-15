@@ -19,7 +19,7 @@ export class CafeListsService {
   async findOne({ cafeListId }) {
     const result = await this.cafeListRepository.findOne({
       where: { id: cafeListId },
-      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+      relations: ['cafeListImage', 'reviews', 'cafeListTag', 'user'],
     });
     return result;
     // 12개 기준
@@ -27,7 +27,7 @@ export class CafeListsService {
 
   async findByCreatedAt({ page, sortBy }) {
     return await this.cafeListRepository.find({
-      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+      relations: ['cafeListImage', 'reviews', 'cafeListTag', 'user'],
       order: { createdAt: sortBy },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
@@ -36,7 +36,7 @@ export class CafeListsService {
 
   async findByfavoriteCafeCount({ page, sortBy }) {
     return await this.cafeListRepository.find({
-      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+      relations: ['cafeListImage', 'reviews', 'cafeListTag', 'user'],
       order: { favoriteCafeCount: sortBy },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
@@ -45,7 +45,7 @@ export class CafeListsService {
 
   async findAll({ page }) {
     const result = await this.cafeListRepository.find({
-      relations: ['cafeListImage', 'reviews', 'cafeListTag'],
+      relations: ['cafeListImage', 'reviews', 'cafeListTag', 'user'],
       take: 10,
       skip: (page - 1) * 10,
     });

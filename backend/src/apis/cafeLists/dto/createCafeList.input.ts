@@ -33,6 +33,9 @@ export class CreateCafeListInput {
   @Field(() => String)
   contents: string;
 
+  @Field(() => String, { nullable: true })
+  remarks: string;
+
   @Field(() => [String], { nullable: true })
   images: string[];
 

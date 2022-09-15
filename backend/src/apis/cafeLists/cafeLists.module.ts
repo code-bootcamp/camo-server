@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesGuard } from 'src/commons/auth/roles.guard';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
@@ -21,6 +22,9 @@ import { CafeList } from './entities/cafeList.entity';
       CafeListTag,
       User,
     ]),
+    ElasticsearchModule.register({
+      node: 'http://elasticsearch:9200',
+    }),
   ],
   providers: [
     CafeListsResolver, //

@@ -28,6 +28,8 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.17.0
+    depends_on:
+      - my-database
     environment:
       discovery.type: single-node
     ports:
@@ -35,10 +37,12 @@ services:
 
   logstash:
     image: logstash:7.17.0
+    depends_on:
+      - elasticsearch
     volumes:
       - ./elk/logstash/mysql-connector-java-8.0.28.jar:/usr/share/logstash/mysql-connector-java-8.0.28.jar
       - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       - ./elk/logstash/elasticsearch.json:/usr/share/logstash/elasticsearch.json
-      - ./elk/logstash/cafelist.conf:/usr/share/logstash/pipeline/cafelist.conf
-      - ./elk/logstash/cafelist_template.json:/usr/share/logstash/cafelist_template.json
-      - ./elk/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml
+      # - ./elk/logstash/cafe.conf:/usr/share/logstash/pipeline/cafe.conf
+      # - ./elk/logstash/cafe.json:/usr/share/logstash/cafe.json
+      # - ./elk/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml

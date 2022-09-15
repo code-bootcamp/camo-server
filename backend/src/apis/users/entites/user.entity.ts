@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { USER_ROLE } from 'src/commons/type/user';
 import {
   Column,
@@ -6,6 +7,8 @@ import {
   Entity,
   CreateDateColumn,
   DeleteDateColumn,
+  OneToMany,
+  JoinTable,
 } from 'typeorm';
 
 registerEnumType(USER_ROLE, {
@@ -53,4 +56,11 @@ export class User {
   @Column({ type: 'enum', enum: USER_ROLE, nullable: true })
   @Field(() => USER_ROLE, { nullable: true })
   role: string;
+
+  @JoinTable()
+  @OneToMany(() => CafeReservation, (cafeReservation) => cafeReservation.user, {
+    nullable: true,
+  })
+  @Field(() => [CafeReservation], { nullable: true })
+  cafeReservation: CafeReservation[];
 }

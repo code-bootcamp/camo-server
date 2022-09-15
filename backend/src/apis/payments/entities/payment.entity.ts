@@ -22,6 +22,7 @@ registerEnumType(PAYMENT_STATUS_ENUM, {
 @ObjectType()
 export class Payment {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => String)
   id: string;
 
   @Column()
@@ -40,11 +41,11 @@ export class Payment {
   @Field(() => PAYMENT_STATUS_ENUM)
   status: string;
 
-  @ManyToOne(() => User)
-  @Field(() => User)
+  @ManyToOne(() => User, { nullable: true })
+  @Field(() => User, { nullable: true })
   user: User;
 
-  @ManyToOne(() => CafeReservation)
-  @Field(() => CafeReservation)
+  @ManyToOne(() => CafeReservation, { nullable: true })
+  @Field(() => CafeReservation, { nullable: true })
   cafeReservation: CafeReservation;
 }

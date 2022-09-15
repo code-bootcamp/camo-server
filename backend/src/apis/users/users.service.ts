@@ -45,6 +45,7 @@ export class UsersService {
   async findOne({ userId }) {
     return await this.usersRepository.findOne({
       where: { id: userId },
+      relations: ['cafeReservation'],
     });
   }
 

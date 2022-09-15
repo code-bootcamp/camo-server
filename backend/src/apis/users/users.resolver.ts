@@ -42,9 +42,16 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
 
+  @Query(() => User)
+  fetchUserbyId(
+    @Args('userId') userId: string, //
+  ) {
+    return this.usersService.findOne({ userId });
+  }
+
   /** 개별 유저 조회 */
   @Query(() => User)
-  fetchUser(
+  fetchUserbyEmail(
     @Args('email') email: string, //
   ) {
     return this.usersService.findOneUser({ email });
@@ -113,6 +120,13 @@ export class UsersResolver {
   ) {
     const userId = context.req.user.id;
     return this.usersService.delete({ password, userId });
+  }
+
+  @Query(() => User)
+  fetchReservation(
+    @Args('userId') userId: string, //
+  ) {
+    //
   }
 
   //----------------------------------------------------------------------

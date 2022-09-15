@@ -1,4 +1,5 @@
-import { UseGuards } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, UseGuards } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
@@ -10,6 +11,7 @@ import { CafeListsService } from './cafeLists.service';
 import { CreateCafeListInput } from './dto/createCafeList.input';
 import { UpdateCafeListInput } from './dto/updateCafeList.input';
 import { CafeList } from './entities/cafeList.entity';
+import { Cache } from 'cache-manager';
 
 /**
  * CafeList(카페 소개글) GrqphQL API Resolver
@@ -22,7 +24,62 @@ export class CafeListsResolver {
     private readonly cafeListsService: CafeListsService, //
     @InjectRepository(CafeList)
     private readonly cafeListRepository: Repository<CafeList>,
+    private readonly elasticsearchService: ElasticsearchService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
+
+  @Mutation(() => CafeList)
+  createProduct(
+    @Args('createCafeListInput') createCafeListInput: CreateCafeListInput,
+  ) {
+    // 엘라스틱서치에 등록하기 연습!!(연습 이후에 삭제하기!!)
+    this.elasticsearchService.create({
+      id: 'myid',
+      index: 'search-cafelist',
+      document: {
+        // name: "철수",
+        // age: 13,
+        // school: "다람쥐초등학교"
+        ...createCafeListInput,
+      },
+    });
+
+    // 엘라스틱서치에서 등록해보기위해 임시로 주석!!
+    // return this.productService.create({ createProductInput });
+  }
+
+  @Query(() => [CafeList])
+  async searchCafeList(
+    @Args({ name: 'search', nullable: true }) search: string,
+  ) {
+    const checkRedis = await this.cacheManager.get(search);
+    if (checkRedis) {
+      return checkRedis;
+    } else {
+      const result = await this.elasticsearchService.search({
+        index: 'search-cafelist',
+        query: {
+          term: { title: search },
+        },
+      });
+
+      const arrayCafeList = result.hits.hits.map((el) => {
+        const obj = {
+          id: el._source['id'],
+          title: el._source['title'],
+          contents: el._source['contents'],
+        };
+        console.log(obj);
+        console.log(result);
+        return obj;
+      });
+
+      await this.cacheManager.set(search, arrayCafeList, { ttl: 20 });
+
+      return arrayCafeList;
+    }
+  }
 
   /** 카페 소개글 개수 조회 */
   @Query(() => Int)

@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
@@ -12,18 +12,26 @@ export class CafeReservation {
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
+  title: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   orderRequest: string;
 
-  @Column()
-  @Field(() => Date)
-  reservationTime: Date;
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  reservedPeople: number;
 
   @Column()
   @Field(() => Date)
   reservationDate: Date;
 
   @Column()
-  @Field(() => Boolean)
+  @Field(() => String)
+  reservationTime: string;
+
+  @Column({ nullable: true })
+  @Field(() => Boolean, { nullable: true })
   reservationStatus: boolean;
 
   @ManyToOne(() => CafeList)

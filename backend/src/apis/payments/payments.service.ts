@@ -24,14 +24,14 @@ export class PaymentsService {
 
     try {
       const payment = this.paymentsRepository.create({
-        impUid,
-        paymentAmount,
-        user: _user,
+        impUid: impUid,
+        paymentAmount: paymentAmount,
+        user: _user.id,
         status: PAYMENT_STATUS_ENUM.PAYMENT,
       });
-
       await queryRunner.manager.save(payment);
-
+      //
+      console.log(payment);
       const user = await queryRunner.manager.findOne(User, {
         where: { id: _user.id },
         lock: { mode: 'pessimistic_write' },

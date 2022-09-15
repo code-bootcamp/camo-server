@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FileService {
@@ -11,16 +12,18 @@ export class FileService {
     const bucket = 'team04-storage';
     const storage = new Storage({
       projectId: process.env.PROJECT_ID,
-      keyFilename: 'reflected-jet-360811-402430377c02.json',
+      keyFilename: process.env.BUCKET_KEYFILENAME,
     }).bucket(bucket);
 
     const results = await Promise.all(
       waitedFiles.map(
-        (el) =>
+        (files) =>
           new Promise((resolve, reject) => {
-            el.createReadStream()
-              .pipe(storage.file(el.filename).createWriteStream())
-              .on('finish', () => resolve(`${bucket}/${el.filename}`))
+            const fname = `${uuidv4()}/origin/${files.filename}`;
+            files
+              .createReadStream()
+              .pipe(storage.file(fname).createWriteStream())
+              .on('finish', () => resolve(`${bucket}/${fname}`))
               .on('error', () => reject('실패'));
           }),
       ),

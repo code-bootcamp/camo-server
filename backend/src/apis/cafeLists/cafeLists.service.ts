@@ -132,8 +132,8 @@ export class CafeListsService {
       where: { id: cafeListId },
       relations: ['user'],
     });
-    if (cafeList.user.id !== userId)
-      throw new ConflictException('게시물의 작성자만 삭제할 수 있습니다.');
+    // if (cafeList.user.id !== userId)
+    //   throw new ConflictException('게시물의 작성자만 삭제할 수 있습니다.');
 
     const result = await this.cafeListRepository.softDelete({ id: cafeListId });
     this.cafeListImageRepository.delete({ cafeList: { id: cafeList.id } });

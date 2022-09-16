@@ -28,7 +28,11 @@ export class CafeReservation {
 
   @Column()
   @Field(() => String)
-  reservationTime: string;
+  startTime: string;
+
+  @Column()
+  @Field(() => String)
+  endTime: string;
 
   @Column({ nullable: true })
   @Field(() => Boolean, { nullable: true })

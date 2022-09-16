@@ -31,6 +31,10 @@ export class CafeReservation {
   startTime: string;
 
   @Column()
+  @Field(() => Int)
+  deposit: number;
+
+  @Column()
   @Field(() => String)
   endTime: string;
 

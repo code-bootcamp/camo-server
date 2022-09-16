@@ -1,6 +1,4 @@
-import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { CafeReservationsService } from './cafeReservations.service';
 import { CreateReservationInput } from './dto/createReservation.input';
 import { CafeReservation } from './entities/cafeReservations.entity';
@@ -29,10 +27,4 @@ export class CafeReservationsResolver {
   ) {
     return this.cafeReservationsService.find({ cafeReservationId });
   }
-
-  //카페아이디
-  // 인원
-  // 예약금
-  // 예약시간
-  // 카페이름
 }

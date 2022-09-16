@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesGuard } from 'src/commons/auth/roles.guard';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
+import { CafeReservation } from '../cafeReservations/entities/cafeReservations.entity';
 import { FavoriteCafe } from '../favoreiteCafes/entities/favoriteCafe.entity';
 import { Review } from '../reviews/entites/review.entity';
 import { User } from '../users/entites/user.entity';
@@ -21,6 +22,7 @@ import { CafeList } from './entities/cafeList.entity';
       CafeListImage,
       CafeListTag,
       User,
+      CafeReservation,
     ]),
     ElasticsearchModule.register({
       node: 'http://elasticsearch:9200',

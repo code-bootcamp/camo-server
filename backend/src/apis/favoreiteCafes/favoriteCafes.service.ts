@@ -118,12 +118,16 @@ export class FavoriteCafesService {
     return board[0];
   }
 
-  async findUserLike({ userId }) {
-    const userInf = await this.favoriteCafeRepository.findOne({
+  async findByUserId({ userId }) {
+    return await this.favoriteCafeRepository.find({
       where: { user: userId },
-      relations: ['user'],
     });
-    console.log(userInf);
-    return userInf;
+  }
+
+  async findUserLike({ userId }) {
+    return await this.favoriteCafeRepository.find({
+      where: { user: { id: userId } },
+      relations: ['cafeList'],
+    });
   }
 }

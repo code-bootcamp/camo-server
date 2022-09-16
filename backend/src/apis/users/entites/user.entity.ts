@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Board } from 'src/apis/boards/entities/board.entity';
 import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { FavoriteCafe } from 'src/apis/favoreiteCafes/entities/favoriteCafe.entity';
 import { USER_ROLE } from 'src/commons/type/user';
@@ -71,4 +72,11 @@ export class User {
   })
   @Field(() => [FavoriteCafe], { nullable: true })
   favoriteCafe: FavoriteCafe[];
+
+  @JoinTable()
+  @OneToMany(() => Board, (board) => board.user, {
+    nullable: true,
+  })
+  @Field(() => [Board], { nullable: true })
+  board: Board[];
 }

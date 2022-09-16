@@ -16,6 +16,7 @@ import {
 import { Review } from 'src/apis/reviews/entites/review.entity';
 import { CafeListImage } from 'src/apis/cafeListImage/entities/cafeListImage.entity';
 import { FavoriteCafe } from 'src/apis/favoreiteCafes/entities/favoriteCafe.entity';
+import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 
 @Entity()
 @ObjectType()
@@ -109,8 +110,18 @@ export class CafeList {
   @JoinTable()
   @OneToMany(() => CafeListImage, (cafeListImage) => cafeListImage.cafeList, {
     nullable: true,
-    // cascade: ['soft-remove', 'update', 'recover'],
   })
   @Field(() => [CafeListImage], { nullable: true })
   cafeListImage: CafeListImage[];
+
+  @JoinTable()
+  @OneToMany(
+    () => CafeReservation,
+    (cafeReservation) => cafeReservation.cafeList,
+    {
+      nullable: true,
+    },
+  )
+  @Field(() => [CafeReservation], { nullable: true })
+  cafeReservation: CafeReservation[];
 }

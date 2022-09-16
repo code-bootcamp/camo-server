@@ -22,6 +22,14 @@ export class CafeReservationsResolver {
     });
   }
 
+  // 카페 예약 내역 조회
+  @Query(() => CafeReservation)
+  fetchCafeReservation(
+    @Args('cafeReservationId') cafeReservationId: string, //
+  ) {
+    return this.cafeReservationsService.find({ cafeReservationId });
+  }
+
   //카페아이디
   // 인원
   // 예약금

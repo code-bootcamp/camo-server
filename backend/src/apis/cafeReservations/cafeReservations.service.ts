@@ -17,6 +17,13 @@ export class CafeReservationsService {
     private readonly cafeListsRepository: Repository<CafeList>,
   ) {}
 
+  async find({ cafeReservationId }) {
+    return await this.cafeReservationsRepository.findOne({
+      where: { id: cafeReservationId },
+      relations: ['cafeList', 'user'],
+    });
+  }
+
   async create({ createReservationInput }) {
     const { userId, cafeListId } = createReservationInput;
     userId;

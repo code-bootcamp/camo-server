@@ -12,7 +12,10 @@ export class CreateReservationInput {
   reservationDate: Date;
 
   @Field(() => String)
-  reservationTime: string;
+  startTime: string;
+
+  @Field(() => String)
+  endTime: string;
 
   @Field(() => String)
   cafeListId: string;

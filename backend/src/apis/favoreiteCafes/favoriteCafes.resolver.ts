@@ -24,9 +24,9 @@ export class FavoriteCafesResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [FavoriteCafe])
   fetchUserFavoriteCafe(
-    @Context() context: IContext, //
+    @Args('userId') userId: string, //
+    @Args('page', { defaultValue: 1 }) page: number,
   ) {
-    const userId = context.req.user.id;
-    return this.favoriteCafesService.findUserLike({ userId });
+    return this.favoriteCafesService.findUserLike({ page });
   }
 }

@@ -49,6 +49,13 @@ export class UsersService {
     });
   }
 
+  async findMyUser({ userId }) {
+    return await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['cafeReservation', 'favoriteCafe', 'board'],
+    });
+  }
+
   /** 일반 유저 생성 */
   async create({ role, ...createUserInput }) {
     const { password, email } = createUserInput;

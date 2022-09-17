@@ -31,13 +31,32 @@
   },
   "mappings": {
     "properties": {
-      "type": {
-        "type": "text"
-      },
       "title": {
         "type": "text",
+        "store": true,
         "analyzer": "my_analyzer",
-        "search_analyzer": "standard"
+        "search_analyzer": "standard",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
+      },
+      "contents": {
+        "type": "text",
+        "store": true,
+        "analyzer": "my_analyzer",
+        "search_analyzer": "standard",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
+      },
+      "address": {
+        "type": "text",
+        "store": true,
+        "analyzer": "my_analyzer",
+        "search_analyzer": "standard",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
       }
     }
   }

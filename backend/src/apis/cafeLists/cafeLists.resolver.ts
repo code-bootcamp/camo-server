@@ -29,26 +29,6 @@ export class CafeListsResolver {
     private readonly cacheManager: Cache,
   ) {}
 
-  @Mutation(() => CafeList)
-  createProduct(
-    @Args('createCafeListInput') createCafeListInput: CreateCafeListInput,
-  ) {
-    // 엘라스틱서치에 등록하기 연습!!(연습 이후에 삭제하기!!)
-    this.elasticsearchService.create({
-      id: 'myid',
-      index: 'search-cafelist',
-      document: {
-        // name: "철수",
-        // age: 13,
-        // school: "다람쥐초등학교"
-        ...createCafeListInput,
-      },
-    });
-
-    // 엘라스틱서치에서 등록해보기위해 임시로 주석!!
-    // return this.productService.create({ createProductInput });
-  }
-
   @Query(() => [CafeList])
   async searchCafeList(
     @Args({ name: 'search', nullable: true }) search: string,
@@ -59,24 +39,25 @@ export class CafeListsResolver {
     } else {
       const result = await this.elasticsearchService.search({
         index: 'search-cafelist',
-        query: {
-          term: { title: search },
+        body: {
+          query: {
+            multi_match: {
+              query: search,
+              fields: ['title', 'contents', 'address'],
+            },
+          },
         },
       });
-
       const arrayCafeList = result.hits.hits.map((el) => {
         const obj = {
-          id: el._source['id'],
+          id: el._source['@metagata']['_id'],
           title: el._source['title'],
           contents: el._source['contents'],
+          address: el._source['address'],
         };
-        console.log(obj);
-        console.log(result);
         return obj;
       });
-
       await this.cacheManager.set(search, arrayCafeList, { ttl: 20 });
-
       return arrayCafeList;
     }
   }

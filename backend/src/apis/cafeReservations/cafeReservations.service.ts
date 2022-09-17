@@ -21,6 +21,14 @@ export class CafeReservationsService {
     });
   }
 
+  async findUser({ page }) {
+    return await this.cafeReservationsRepository.find({
+      relations: ['cafeList', 'user'],
+      take: 3,
+      skip: page ? (page - 1) * 3 : 0,
+    });
+  }
+
   async create({ createReservationInput }) {
     const { userId, cafeListId } = createReservationInput;
     userId;

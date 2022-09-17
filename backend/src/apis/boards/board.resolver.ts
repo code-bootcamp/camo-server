@@ -44,9 +44,9 @@ export class Boardsresolver {
   /** 게시글을 검색어로 조회 */
   @Query(() => [Board])
   async searchBoards(
-    @Args({ name: 'search', nullable: true }) search: string, //
+    @Args({ name: 'search_board', nullable: true }) search_board: string, //
   ) {
-    const checkRedis = await this.cacheManager.get(search);
+    const checkRedis = await this.cacheManager.get(search_board);
     if (checkRedis) {
       return checkRedis;
     } else {
@@ -55,7 +55,7 @@ export class Boardsresolver {
         body: {
           query: {
             multi_match: {
-              query: search,
+              query: search_board,
               fields: ['title', 'contents'],
             },
           },
@@ -71,7 +71,7 @@ export class Boardsresolver {
         return obj;
       });
 
-      await this.cacheManager.set(search, arrayBoard, { ttl: 20 });
+      await this.cacheManager.set(search_board, arrayBoard, { ttl: 20 });
 
       return arrayBoard;
     }

@@ -45,4 +45,4 @@ services:
       - ./elk/logstash/elasticsearch.json:/usr/share/logstash/templates/elasticsearch.json
       - ./elk/logstash/cafe.conf:/usr/share/logstash/pipeline/cafe.conf
       - ./elk/logstash/cafe.json:/usr/share/logstash/templates/cafe.json
-      - ./elk/logstash/pipelines.yml:/usr/share/logstash/path.settings/pipelines.yml
+      - ./elk/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml

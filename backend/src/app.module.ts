@@ -29,7 +29,6 @@ import { APP_GUARD } from '@nestjs/core';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-
     AuthsModule,
     Boardmodule,
     CafeListsModule,

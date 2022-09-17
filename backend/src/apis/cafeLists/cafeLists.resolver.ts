@@ -31,9 +31,9 @@ export class CafeListsResolver {
 
   @Query(() => [CafeList])
   async searchCafeList(
-    @Args({ name: 'search', nullable: true }) search: string,
+    @Args({ name: 'search_cafelist', nullable: true }) search_cafelist: string,
   ) {
-    const checkRedis = await this.cacheManager.get(search);
+    const checkRedis = await this.cacheManager.get(search_cafelist);
     if (checkRedis) {
       return checkRedis;
     } else {
@@ -42,7 +42,7 @@ export class CafeListsResolver {
         body: {
           query: {
             multi_match: {
-              query: search,
+              query: search_cafelist,
               fields: ['title', 'contents', 'address'],
             },
           },
@@ -50,14 +50,14 @@ export class CafeListsResolver {
       });
       const arrayCafeList = result.hits.hits.map((el) => {
         const obj = {
-          id: el._source['@metagata']['_id'],
+          id: el._source['_id'],
           title: el._source['title'],
           contents: el._source['contents'],
           address: el._source['address'],
         };
         return obj;
       });
-      await this.cacheManager.set(search, arrayCafeList, { ttl: 20 });
+      await this.cacheManager.set(search_cafelist, arrayCafeList, { ttl: 20 });
       return arrayCafeList;
     }
   }

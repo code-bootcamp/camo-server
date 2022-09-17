@@ -35,28 +35,19 @@
         "type": "text",
         "store": true,
         "analyzer": "my_analyzer",
-        "search_analyzer": "standard",
-        "fields": {
-          "keyword": { "type": "keyword" }
-        }
+        "search_analyzer": "standard"
       },
       "contents": {
         "type": "text",
         "store": true,
         "analyzer": "my_analyzer",
-        "search_analyzer": "standard",
-        "fields": {
-          "keyword": { "type": "keyword" }
-        }
+        "search_analyzer": "standard"
       },
       "address": {
         "type": "text",
         "store": true,
         "analyzer": "my_analyzer",
-        "search_analyzer": "standard",
-        "fields": {
-          "keyword": { "type": "keyword" }
-        }
+        "search_analyzer": "standard"
       }
     }
   }

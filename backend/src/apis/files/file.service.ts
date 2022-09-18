@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FileService {
-  async upload({ files }) {
+  async upload({ file }) {
     // 구글 스토리지에 파일 업로드
 
-    const waitedFiles = await Promise.all(files);
+    const waitedFiles = await Promise.all(file);
 
     const bucket = 'team04-storage';
     const storage = new Storage({
@@ -17,10 +17,10 @@ export class FileService {
 
     const results = await Promise.all(
       waitedFiles.map(
-        (files) =>
+        (file) =>
           new Promise((resolve, reject) => {
-            const fname = `${uuidv4()}/${files.filename}`;
-            files
+            const fname = `${uuidv4()}/${file.filename}`;
+            file
               .createReadStream()
               .pipe(storage.file(fname).createWriteStream())
               .on('finish', () => resolve(`${bucket}/${fname}`))

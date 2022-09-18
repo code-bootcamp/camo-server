@@ -46,7 +46,7 @@ export class AuthsService {
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
     );
-    const alloweOrigins = ['https://cafemoment.site'];
+    const alloweOrigins = ['https://cafemoment.site', 'http://localhost:3000'];
     const origin = req.headers.origin;
 
     if (alloweOrigins.includes(origin)) {
@@ -66,7 +66,6 @@ export class AuthsService {
       'https://cafemoment.site',
       'http://localhost:3000',
     ]);
-    res.setHeader('strict-origin-when-cross-origin', 'https://cafemoment.site');
     res.setHeader(
       'Set-Cookie',
       `refreshToken=${refreshToken}; path=/; domain=.cafemoment-backend.site; SameSite=None; Secure; httpOnly;`,
@@ -78,8 +77,8 @@ export class AuthsService {
     let user = await this.usersService.findOneUser({ email: req.user.email });
     if (!user) user = await this.usersService.create({ ...req.user });
     this.setRefreshToken({ user, res, req });
-    // res.redirect('http://localhost:3000/graphql');
-    res.redirect('https://cafemoment.site');
+    res.redirect('http://localhost:3000');
+    // res.redirect('https://cafemoment.site');
   }
 
   /** 일반 유저 로그인 */

@@ -23,7 +23,7 @@ export class FileService {
       waitedFiles.map(
         (files) =>
           new Promise((resolve, reject) => {
-            const fname = `images/${uuidv4()}/${files.filename}`;
+            const fname = `${uuidv4()}/${files.filename}`;
             files
               .createReadStream()
               .pipe(storage.file(fname).createWriteStream())

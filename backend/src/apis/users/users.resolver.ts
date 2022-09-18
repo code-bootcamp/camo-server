@@ -50,7 +50,7 @@ export class UsersResolver {
   }
 
   @Query(() => User)
-  fetchUserMyBoard1(
+  fetchUserMyBoard(
     @Args('userId') userId: string, //
     @Args('page', { defaultValue: 1 }) page: number, //
   ) {

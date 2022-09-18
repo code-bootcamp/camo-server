@@ -1,37 +1,35 @@
-import {
-  ConflictException,
-  UnprocessableEntityException,
-  UseGuards,
-} from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation, Context, Int } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { BoardsService } from './board.service';
 import { CreateBoardInput } from './dto/createBoard.input';
 import { UpdateBoardInput } from './dto/updateBoard.input';
 import { Board } from './entities/board.entity';
-import { Cache } from 'cache-manager';
-import { CACHE_MANAGER, Inject } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { IContext } from 'src/commons/type/context';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 /**
  * Board GraphQL API Resolver
- * @APIs 'fetchBoardsNumber', `searchBoards`, `fetchBoards`, 'fetchBoardsASC', `fetchBoard`, `fetchBoardWithDeleted`,
- * `searchMyBoards`, 'createBoard', 'updateBoard', 'deleteBoard', 'restoreBoard'
+ * @APIs
+ * 'fetchBoardsNumber',
+ * `searchBoards`,
+ * `fetchBoards`,
+ * 'fetchBoardsASC',
+ * `fetchBoard`,
+ * `fetchBoardWithDeleted`,
+ * `searchMyBoards`,
+ * 'createBoard',
+ * 'updateBoard',
+ * 'deleteBoard',
+ * 'restoreBoard'
  */
 @Resolver()
 export class Boardsresolver {
   constructor(
     private readonly boardsService: BoardsService, //
-    private readonly elasticsearchService: ElasticsearchService,
-    private readonly favoriteBoardsService: FavoriteBoardsService,
     @InjectRepository(Board)
     private readonly boardRepository: Repository<Board>,
-    @Inject(CACHE_MANAGER)
-    private readonly cacheManager: Cache,
   ) {}
 
   /** 게시글 개수 조회 */
@@ -46,35 +44,7 @@ export class Boardsresolver {
   async searchBoards(
     @Args({ name: 'search_board', nullable: true }) search_board: string, //
   ) {
-    const checkRedis = await this.cacheManager.get(search_board);
-    if (checkRedis) {
-      return checkRedis;
-    } else {
-      const result = await this.elasticsearchService.search({
-        index: 'search-board',
-        body: {
-          query: {
-            multi_match: {
-              query: search_board,
-              fields: ['title', 'contents'],
-            },
-          },
-        },
-      });
-
-      const arrayBoard = result.hits.hits.map((el) => {
-        const obj = {
-          id: el._source['id'],
-          title: el._source['title'],
-          contents: el._source['contents'],
-        };
-        return obj;
-      });
-
-      await this.cacheManager.set(search_board, arrayBoard, { ttl: 20 });
-
-      return arrayBoard;
-    }
+    return this.boardsService.search({ search_board });
   }
 
   /** 게시글 전체 조회 내림차순 */
@@ -135,43 +105,10 @@ export class Boardsresolver {
   async searchMyBoards(
     @Args({ name: 'search', nullable: true }) search: string, //
   ) {
-    const checkRedis = await this.cacheManager.get(search);
-
-    if (checkRedis) {
-      return checkRedis;
-    } else {
-      const result = await this.elasticsearchService.search({
-        index: 'search-board',
-        body: {
-          query: {
-            multi_match: {
-              query: search,
-              fields: ['title', 'contents'],
-            },
-          },
-        },
-      });
-
-      const arrayBoard = result.hits.hits.map((el) => {
-        const obj = {
-          id: el._source['id'],
-          title: el._source['title'],
-          contents: el._source['contents'],
-        };
-        return obj;
-      });
-
-      await this.cacheManager.set(search, arrayBoard, { ttl: 20 });
-
-      return arrayBoard;
-    }
+    return this.boardsService.searchUsersBoard({ search });
   }
 
-  // 태그로 조회
-
   // 게시글 생성
-  // @UseGuards(RolesGuard)
-  // @Roles('USER', 'CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async createBoard(
@@ -179,13 +116,10 @@ export class Boardsresolver {
     @Args('createBoardInput') createBoardInput: CreateBoardInput,
   ) {
     const user = context.req.user.email;
-    const userId = context.req.user.id;
     return await this.boardsService.create({ user, createBoardInput });
   }
 
   /** 게시글 수정 */
-  // @UseGuards(RolesGuard)
-  // @Roles('CAFEOWNER', 'CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async updateBoard(
@@ -194,21 +128,15 @@ export class Boardsresolver {
     @Args('nickName') nickName: string,
     @Args('updateBoardInput') updateBoardInput: UpdateBoardInput,
   ) {
-    const board = await this.boardsService.findBoardOne({ boardId });
-    const user = context.req.user.id;
-
-    if (!board)
-      throw new UnprocessableEntityException('등록된 게시글이 없습니다.');
-
-    if (!user)
-      throw new ConflictException(`${nickName}님의 게시글이 아닙니다.`);
-
-    return this.boardsService.update({ boardId, updateBoardInput });
+    return this.boardsService.updateBoard({
+      boardId,
+      nickName,
+      updateBoardInput,
+      context,
+    });
   }
 
   /** 게시글 삭제 */
-  // @UseGuards(RolesGuard)
-  // @Roles('USER', 'CAFEOWNER')
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteBoard(

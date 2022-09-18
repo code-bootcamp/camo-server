@@ -12,9 +12,10 @@ export class ImagesService {
   async createImage({ image, board }) {
     const result = await Promise.all(
       image.map(
-        (el) =>
+        (el, idx) =>
           new Promise((resolve) => {
             const results = this.ImagesRepository.save({
+              isMain: idx === 0 ? true : false,
               url: el,
               board,
             });
@@ -22,6 +23,7 @@ export class ImagesService {
           }),
       ),
     );
+    console.log(result);
     return result;
   }
 
@@ -32,9 +34,10 @@ export class ImagesService {
 
     const result = await Promise.all(
       image.map(
-        (el) =>
+        (el, idx) =>
           new Promise((resolve) => {
             const result = this.ImagesRepository.save({
+              isMain: idx === 0 ? true : false,
               url: el,
               board: board,
             });

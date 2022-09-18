@@ -1,9 +1,12 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
 import { CafeList } from './entities/cafeList.entity';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER, Inject } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CafeListsService {
@@ -14,6 +17,9 @@ export class CafeListsService {
     private readonly cafeListImageRepository: Repository<CafeListImage>,
     @InjectRepository(CafeListTag)
     private readonly cafeListTagRepository: Repository<CafeListTag>,
+    private readonly elasticsearchService: ElasticsearchService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async findOne({ cafeListId }) {
@@ -79,33 +85,70 @@ export class CafeListsService {
   async create({ userId, createCafeListInput }) {
     const { tags, images, ...cafeList } = createCafeListInput;
 
-    const cafeListTag = [];
-    for (let i = 0; i < tags.length; i++) {
-      const tagName = tags[i].replace('#', '');
+    if (tags) {
+      const cafeListTag = [];
+      for (let i = 0; i < tags.length; i++) {
+        const tagName = tags[i].replace('#', '');
 
-      const prevTag = await this.cafeListTagRepository.findOne({
-        where: { name: tagName },
-      });
-
-      if (prevTag) {
-        cafeListTag.push(prevTag);
-      } else {
-        const newTag = await this.cafeListTagRepository.save({
-          name: tagName,
+        const prevTag = await this.cafeListTagRepository.findOne({
+          where: { name: tagName },
         });
-        cafeListTag.push(newTag);
-      }
-    }
-    const result = await this.cafeListRepository.save({
-      ...cafeList,
-      cafeListTag: cafeListTag,
-      user: userId,
-    });
-    if (images) {
-      this.saveImage({ images, result });
-    }
 
-    return result;
+        if (prevTag) {
+          cafeListTag.push(prevTag);
+        } else {
+          const newTag = await this.cafeListTagRepository.save({
+            name: tagName,
+          });
+          cafeListTag.push(newTag);
+        }
+      }
+      const result = await this.cafeListRepository.save({
+        ...cafeList,
+        cafeListTag: cafeListTag,
+        user: userId,
+      });
+      if (images) {
+        const imageresult = await Promise.all(
+          images.map(
+            (el, idx) =>
+              new Promise((resolve, reject) => {
+                this.cafeListImageRepository.save({
+                  iaMain: idx === 0 ? true : false,
+                  url: el,
+                  cafeList: { id: result.id },
+                });
+                resolve('이미지 저장 완료');
+                reject('이미지 저장 실패');
+              }),
+          ),
+        );
+        console.log('123412341234', imageresult);
+      }
+      return result;
+    } else {
+      const result = await this.cafeListRepository.save({
+        ...cafeList,
+        user: userId,
+      });
+      if (images) {
+        await Promise.all(
+          images.map(
+            (el, idx) =>
+              new Promise((resolve, reject) => {
+                this.cafeListImageRepository.save({
+                  iaMain: idx === 0 ? true : false,
+                  url: el,
+                  cafeList: { id: result.id },
+                });
+                resolve('이미지 저장 완료');
+                reject('이미지 저장 실패');
+              }),
+          ),
+        );
+      }
+      return result;
+    }
   }
 
   async update({ userId, cafeListId, updateCafeListInput }) {
@@ -151,7 +194,8 @@ export class CafeListsService {
     return result;
   }
 
-  async delete({ userId, cafeListId }: { userId: string; cafeListId: string }) {
+  async delete({ context, cafeListId }) {
+    const userId = context.req.user.id;
     const cafeList = await this.cafeListRepository.findOne({
       where: { id: cafeListId },
       relations: ['user'],
@@ -174,9 +218,10 @@ export class CafeListsService {
   async saveImage({ images, result }) {
     await Promise.all(
       images.map(
-        (el) =>
+        (el, idx) =>
           new Promise((resolve, reject) => {
             this.cafeListImageRepository.save({
+              iaMain: idx === 0 ? true : false,
               url: el,
               cafeList: { id: result.id },
             });
@@ -185,5 +230,35 @@ export class CafeListsService {
           }),
       ),
     );
+  }
+
+  async search({ search_cafelist }) {
+    const checkRedis = await this.cacheManager.get(search_cafelist);
+    if (checkRedis) {
+      return checkRedis;
+    } else {
+      const result = await this.elasticsearchService.search({
+        index: 'search-cafelist',
+        body: {
+          query: {
+            multi_match: {
+              query: search_cafelist,
+              fields: ['title', 'contents', 'address'],
+            },
+          },
+        },
+      });
+      const arrayCafeList = result.hits.hits.map((el) => {
+        const obj = {
+          id: el._source['_id'],
+          title: el._source['title'],
+          contents: el._source['contents'],
+          address: el._source['address'],
+        };
+        return obj;
+      });
+      await this.cacheManager.set(search_cafelist, arrayCafeList, { ttl: 20 });
+      return arrayCafeList;
+    }
   }
 }

@@ -1,9 +1,14 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { IContext } from 'src/commons/type/context';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CafeReservationsService } from './cafeReservations.service';
 import { CreateReservationInput } from './dto/createReservation.input';
 import { CafeReservation } from './entities/cafeReservations.entity';
 
+/**
+ * CafeReservation GraphQL API Resolver
+ * @APIs
+ * 'createCafeReservation',
+ * 'fetchCafeReservation'
+ */
 @Resolver()
 export class CafeReservationsResolver {
   constructor(
@@ -27,13 +32,5 @@ export class CafeReservationsResolver {
     @Args('cafeReservationId') cafeReservationId: string, //
   ) {
     return this.cafeReservationsService.find({ cafeReservationId });
-  }
-
-  @Query(() => [CafeReservation])
-  fetchMyCafeReservation(
-    @Args('userId') userId: string, //
-    @Args('page', { defaultValue: 1 }) page: number,
-  ) {
-    return this.cafeReservationsService.findUser({ page });
   }
 }

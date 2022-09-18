@@ -88,6 +88,10 @@ export class FavoriteCafesService {
         });
 
         likeStatus = false;
+        await this.favoriteCafeRepository.delete({
+          cafeList: cafeListId,
+          user: userId,
+        });
       }
 
       if (likeStatus === null)

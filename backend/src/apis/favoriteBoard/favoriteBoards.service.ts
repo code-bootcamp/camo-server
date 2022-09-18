@@ -3,6 +3,7 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
+import { Args, Mutation } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Board } from '../boards/entities/board.entity';
@@ -85,6 +86,10 @@ export class FavoriteBoardsService {
         });
 
         likeStatus = false;
+        await this.favoriteBoardsRepository.delete({
+          board: boardId,
+          user: userId,
+        });
       }
 
       if (likeStatus === null)
@@ -101,5 +106,13 @@ export class FavoriteBoardsService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async findAll({ boardId }) {
+    const result = await this.favoriteBoardsRepository.find({
+      where: { board: { id: boardId } },
+      relations: ['board', 'user'],
+    });
+    return result;
   }
 }

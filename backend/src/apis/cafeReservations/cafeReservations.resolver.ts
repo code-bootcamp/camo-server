@@ -33,4 +33,12 @@ export class CafeReservationsResolver {
   ) {
     return this.cafeReservationsService.find({ cafeReservationId });
   }
+
+  @Query(() => [CafeReservation])
+  fetchMyCafeReservation(
+    @Args('userId') userId: string, //
+    @Args('page', { defaultValue: 1 }) page: number,
+  ) {
+    return this.cafeReservationsService.findUser({ page });
+  }
 }

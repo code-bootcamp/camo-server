@@ -1,4 +1,3 @@
-import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
 import { CafeList } from './entities/cafeList.entity';
 import { Cache } from 'cache-manager';
@@ -7,14 +6,17 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 
 @Injectable()
 export class CafeListsService {
   constructor(
     @InjectRepository(CafeList)
     private readonly cafeListRepository: Repository<CafeList>,
+
     @InjectRepository(CafeListImage)
     private readonly cafeListImageRepository: Repository<CafeListImage>,
+
     @InjectRepository(CafeListTag)
     private readonly cafeListTagRepository: Repository<CafeListTag>,
     private readonly elasticsearchService: ElasticsearchService,
@@ -114,7 +116,7 @@ export class CafeListsService {
             (el, idx) =>
               new Promise((resolve, reject) => {
                 this.cafeListImageRepository.save({
-                  iaMain: idx === 0 ? true : false,
+                  isMain: idx === 0 ? true : false,
                   url: el,
                   cafeList: { id: result.id },
                 });
@@ -137,7 +139,7 @@ export class CafeListsService {
             (el, idx) =>
               new Promise((resolve, reject) => {
                 this.cafeListImageRepository.save({
-                  iaMain: idx === 0 ? true : false,
+                  isMain: idx === 0 ? true : false,
                   url: el,
                   cafeList: { id: result.id },
                 });

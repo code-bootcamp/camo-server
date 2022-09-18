@@ -128,6 +128,13 @@ export class FavoriteCafesService {
     });
   }
 
+  async findAll({ cafeListId }) {
+    await this.favoriteCafeRepository.find({
+      where: { cafeList: { id: cafeListId } },
+      relations: ['cafeList', 'user'],
+    });
+  }
+
   async findUserLike({ page }) {
     return await this.favoriteCafeRepository.find({
       relations: ['cafeList'],

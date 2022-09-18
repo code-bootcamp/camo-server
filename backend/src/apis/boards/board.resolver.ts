@@ -162,7 +162,7 @@ export class Boardsresolver {
     return this.boardsService.findBoardByUser({ userId });
   }
 
-  @Query(() => User)
+  @Query(() => Board)
   fetchUserMyBoard1(
     @Args('userId') userId: string, //
     @Args('page', { defaultValue: 1 }) page: number, //

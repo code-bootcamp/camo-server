@@ -20,6 +20,7 @@ export class JwtNaverStrategy extends PassportStrategy(Strategy, 'naver') {
       email: profile.emails[0].value,
       hashedPassword: process.env.DEFAULT_PASSWORD,
       name: profile.displayName,
+      provider: 'NAVER',
     };
   }
 }

@@ -10,11 +10,12 @@ export class JwtGoogleStrategy extends PassportStrategy(Strategy, 'google') {
       scope: ['email', 'profile'],
     });
   }
-  validate(_, __, profile: any) {
+  validate(accessToken: string, refreshToken: string, profile: any) {
     return {
       email: profile.emails[0].value,
       hashedPassword: process.env.DEFAULT_PASSWORD,
       name: profile.displayName,
+      provider: 'GOOGLE',
     };
   }
 }

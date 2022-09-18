@@ -21,6 +21,7 @@ export class jwtKakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       email: profile._json.kakao_account.email,
       hashedPassword: process.env.DEFAULT_PASSWORD,
       name: profile._json.properties.nickname,
+      provider: 'KAKAO',
     };
   }
 }

@@ -10,7 +10,12 @@ import { UsersService } from '../users/users.service';
 
 /**
  * Authorization GraphQL API Resolver
- * @APIs `loginUser`, `logoutUser`, `restoreAccessToken`, `sendTokenToSMS`, `checkSMSTokenValid`
+ * @APIs
+ * `loginUser`,
+ * `logoutUser`,
+ * `restoreAccessToken`,
+ * `sendTokenToSMS`,
+ * `checkSMSTokenValid`
  */
 @Resolver()
 export class AuthResolver {

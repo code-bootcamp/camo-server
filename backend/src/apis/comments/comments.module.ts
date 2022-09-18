@@ -11,6 +11,7 @@ import { UsersService } from '../users/users.service';
 import { CommentsResolver } from './comments.resolver';
 import { CommentsService } from './comments.service';
 import { Comment } from './entites/comment.entity';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 
 @Module({
   imports: [
@@ -22,6 +23,9 @@ import { Comment } from './entites/comment.entity';
       Image,
       favoriteBoard,
     ]),
+    ElasticsearchModule.register({
+      node: 'http://elasticsearch:9200',
+    }),
   ],
   providers: [
     CommentsResolver, //
@@ -29,6 +33,7 @@ import { Comment } from './entites/comment.entity';
     UsersService,
     BoardsService,
     TagsService,
+    // ElasticsearchService,
   ],
 })
 export class CommentsModule {}

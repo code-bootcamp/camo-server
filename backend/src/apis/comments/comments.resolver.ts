@@ -7,6 +7,14 @@ import { CreateCommentInput } from './dto/createComment.input';
 import { UpdateCommentInput } from './dto/updateComment.input';
 import { Comment } from './entites/comment.entity';
 
+/**
+ * Comment GrqphQL API Resolver
+ * @APIs
+ * 'createComment',
+ * 'updateComment',
+ * 'deleteComment',
+ * 'fetchComments'
+ */
 @Resolver()
 export class CommentsResolver {
   constructor(private readonly commentService: CommentsService) {}

@@ -1,10 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Image } from '../images/entities/image.entity';
 import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entites/user.entity';
 import { Board } from './entities/board.entity';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER, Inject } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Injectable()
 export class BoardsService {
@@ -17,6 +24,10 @@ export class BoardsService {
     private readonly imageRepository: Repository<Image>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
+
+    private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
   async findBoardAll({ page }) {
@@ -30,7 +41,7 @@ export class BoardsService {
 
   async findBoardsCreatedAt({ page, sortBy }) {
     return await this.boardRepository.find({
-      relations: ['tags', 'comment', 'images', 'user'],
+      relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
       order: { createdAt: sortBy },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
@@ -39,7 +50,7 @@ export class BoardsService {
 
   async findBoardsLikeCount({ page, sortBy }) {
     return await this.boardRepository.find({
-      relations: ['tags', 'comment', 'images', 'user'],
+      relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
       order: { likeCount: sortBy },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
@@ -47,10 +58,12 @@ export class BoardsService {
   }
 
   async findBoardOne({ boardId }) {
-    return await this.boardRepository.findOne({
+    const result = await this.boardRepository.findOne({
       where: { id: boardId },
-      relations: ['tags', 'comment', 'images', 'user'],
+      relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
     });
+
+    return result;
   }
 
   async create({ user, createBoardInput }) {
@@ -83,11 +96,12 @@ export class BoardsService {
       });
 
       if (image) {
-        await Promise.all(
+        const imageResult = await Promise.all(
           image.map(
-            (el) =>
+            (el, idx) =>
               new Promise((resolve, reject) => {
                 this.imageRepository.save({
+                  isMain: idx === 0 ? true : false,
                   url: el,
                   board: { id: result.id },
                 });
@@ -104,11 +118,12 @@ export class BoardsService {
         user: _user,
       });
       if (image) {
-        await Promise.all(
+        const imageResult = await Promise.all(
           image.map(
-            (el) =>
+            (el, idx) =>
               new Promise((resolve, reject) => {
                 this.imageRepository.save({
+                  isMain: idx === 0 ? true : false,
                   url: el,
                   board: { id: result.id },
                 });
@@ -181,5 +196,83 @@ export class BoardsService {
   async restore({ boardId }) {
     const restoreResult = await this.boardRepository.restore({ id: boardId });
     return restoreResult.affected ? true : false;
+  }
+
+  async search({ search_board }) {
+    const checkRedis = await this.cacheManager.get(search_board);
+    if (checkRedis) {
+      return checkRedis;
+    } else {
+      const result = await this.elasticsearchService.search({
+        index: 'search-board',
+        body: {
+          query: {
+            multi_match: {
+              query: search_board,
+              fields: ['title', 'contents'],
+            },
+          },
+        },
+      });
+
+      const arrayBoard = result.hits.hits.map((el) => {
+        const obj = {
+          id: el._source['id'],
+          title: el._source['title'],
+          contents: el._source['contents'],
+        };
+        return obj;
+      });
+
+      await this.cacheManager.set(search_board, arrayBoard, { ttl: 20 });
+
+      return arrayBoard;
+    }
+  }
+
+  async searchUsersBoard({ search }) {
+    const checkRedis = await this.cacheManager.get(search);
+
+    if (checkRedis) {
+      return checkRedis;
+    } else {
+      const result = await this.elasticsearchService.search({
+        index: 'search-board',
+        body: {
+          query: {
+            multi_match: {
+              query: search,
+              fields: ['title', 'contents'],
+            },
+          },
+        },
+      });
+
+      const arrayBoard = result.hits.hits.map((el) => {
+        const obj = {
+          id: el._source['id'],
+          title: el._source['title'],
+          contents: el._source['contents'],
+        };
+        return obj;
+      });
+
+      await this.cacheManager.set(search, arrayBoard, { ttl: 20 });
+
+      return arrayBoard;
+    }
+  }
+
+  async updateBoard({ boardId, nickName, updateBoardInput, context }) {
+    const board = await this.findBoardOne({ boardId });
+    const user = context.req.user.id;
+
+    if (!board)
+      throw new UnprocessableEntityException('등록된 게시글이 없습니다.');
+
+    if (!user)
+      throw new ConflictException(`${nickName}님의 게시글이 아닙니다.`);
+
+    return this.update({ boardId, updateBoardInput });
   }
 }

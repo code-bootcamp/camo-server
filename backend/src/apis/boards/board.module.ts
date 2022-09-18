@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import {
+  ElasticsearchModule,
+  ElasticsearchService,
+} from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from '../comments/entites/comment.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
@@ -19,7 +22,6 @@ import { Board } from './entities/board.entity';
       Board, //
       Tag,
       User,
-      Comment,
       favoriteBoard,
       Image,
     ]),
@@ -33,6 +35,7 @@ import { Board } from './entities/board.entity';
     UsersService,
     ImagesService,
     FavoriteBoardsService,
+    // ElasticsearchService,
   ],
 })
 export class Boardmodule {}

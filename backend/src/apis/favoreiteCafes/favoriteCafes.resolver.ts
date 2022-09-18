@@ -30,7 +30,14 @@ export class FavoriteCafesResolver {
     return this.favoriteCafesService.findUserLike({ page });
   }
 
-  @Query(() => [FavoriteCafe])
+  @Query(() => Number)
+  fetchFavoriteCafeNumber(
+    @Args('userId') userId: string, //
+  ) {
+    return this.favoriteCafesService.findByUserId({ userId });
+  }
+
+  @Query(() => Number)
   fetchFavoriteCafeUser(
     @Args('cafeListId') cafeListId: string, //
   ) {

@@ -123,9 +123,10 @@ export class FavoriteCafesService {
   }
 
   async findByUserId({ userId }) {
-    return await this.favoriteCafeRepository.find({
-      where: { user: userId },
+    const result = await this.favoriteCafeRepository.find({
+      where: { user: { id: userId } },
     });
+    return result.length;
   }
 
   async findAll({ cafeListId }) {

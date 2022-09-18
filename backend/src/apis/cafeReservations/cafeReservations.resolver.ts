@@ -41,4 +41,10 @@ export class CafeReservationsResolver {
   ) {
     return this.cafeReservationsService.findUser({ page });
   }
+  @Query(() => Number)
+  fetchCafeReservationNumber(
+    @Args('userId') userId: string, //
+  ) {
+    return this.cafeReservationsService.findbyUser({ userId });
+  }
 }

@@ -8,6 +8,7 @@ import { Board } from './entities/board.entity';
 import { IContext } from 'src/commons/type/context';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../users/entites/user.entity';
 
 /**
  * Board GraphQL API Resolver
@@ -152,5 +153,20 @@ export class Boardsresolver {
     @Args('boardId') boardId: string, //
   ) {
     return this.boardsService.restore({ boardId });
+  }
+
+  @Query(() => Number)
+  fetchUsermyBoardNumber(
+    @Args('userId') userId: string, //
+  ) {
+    return this.boardsService.findBoardByUser({ userId });
+  }
+
+  @Query(() => User)
+  fetchUserMyBoard1(
+    @Args('userId') userId: string, //
+    @Args('page', { defaultValue: 1 }) page: number, //
+  ) {
+    return this.boardsService.findBoardByUserWithPage({ userId, page });
   }
 }

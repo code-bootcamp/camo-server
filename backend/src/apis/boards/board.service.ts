@@ -39,6 +39,24 @@ export class BoardsService {
     });
   }
 
+  async findBoardByUser({ userId }) {
+    const result = await this.boardRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+    return result.length;
+  }
+
+  async findBoardByUserWithPage({ userId, page }) {
+    const result = await this.boardRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+      take: 3,
+      skip: page ? (page - 1) * 3 : 0,
+    });
+    return result.length;
+  }
+
   async findBoardsCreatedAt({ page, sortBy }) {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],

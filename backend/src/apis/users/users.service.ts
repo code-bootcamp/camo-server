@@ -42,14 +42,17 @@ export class UsersService {
   }
 
   /** 개별 유저 조회 */
-  async findOne({ userId }) {
-    return await this.usersRepository.findOne({
+  async findAllByUser({ userId, page }) {
+    return await this.usersRepository.find({
       where: { id: userId },
       relations: ['cafeReservation', 'favoriteCafe', 'board'],
+      take: 3,
+      skip: page ? (page - 1) * 3 : 0,
     });
   }
 
-  async findMyUser({ userId }) {
+  /** 개별 유저 조회 */
+  async findOne({ userId }) {
     return await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['cafeReservation', 'favoriteCafe', 'board'],

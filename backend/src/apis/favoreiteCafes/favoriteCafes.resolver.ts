@@ -29,4 +29,11 @@ export class FavoriteCafesResolver {
   ) {
     return this.favoriteCafesService.findUserLike({ page });
   }
+
+  @Query(() => [FavoriteCafe])
+  fetchFavoriteCafeUser(
+    @Args('cafeListId') cafeListId: string, //
+  ) {
+    return this.favoriteCafesService.findAll({ cafeListId });
+  }
 }

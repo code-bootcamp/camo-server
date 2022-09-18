@@ -64,8 +64,8 @@ export class CafeListsService {
         'cafeReservation',
       ],
       order: { favoriteCafeCount: sortBy },
-      take: 10,
-      skip: page ? (page - 1) * 10 : 0,
+      take: 6,
+      skip: page ? (page - 1) * 6 : 0,
     });
   }
 

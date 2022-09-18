@@ -32,8 +32,8 @@ export class CafeReservationsService {
   async findUser({ page }) {
     return await this.cafeReservationsRepository.find({
       relations: ['cafeList', 'user'],
-      take: 3,
-      skip: page ? (page - 1) * 3 : 0,
+      take: 2,
+      skip: page ? (page - 1) * 2 : 0,
     });
   }
 

@@ -7,6 +7,7 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
+import { FavoriteCafe } from '../favoreiteCafes/entities/favoriteCafe.entity';
 
 @Injectable()
 export class CafeListsService {
@@ -22,6 +23,9 @@ export class CafeListsService {
     private readonly elasticsearchService: ElasticsearchService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+
+    @InjectRepository(FavoriteCafe)
+    private readonly favoriteCafeRepository: Repository<FavoriteCafe>,
   ) {}
 
   async findOne({ cafeListId }) {
@@ -207,6 +211,7 @@ export class CafeListsService {
 
     const result = await this.cafeListRepository.softDelete({ id: cafeListId });
     this.cafeListImageRepository.delete({ cafeList: { id: cafeList.id } });
+    this.favoriteCafeRepository.delete({ cafeList: { id: cafeList.id } });
     return result.affected ? true : false;
   }
 

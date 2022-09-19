@@ -82,8 +82,8 @@ export class AuthsService {
     if (!user) user = await this.usersService.create({ role, ...req.user });
     console.log('있나요', user);
     this.setRefreshToken({ user, res, req });
-    res.redirect('http://localhost:3000/graphql');
-    // res.redirect('https://cafemoment.site');
+    // res.redirect('http://localhost:3000/graphql');
+    res.redirect('https://cafemoment.site');
   }
 
   /** 일반 유저 로그인 */

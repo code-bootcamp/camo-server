@@ -62,6 +62,8 @@ export class UsersService {
   /** 일반 유저 생성 */
   async create({ role, ...createUserInput }) {
     const { password, email } = createUserInput;
+    console.log('패스워드', password);
+    console.log('이메일', email);
     const hashedPassword = await bcrypt.hash(
       password,
       Number(process.env.HASH_SECRET),

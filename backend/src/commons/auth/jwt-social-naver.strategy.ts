@@ -18,7 +18,7 @@ export class JwtNaverStrategy extends PassportStrategy(Strategy, 'naver') {
   ) {
     return {
       email: profile.emails[0].value,
-      hashedPassword: process.env.DEFAULT_PASSWORD,
+      password: process.env.DEFAULT_PASSWORD,
       name: profile.displayName,
       provider: 'NAVER',
     };

@@ -49,14 +49,6 @@ export class UsersResolver {
     return this.usersService.findOne({ userId });
   }
 
-  @Query(() => User)
-  fetchUserMyBoard(
-    @Args('userId') userId: string, //
-    @Args('page', { defaultValue: 1 }) page: number, //
-  ) {
-    return this.usersService.findAllByUser({ userId, page });
-  }
-
   /** 개별 유저 조회 */
   @Query(() => User)
   fetchUserbyEmail(

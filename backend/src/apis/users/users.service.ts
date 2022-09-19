@@ -141,6 +141,14 @@ export class UsersService {
     return deleteresult.affected ? true : false;
   }
 
+  /** 유저 삭제 (어드민) */
+  async deleteUser({ userId }) {
+    const deleteresult = await this.usersRepository.softDelete({
+      id: userId,
+    });
+    return deleteresult.affected ? true : false;
+  }
+
   /** 유저 복구 */
   async restore({ email }) {
     const result = await this.usersRepository.restore({ email });

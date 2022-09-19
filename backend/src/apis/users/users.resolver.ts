@@ -122,6 +122,13 @@ export class UsersResolver {
     return this.usersService.delete({ password, userId });
   }
 
+  @Mutation(() => Boolean)
+  deleteUser(
+    @Args('userId') userId: string, //
+  ) {
+    return this.usersService.deleteUser({ userId });
+  }
+
   @Query(() => User)
   fetchReservation(
     @Args('userId') userId: string, //
@@ -143,34 +150,5 @@ export class UsersResolver {
   @Query(() => [User])
   fetchUserWithDeleted() {
     return this.usersService.WithDelete();
-  }
-
-  // Role Guard 테스트실
-  @UseGuards(RolesGuard)
-  @Roles('ADMIN', 'USER')
-  @Query(() => User)
-  async roleGuardUser(
-    @Args('userId') userId: string, //
-  ) {
-    return await this.usersService.findOne({ userId });
-  }
-
-  @UseGuards(JwtAccessStrategy)
-  @UseGuards(RolesGuard)
-  @Roles('CAFEOWNER')
-  @Query(() => User)
-  async roleGuardCafeOwner(
-    @Args('userId') userId: string, //
-  ) {
-    return await this.usersService.findOne({ userId });
-  }
-
-  @UseGuards(RolesGuard)
-  @Roles('ADMIN')
-  @Query(() => User)
-  async roleGuardAdmin(
-    @Args('userId') userId: string, //
-  ) {
-    return await this.usersService.findOne({ userId });
   }
 }

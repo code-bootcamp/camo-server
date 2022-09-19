@@ -7,6 +7,8 @@ reflected-jet-360811-402430377c02.json
 logstash.conf
 /elk/logstash/pipelines.yml
 
+reflected-jet-360811-36eb65a5d06e.json
+
 # Logs
 logs
 *.log

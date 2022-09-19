@@ -1,17 +1,17 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
 import { v4 as uuidv4 } from 'uuid';
+import { getToday } from 'src/commons/libraries/utils';
 
 @Injectable()
 export class FileService {
   async upload({ files }) {
-    // 구글 스토리지에 파일 업로드
-
     const waitedFiles = await Promise.all(files);
     const bucket = 'team04-storage';
+
     const storage = new Storage({
       projectId: process.env.PROJECT_ID,
-      keyFilename: process.env.BUCKET_KEYFILENAME,
+      keyFilename: process.env.BUCKET,
     }).bucket(bucket);
 
     const fileType = files.mimetype.split('/')[0];
@@ -20,13 +20,13 @@ export class FileService {
     }
     const results = await Promise.all(
       waitedFiles.map(
-        (files) =>
+        (file) =>
           new Promise((resolve, reject) => {
-            const fname = `${uuidv4()}/${files.filename}`;
-            files
+            const fname = `${getToday()}/${uuidv4()}/origin/${file.filename}`;
+            file
               .createReadStream()
               .pipe(storage.file(fname).createWriteStream())
-              .on('finish', () => resolve(`${bucket}/${fname}`))
+              .on('finish', () => resolve(`${fname}`))
               .on('error', () => reject('실패'));
           }),
       ),

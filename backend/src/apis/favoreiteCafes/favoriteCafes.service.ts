@@ -138,6 +138,7 @@ export class FavoriteCafesService {
 
   async findUserLike({ userId, page }) {
     return await this.favoriteCafeRepository.find({
+      where: { user: { id: userId } },
       relations: ['cafeList'],
       take: 6,
       skip: page ? (page - 1) * 6 : 0,

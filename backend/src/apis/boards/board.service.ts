@@ -92,7 +92,6 @@ export class BoardsService {
     const _user = await this.userRepository.findOne({
       where: { email: user },
     });
-    console.log('ㅁㄴㅇㄹㅁㄴㅇㄹㄴㅇ', _user);
     if (tags) {
       const boardtag = [];
       for (let i = 0; i < tags.length; i++) {

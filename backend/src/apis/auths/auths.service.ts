@@ -42,6 +42,7 @@ export class AuthsService {
     res: Response;
     req: Request;
   }) {
+    console.log(user);
     const refreshToken = this.jwtService.sign(
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
@@ -74,11 +75,15 @@ export class AuthsService {
 
   /** 소셜 회원 로그인 */
   async getSocialLogin({ req, res }) {
+    console.log(req.user);
+    const role = 'USER';
     let user = await this.usersService.findOneUser({ email: req.user.email });
-    if (!user) user = await this.usersService.create({ ...req.user });
+    console.log(user);
+    if (!user) user = await this.usersService.create({ role, ...req.user });
+    console.log('있나요', user);
     this.setRefreshToken({ user, res, req });
-    // res.redirect('http://localhost:3000');
-    res.redirect('https://cafemoment.site');
+    res.redirect('http://localhost:3000/graphql');
+    // res.redirect('https://cafemoment.site');
   }
 
   /** 일반 유저 로그인 */

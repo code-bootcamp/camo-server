@@ -78,9 +78,7 @@ export class AuthsService {
     console.log(req.user);
     const role = 'USER';
     let user = await this.usersService.findOneUser({ email: req.user.email });
-    console.log(user);
     if (!user) user = await this.usersService.create({ role, ...req.user });
-    console.log('있나요', user);
     this.setRefreshToken({ user, res, req });
     // res.redirect('http://localhost:3000/graphql');
     res.redirect('https://cafemoment.site');

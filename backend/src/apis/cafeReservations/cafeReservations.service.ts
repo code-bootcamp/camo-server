@@ -29,8 +29,9 @@ export class CafeReservationsService {
     return result.length;
   }
 
-  async findUser({ page }) {
+  async findUser({ page, userId }) {
     return await this.cafeReservationsRepository.find({
+      where: { user: { id: userId } },
       relations: ['cafeList', 'user'],
       take: 2,
       skip: page ? (page - 1) * 2 : 0,
@@ -39,7 +40,6 @@ export class CafeReservationsService {
 
   async create({ createReservationInput }) {
     const { userId, cafeListId } = createReservationInput;
-    userId;
 
     const cafeList = await this.cafeListsRepository.findOne({
       where: { id: cafeListId },
@@ -52,6 +52,7 @@ export class CafeReservationsService {
       user: userId,
       cafeList: cafeListId,
     });
+    console.log(result);
     return result;
   }
 }

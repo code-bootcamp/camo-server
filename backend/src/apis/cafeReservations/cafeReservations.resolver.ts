@@ -39,7 +39,7 @@ export class CafeReservationsResolver {
     @Args('userId') userId: string, //
     @Args('page', { defaultValue: 1 }) page: number,
   ) {
-    return this.cafeReservationsService.findUser({ page });
+    return this.cafeReservationsService.findUser({ page, userId });
   }
   @Query(() => Number)
   fetchCafeReservationNumber(

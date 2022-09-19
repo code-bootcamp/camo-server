@@ -50,11 +50,13 @@ export class BoardsService {
   async findBoardByUserWithPage({ userId, page }) {
     const result = await this.boardRepository.find({
       where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
       relations: ['user'],
       take: 3,
       skip: page ? (page - 1) * 3 : 0,
     });
-    return result.length;
+    console.log(result);
+    return result;
   }
 
   async findBoardsCreatedAt({ page, sortBy }) {
@@ -90,6 +92,7 @@ export class BoardsService {
     const _user = await this.userRepository.findOne({
       where: { email: user },
     });
+    console.log('ㅁㄴㅇㄹㅁㄴㅇㄹㄴㅇ', _user);
     if (tags) {
       const boardtag = [];
       for (let i = 0; i < tags.length; i++) {
@@ -110,7 +113,7 @@ export class BoardsService {
       const result = await this.boardRepository.save({
         ...Board,
         tags: boardtag,
-        user: _user,
+        user: _user.id,
       });
 
       if (image) {

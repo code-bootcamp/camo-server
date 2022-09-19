@@ -8,7 +8,6 @@ import { Board } from './entities/board.entity';
 import { IContext } from 'src/commons/type/context';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../users/entites/user.entity';
 
 /**
  * Board GraphQL API Resolver
@@ -162,7 +161,7 @@ export class Boardsresolver {
     return this.boardsService.findBoardByUser({ userId });
   }
 
-  @Query(() => Board)
+  @Query(() => [Board])
   fetchUserMyBoard1(
     @Args('userId') userId: string, //
     @Args('page', { defaultValue: 1 }) page: number, //

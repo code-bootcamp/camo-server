@@ -77,8 +77,8 @@ export class AuthsService {
     let user = await this.usersService.findOneUser({ email: req.user.email });
     if (!user) user = await this.usersService.create({ ...req.user });
     this.setRefreshToken({ user, res, req });
-    res.redirect('http://localhost:3000');
-    // res.redirect('https://cafemoment.site');
+    // res.redirect('http://localhost:3000');
+    res.redirect('https://cafemoment.site');
   }
 
   /** 일반 유저 로그인 */

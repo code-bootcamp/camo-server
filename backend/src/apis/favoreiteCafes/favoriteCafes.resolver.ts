@@ -27,7 +27,7 @@ export class FavoriteCafesResolver {
     @Args('userId') userId: string, //
     @Args('page', { defaultValue: 1 }) page: number,
   ) {
-    return this.favoriteCafesService.findUserLike({ page });
+    return this.favoriteCafesService.findUserLike({ userId, page });
   }
 
   @Query(() => Number)

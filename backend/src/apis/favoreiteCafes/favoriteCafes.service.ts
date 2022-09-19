@@ -136,7 +136,7 @@ export class FavoriteCafesService {
     });
   }
 
-  async findUserLike({ page }) {
+  async findUserLike({ userId, page }) {
     return await this.favoriteCafeRepository.find({
       relations: ['cafeList'],
       take: 6,

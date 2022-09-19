@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { getToday } from 'src/commons/libraries/utils';
@@ -14,10 +14,6 @@ export class FileService {
       keyFilename: process.env.BUCKET,
     }).bucket(bucket);
 
-    const fileType = files.mimetype.split('/')[0];
-    if (fileType !== 'image') {
-      throw new UnprocessableEntityException('이미지 파일이 아닙니다.');
-    }
     const results = await Promise.all(
       waitedFiles.map(
         (file) =>

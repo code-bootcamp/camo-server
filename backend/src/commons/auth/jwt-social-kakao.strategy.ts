@@ -17,7 +17,6 @@ export class jwtKakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     refreshToken: string,
     profile: Profile,
   ) {
-    console.log('123');
     return {
       email: profile._json.kakao_account.email,
       password: process.env.DEFAULT_PASSWORD,

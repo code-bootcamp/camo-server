@@ -52,7 +52,6 @@ export class CafeReservationsService {
       user: userId,
       cafeList: cafeListId,
     });
-    console.log(result);
     return result;
   }
 }

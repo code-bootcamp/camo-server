@@ -9,22 +9,21 @@ export class ImagesService {
     @InjectRepository(Image)
     private readonly ImagesRepository: Repository<Image>, //
   ) {}
-  async createImage({ image, board }) {
-    const result = await Promise.all(
+  async createImage({ image, result }) {
+    return await Promise.all(
       image.map(
         (el, idx) =>
-          new Promise((resolve) => {
-            const results = this.ImagesRepository.save({
+          new Promise((resolve, reject) => {
+            this.ImagesRepository.save({
               isMain: idx === 0 ? true : false,
               url: el,
-              board,
+              board: { id: result.id },
             });
-            resolve(results);
+            resolve('이미지 저장 완료');
+            reject('이미지 저장 실패');
           }),
       ),
     );
-    console.log(result);
-    return result;
   }
 
   async updateImage({ image, board }) {

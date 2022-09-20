@@ -21,6 +21,7 @@ export class JwtNaverStrategy extends PassportStrategy(Strategy, 'naver') {
       password: process.env.DEFAULT_PASSWORD,
       name: profile.displayName,
       provider: 'NAVER',
+      nickName: '네이버 소셜',
     };
   }
 }

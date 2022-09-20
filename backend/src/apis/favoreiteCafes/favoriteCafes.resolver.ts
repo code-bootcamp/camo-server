@@ -5,6 +5,14 @@ import { IContext } from 'src/commons/type/context';
 import { FavoriteCafe } from './entities/favoriteCafe.entity';
 import { FavoriteCafesService } from './favoriteCafes.service';
 
+/**
+ * FavoriteCafesResolver GraphQL API Resolver
+ * @APIs
+ * 'toggleFavoriteCafes'
+ * 'fetchUserFavoriteCafe'
+ * 'fetchFavoriteCafeNumber'
+ * 'fetchFavoriteCafeUser'
+ */
 @Resolver()
 export class FavoriteCafesResolver {
   constructor(
@@ -21,6 +29,7 @@ export class FavoriteCafesResolver {
     return this.favoriteCafesService.like({ userId, cafeListId });
   }
 
+  /** 유저가 찜한 카페 조회 */
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [FavoriteCafe])
   fetchUserFavoriteCafe(
@@ -30,6 +39,7 @@ export class FavoriteCafesResolver {
     return this.favoriteCafesService.findUserLike({ userId, page });
   }
 
+  /** 유저가 찜한 카페 개수 조회 */
   @Query(() => Number)
   fetchFavoriteCafeNumber(
     @Args('userId') userId: string, //
@@ -37,7 +47,8 @@ export class FavoriteCafesResolver {
     return this.favoriteCafesService.findByUserId({ userId });
   }
 
-  @Query(() => Number)
+  /** 유저가 찜한 카페 조회 */
+  @Query(() => [FavoriteCafe])
   fetchFavoriteCafeUser(
     @Args('cafeListId') cafeListId: string, //
   ) {

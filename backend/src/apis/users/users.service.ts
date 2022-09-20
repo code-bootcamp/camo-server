@@ -62,13 +62,10 @@ export class UsersService {
   /** 일반 유저 생성 */
   async create({ role, ...createUserInput }) {
     const { password, email } = createUserInput;
-    console.log('패스워드', password);
-    console.log('이메일', email);
     const hashedPassword = await bcrypt.hash(
       password,
       Number(process.env.HASH_SECRET),
     );
-    console.log(hashedPassword);
     const user = await this.usersRepository.findOne({ where: { email } });
     if (user) throw new ConflictException('이미 등록된 이메일입니다.');
 

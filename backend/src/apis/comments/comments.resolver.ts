@@ -19,6 +19,7 @@ import { Comment } from './entites/comment.entity';
 export class CommentsResolver {
   constructor(private readonly commentService: CommentsService) {}
 
+  /** 댓글 작성 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   createComment(
@@ -29,6 +30,7 @@ export class CommentsResolver {
     return this.commentService.create({ user, createCommentInput });
   }
 
+  /** 댓글 수정 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   updateComment(
@@ -55,7 +57,7 @@ export class CommentsResolver {
     return this.commentService.deleteComment({ context, commentId });
   }
 
-  /** 댓글 조회하기 */
+  /** 게시물에 달린 댓글 모두 조회 */
   @Query(() => [Comment])
   async fetchComments(
     @Args('boardId') boardId: string, //

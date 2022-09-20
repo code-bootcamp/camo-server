@@ -12,17 +12,20 @@ import { Repository } from 'typeorm';
 /**
  * Board GraphQL API Resolver
  * @APIs
+ * 'searchBoards',
  * 'fetchBoardsNumber',
- * `searchBoards`,
- * `fetchBoards`,
- * 'fetchBoardsASC',
- * `fetchBoard`,
- * `fetchBoardWithDeleted`,
+ * 'fetchBoard'
+ * 'fetchBoards',
+ * 'fetchBoardsCreatedAt',
+ * `fetchBoardsLikeCount`,
  * `searchMyBoards`,
  * 'createBoard',
  * 'updateBoard',
  * 'deleteBoard',
  * 'restoreBoard'
+ * 'fetchUsermyBoardNumber'
+ * 'fetchUserMyBoard'
+ * 'fetchBoardWithDeleted',
  */
 @Resolver()
 export class Boardsresolver {
@@ -32,13 +35,6 @@ export class Boardsresolver {
     private readonly boardRepository: Repository<Board>,
   ) {}
 
-  /** 게시글 개수 조회 */
-  @Query(() => Int)
-  async fetchBoardsNumber() {
-    const result = await this.boardRepository.find({});
-    return result.length;
-  }
-
   /** 게시글을 검색어로 조회 */
   @Query(() => [Board])
   async searchBoards(
@@ -47,12 +43,27 @@ export class Boardsresolver {
     return this.boardsService.search({ search_board });
   }
 
-  /** 게시글 전체 조회 내림차순 */
+  /** 게시글 개수 조회 */
+  @Query(() => Int)
+  async fetchBoardsNumber() {
+    const result = await this.boardRepository.find({});
+    return result.length;
+  }
+
+  /** 게시글 하나 조회 */
+  @Query(() => Board)
+  fetchBoard(
+    @Args('boardId') boardId: string, //
+  ) {
+    return this.boardsService.findBoardOne({ boardId });
+  }
+
+  /** 게시글 전체 내림차순 조회 */
   @Query(() => [Board])
   fetchBoards(
     @Args('page', { defaultValue: 1 }) page: number, //
   ) {
-    return this.boardsService.findBoardAll({ page });
+    return this.boardsService.findAll({ page });
   }
 
   /** 게시글 생성일 기준 조회
@@ -85,20 +96,6 @@ export class Boardsresolver {
     });
   }
 
-  /** 게시글 하나 조회 */
-  @Query(() => Board)
-  fetchBoard(
-    @Args('boardId') boardId: string, //
-  ) {
-    return this.boardsService.findBoardOne({ boardId });
-  }
-
-  /** 삭제된 게시글 조회 */
-  @Query(() => [Board])
-  fetchBoardWithDeleted() {
-    return this.boardsService.WithBoardDelete();
-  }
-
   /** 로그인한 본인 게시글만 조회 */
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Board])
@@ -108,7 +105,7 @@ export class Boardsresolver {
     return this.boardsService.searchUsersBoard({ search });
   }
 
-  // 게시글 생성
+  /** 게시글 생성 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Board)
   async createBoard(
@@ -154,6 +151,7 @@ export class Boardsresolver {
     return this.boardsService.restore({ boardId });
   }
 
+  /** 유저가 작성한 게시글 조회 */
   @Query(() => Number)
   fetchUsermyBoardNumber(
     @Args('userId') userId: string, //
@@ -161,11 +159,18 @@ export class Boardsresolver {
     return this.boardsService.findBoardByUser({ userId });
   }
 
+  /** 로그인한 본인 게시글만 조회 */
   @Query(() => [Board])
-  fetchUserMyBoard1(
+  fetchUserMyBoard(
     @Args('userId') userId: string, //
-    @Args('page', { defaultValue: 1 }) page: number, //
+    @Args('page', { defaultValue: 1 }) page: number,
   ) {
     return this.boardsService.findBoardByUserWithPage({ userId, page });
+  }
+
+  /** 삭제된 게시글 조회 */
+  @Query(() => [Board])
+  fetchBoardWithDeleted() {
+    return this.boardsService.WithBoardDelete();
   }
 }

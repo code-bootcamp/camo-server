@@ -12,6 +12,7 @@ import { CommentsResolver } from './comments.resolver';
 import { CommentsService } from './comments.service';
 import { Comment } from './entites/comment.entity';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { ImagesService } from '../images/image.service';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
     UsersService,
     BoardsService,
     TagsService,
+    ImagesService,
     // ElasticsearchService,
   ],
 })

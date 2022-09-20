@@ -42,7 +42,6 @@ export class AuthsService {
     res: Response;
     req: Request;
   }) {
-    console.log(user);
     const refreshToken = this.jwtService.sign(
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
@@ -53,10 +52,6 @@ export class AuthsService {
     if (alloweOrigins.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     }
-    // 개발환경
-    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
-    // 배포환경
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
     res.setHeader(
@@ -75,7 +70,6 @@ export class AuthsService {
 
   /** 소셜 회원 로그인 */
   async getSocialLogin({ req, res }) {
-    console.log(req.user);
     const role = 'USER';
     let user = await this.usersService.findOneUser({ email: req.user.email });
     if (!user) user = await this.usersService.create({ role, ...req.user });

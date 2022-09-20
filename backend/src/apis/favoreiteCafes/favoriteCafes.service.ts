@@ -111,11 +111,6 @@ export class FavoriteCafesService {
   }
 
   async findLike({ boardId }) {
-    console.log(
-      await this.cafeListRepository.find({
-        where: { id: boardId },
-      }),
-    );
     const board = await this.cafeListRepository.find({
       where: { id: boardId },
     });

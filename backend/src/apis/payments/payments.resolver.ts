@@ -10,8 +10,11 @@ import { IamportService } from '../iamport/iamport.service';
 import { Payment } from './entities/payment.entity';
 import { PaymentsService } from './payments.service';
 
-/** Payment Graphql API Resolver
- *  APIs 'createPayment', 'createCancel'
+/**
+ * Payment Graphql API Resolver
+ * @APIs
+ * 'createPayment',
+ * 'createCancel'
  */
 @Resolver()
 export class PaymentsResolver {
@@ -20,6 +23,7 @@ export class PaymentsResolver {
     private readonly iamportsService: IamportService,
   ) {}
 
+  /** 결제하기 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Payment)
   async createPayment(
@@ -41,6 +45,7 @@ export class PaymentsResolver {
     return this.paymentsService.create({ impUid, paymentAmount, user });
   }
 
+  /** 결제 최소하기 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Payment)
   async createCancel(

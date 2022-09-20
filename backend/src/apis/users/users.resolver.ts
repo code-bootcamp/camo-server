@@ -5,13 +5,28 @@ import { UsersService } from './users.service';
 import { User } from './entites/user.entity';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
-import { Roles } from 'src/commons/auth/roles.decorator';
-import { RolesGuard } from 'src/commons/auth/roles.guard';
 import { CreateUserInput } from './dto/createUser.input';
 import { USER_ROLE } from 'src/commons/type/user';
 import { CreateCafeOwnerInput } from './dto/createCafeOwner.input';
-import { JwtAccessStrategy } from 'src/commons/auth/jwt-access.strategy';
 
+/**
+ * UsersResolver GraphQL API Resolver
+ * @APIs
+ * fetchUserByEmail
+ * fetchLoginedUser
+ * fetchUsers
+ * fetchUserbyId
+ * fetchUserbyEmail
+ * checkUserEmail
+ * createUser
+ * createCafeOwner
+ * updateLoginUser
+ * updateUserPassword
+ * deleteLoginUser
+ * deleteUser
+ * fetchReservation
+ * restoreUser
+ */
 @Resolver()
 export class UsersResolver {
   constructor(
@@ -81,7 +96,7 @@ export class UsersResolver {
 
   /** 카페 사업자 회원 가입 */
   @Mutation(() => User)
-  async createCafeOwner(
+  createCafeOwner(
     @Args('CreateCafeOwnerInput') createCafeOwnerInput: CreateCafeOwnerInput, //
   ) {
     const role = USER_ROLE.CAFEOWNER;
@@ -94,7 +109,7 @@ export class UsersResolver {
   /** 로그인한 회원 정보 수정 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
-  async updateLoginUser(
+  updateLoginUser(
     @Args('updateUserInput') updateUserInput: UpdateUserInput, //
     @Context() context: IContext,
   ) {
@@ -122,18 +137,12 @@ export class UsersResolver {
     return this.usersService.delete({ password, userId });
   }
 
+  /** 유저 삭제 */
   @Mutation(() => Boolean)
   deleteUser(
     @Args('userId') userId: string, //
   ) {
     return this.usersService.deleteUser({ userId });
-  }
-
-  @Query(() => User)
-  fetchReservation(
-    @Args('userId') userId: string, //
-  ) {
-    //
   }
 
   //----------------------------------------------------------------------

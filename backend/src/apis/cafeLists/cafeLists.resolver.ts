@@ -132,6 +132,8 @@ export class CafeListsResolver {
     return this.cafeListsService.delete({ context, cafeListId });
   }
 
+  /** Admin */
+
   /** 카페 소개글 복구 */
   @Mutation(() => Boolean)
   restoreCafeList(

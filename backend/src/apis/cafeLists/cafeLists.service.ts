@@ -129,7 +129,6 @@ export class CafeListsService {
               }),
           ),
         );
-        console.log('123412341234', imageresult);
       }
       return result;
     } else {

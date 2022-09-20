@@ -12,6 +12,7 @@ import { Board } from './entities/board.entity';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ImagesService } from '../images/image.service';
 
 @Injectable()
 export class BoardsService {
@@ -28,9 +29,10 @@ export class BoardsService {
     private readonly cacheManager: Cache,
 
     private readonly elasticsearchService: ElasticsearchService,
+    private readonly imagesService: ImagesService,
   ) {}
 
-  async findBoardAll({ page }) {
+  async findAll({ page }) {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'images', 'user'],
       order: { createdAt: 'DESC' },
@@ -55,7 +57,6 @@ export class BoardsService {
       take: 3,
       skip: page ? (page - 1) * 3 : 0,
     });
-    console.log(result);
     return result;
   }
 
@@ -116,20 +117,7 @@ export class BoardsService {
       });
 
       if (image) {
-        const imageResult = await Promise.all(
-          image.map(
-            (el, idx) =>
-              new Promise((resolve, reject) => {
-                this.imageRepository.save({
-                  isMain: idx === 0 ? true : false,
-                  url: el,
-                  board: { id: result.id },
-                });
-                resolve('이미지 저장 완료');
-                reject('이미지 저장 실패');
-              }),
-          ),
-        );
+        await this.imagesService.createImage({ image, result });
       }
       return result;
     } else {
@@ -138,20 +126,7 @@ export class BoardsService {
         user: _user,
       });
       if (image) {
-        const imageResult = await Promise.all(
-          image.map(
-            (el, idx) =>
-              new Promise((resolve, reject) => {
-                this.imageRepository.save({
-                  isMain: idx === 0 ? true : false,
-                  url: el,
-                  board: { id: result.id },
-                });
-                resolve('이미지 저장 완료');
-                reject('이미지 저장 실패');
-              }),
-          ),
-        );
+        await this.imagesService.createImage({ image, result });
       }
       return result;
     }
@@ -250,6 +225,7 @@ export class BoardsService {
     }
   }
 
+  /** 게시글 내용 검색 */
   async searchUsersBoard({ search }) {
     const checkRedis = await this.cacheManager.get(search);
 
@@ -283,6 +259,7 @@ export class BoardsService {
     }
   }
 
+  /** 게시글 수정 */
   async updateBoard({ boardId, nickName, updateBoardInput, context }) {
     const board = await this.findBoardOne({ boardId });
     const user = context.req.user.id;

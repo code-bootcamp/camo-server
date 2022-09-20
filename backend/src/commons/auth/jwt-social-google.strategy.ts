@@ -16,6 +16,7 @@ export class JwtGoogleStrategy extends PassportStrategy(Strategy, 'google') {
       password: process.env.DEFAULT_PASSWORD,
       name: profile.displayName,
       provider: 'GOOGLE',
+      nickName: '구글 소셜',
     };
   }
 }

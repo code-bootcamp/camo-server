@@ -7,6 +7,15 @@ import { UpdateReviewInput } from './dto/updateReview.input';
 import { Review } from './entites/review.entity';
 import { ReviewsService } from './reviews.service';
 
+/**
+ * ReviewsResolver Graphql API Resolver
+ * @APIs
+ * 'fetchReview'
+ * 'fetchReviews'
+ * 'createReview'
+ * 'updateReview'
+ * 'deleteReview'
+ */
 @Resolver()
 export class ReviewsResolver {
   constructor(

@@ -31,7 +31,6 @@ export class PaymentsService {
       });
       await queryRunner.manager.save(payment);
       //
-      console.log(payment);
       const user = await queryRunner.manager.findOne(User, {
         where: { id: _user.id },
         lock: { mode: 'pessimistic_write' },

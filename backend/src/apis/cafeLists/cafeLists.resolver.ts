@@ -98,9 +98,9 @@ export class CafeListsResolver {
     @Args('createCafeListInput') createCafeListInput: CreateCafeListInput,
     @Context() context: IContext,
   ) {
-    const userId = context.req.user.id;
+    const user = context.req.user.email;
     return await this.cafeListsService.create({
-      userId,
+      user,
       createCafeListInput,
     });
   }
@@ -113,9 +113,9 @@ export class CafeListsResolver {
     @Args('updateCafeListInput') updateCafeListInput: UpdateCafeListInput,
     @Context() context: IContext,
   ) {
-    const userId = context.req.user.id;
+    const user = context.req.user.email;
     const result = await this.cafeListsService.update({
-      userId,
+      user,
       cafeListId,
       updateCafeListInput,
     });

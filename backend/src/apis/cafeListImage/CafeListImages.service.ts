@@ -9,20 +9,21 @@ export class CafeListImagesService {
     @InjectRepository(CafeListImage)
     private readonly cafeListImagesRepository: Repository<CafeListImage>,
   ) {}
-  async createImage({ image, board }) {
-    const result = await Promise.all(
+  async createImage({ image, result }) {
+    return await Promise.all(
       image.map(
-        (el) =>
-          new Promise((resolve) => {
-            const results = this.cafeListImagesRepository.save({
+        (el, idx) =>
+          new Promise((resolve, reject) => {
+            this.cafeListImagesRepository.save({
+              isMain: idx === 0 ? true : false,
               url: el,
-              board,
+              cafeList: { id: result.id },
             });
-            resolve(results);
+            resolve('이미지 저장 완료');
+            reject('이미지 저장 실패');
           }),
       ),
     );
-    return result;
   }
 
   async updateImage({ image, cafeList }) {
@@ -36,9 +37,10 @@ export class CafeListImagesService {
 
     const result = await Promise.all(
       image.map(
-        (el) =>
+        (el, idx) =>
           new Promise((resolve) => {
             const result = this.cafeListImagesRepository.save({
+              isMain: idx === 0 ? true : false,
               url: el,
               cafeList: cafeList,
             });

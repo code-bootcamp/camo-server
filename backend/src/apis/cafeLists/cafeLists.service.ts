@@ -8,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { FavoriteCafe } from '../favoreiteCafes/entities/favoriteCafe.entity';
+import { CafeListImagesService } from '../cafeListImage/CafeListImages.service';
+import { User } from '../users/entites/user.entity';
 
 @Injectable()
 export class CafeListsService {
@@ -18,6 +20,8 @@ export class CafeListsService {
     @InjectRepository(CafeListImage)
     private readonly cafeListImageRepository: Repository<CafeListImage>,
 
+    private readonly cafeListImageService: CafeListImagesService,
+
     @InjectRepository(CafeListTag)
     private readonly cafeListTagRepository: Repository<CafeListTag>,
     private readonly elasticsearchService: ElasticsearchService,
@@ -26,6 +30,9 @@ export class CafeListsService {
 
     @InjectRepository(FavoriteCafe)
     private readonly favoriteCafeRepository: Repository<FavoriteCafe>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findOne({ cafeListId }) {
@@ -88,8 +95,12 @@ export class CafeListsService {
     return result;
   }
 
-  async create({ userId, createCafeListInput }) {
-    const { tags, images, ...cafeList } = createCafeListInput;
+  async create({ user, createCafeListInput }) {
+    const { tags, image, ...cafeList } = createCafeListInput;
+
+    const _user = await this.userRepository.findOne({
+      where: { email: user },
+    });
 
     if (tags) {
       const cafeListTag = [];
@@ -112,55 +123,29 @@ export class CafeListsService {
       const result = await this.cafeListRepository.save({
         ...cafeList,
         cafeListTag: cafeListTag,
-        user: userId,
+        user: _user.id,
       });
-      if (images) {
-        const imageresult = await Promise.all(
-          images.map(
-            (el, idx) =>
-              new Promise((resolve, reject) => {
-                this.cafeListImageRepository.save({
-                  isMain: idx === 0 ? true : false,
-                  url: el,
-                  cafeList: { id: result.id },
-                });
-                resolve('이미지 저장 완료');
-                reject('이미지 저장 실패');
-              }),
-          ),
-        );
+      if (image) {
+        await this.cafeListImageService.createImage({ image, result });
       }
       return result;
     } else {
       const result = await this.cafeListRepository.save({
         ...cafeList,
-        user: userId,
+        user: _user,
       });
-      if (images) {
-        await Promise.all(
-          images.map(
-            (el, idx) =>
-              new Promise((resolve, reject) => {
-                this.cafeListImageRepository.save({
-                  isMain: idx === 0 ? true : false,
-                  url: el,
-                  cafeList: { id: result.id },
-                });
-                resolve('이미지 저장 완료');
-                reject('이미지 저장 실패');
-              }),
-          ),
-        );
+      if (image) {
+        await this.cafeListImageService.createImage({ image, result });
       }
       return result;
     }
   }
 
-  async update({ userId, cafeListId, updateCafeListInput }) {
+  async update({ user, cafeListId, updateCafeListInput }) {
     const { image } = updateCafeListInput;
 
     const newCafeList = await this.cafeListRepository.findOne({
-      where: { id: cafeListId },
+      where: { id: user.id },
       relations: ['user'],
     });
 
@@ -168,7 +153,7 @@ export class CafeListsService {
       where: { cafeList: { id: cafeListId } },
     });
 
-    if (userId !== newCafeList.user.id)
+    if (user !== newCafeList.user.email)
       throw new ConflictException('권한이 없습니다.');
 
     await Promise.all(
@@ -182,11 +167,11 @@ export class CafeListsService {
     );
 
     await Promise.all(
-      image.map(
+      _image.map(
         (el) =>
           new Promise((resolve) => {
             this.cafeListImageRepository.save({
-              url: el,
+              url: el.id,
               cafeList: { id: cafeListId },
             });
             resolve('이미지 저장 완료');

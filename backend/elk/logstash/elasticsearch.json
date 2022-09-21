@@ -1,6 +1,6 @@
 {
   "template": "board",
-  "index_patterns": ["search-board"],
+  "index_patterns": ["board"],
   "settings": {
     "index": {
       "max_ngram_diff": "20"

@@ -46,7 +46,11 @@ export class AuthsService {
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
     );
-    const alloweOrigins = ['https://cafemoment.site', 'http://localhost:3000'];
+    const alloweOrigins = [
+      'https://cafemoment.site',
+      'http://localhost:3000',
+      'https://cafemoment-backend.site',
+    ];
     const origin = req.headers.origin;
 
     if (alloweOrigins.includes(origin)) {

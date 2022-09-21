@@ -167,7 +167,7 @@ export class CafeListsService {
       throw new ConflictException('권한이 없습니다.');
 
     const _image = await this.cafeListImageRepository.find({
-      where: { id: cafeListId },
+      where: { cafeList: { id: cafeListId } },
     });
     await Promise.all(
       _image.map(
@@ -180,11 +180,11 @@ export class CafeListsService {
     );
 
     await Promise.all(
-      _image.map(
+      image.map(
         (el) =>
           new Promise((resolve) => {
             this.cafeListImageRepository.save({
-              url: el.url,
+              url: el,
               cafeList: { id: cafeListId },
             });
             resolve('이미지 저장 완료');

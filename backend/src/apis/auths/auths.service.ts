@@ -63,7 +63,7 @@ export class AuthsService {
       'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
     );
     res.setHeader('Access-Control-Allow-Origin', [
-      'https://cafemoment.site',
+      // 'https://cafemoment.site',
       'http://localhost:3000',
     ]);
     res.setHeader(

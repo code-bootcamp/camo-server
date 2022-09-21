@@ -46,6 +46,8 @@ import { APP_GUARD } from '@nestjs/core';
     ChatModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      // playground: false
+      // debug: false
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
       cors: {
@@ -60,8 +62,8 @@ import { APP_GUARD } from '@nestjs/core';
         ],
         origin: [
           'http://localhost:3000',
-          'https://cafemoment.site',
-          'https://cafemoment-backend.site',
+          // 'https://cafemoment.site',
+          // 'https://cafemoment-backend.site',
         ],
         exposedHeaders: ['Set-Cookie', 'Cookie'],
       },

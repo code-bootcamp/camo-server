@@ -1,6 +1,6 @@
 {
   "template": "cafe",
-  "index_patterns": ["search-cafelist"],
+  "index_patterns": ["cafelist"],
   "settings": {
     "index": {
       "max_ngram_diff": "20"

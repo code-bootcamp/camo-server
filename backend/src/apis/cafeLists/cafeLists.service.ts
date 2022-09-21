@@ -232,7 +232,7 @@ export class CafeListsService {
       return checkRedis;
     } else {
       const result = await this.elasticsearchService.search({
-        index: 'search-cafelist',
+        index: 'cafelist',
         body: {
           query: {
             multi_match: {

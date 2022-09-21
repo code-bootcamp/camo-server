@@ -201,7 +201,7 @@ export class BoardsService {
       return checkRedis;
     } else {
       const result = await this.elasticsearchService.search({
-        index: 'search-board',
+        index: 'board',
         body: {
           query: {
             multi_match: {

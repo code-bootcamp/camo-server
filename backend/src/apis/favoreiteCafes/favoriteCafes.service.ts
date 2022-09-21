@@ -125,16 +125,17 @@ export class FavoriteCafesService {
   }
 
   async findAll({ cafeListId }) {
-    await this.favoriteCafeRepository.find({
+    const user = await this.favoriteCafeRepository.find({
       where: { cafeList: { id: cafeListId } },
       relations: ['cafeList', 'user'],
     });
+    console.log(user);
   }
 
   async findUserLike({ userId, page }) {
     return await this.favoriteCafeRepository.find({
       where: { user: { id: userId } },
-      relations: ['cafeList'],
+      relations: ['cafeList', 'user', 'cafeList.cafeListImage'],
       take: 6,
       skip: page ? (page - 1) * 6 : 0,
     });

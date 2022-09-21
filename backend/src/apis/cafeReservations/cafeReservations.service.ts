@@ -32,7 +32,7 @@ export class CafeReservationsService {
   async findUser({ page, userId }) {
     return await this.cafeReservationsRepository.find({
       where: { user: { id: userId } },
-      relations: ['cafeList', 'user'],
+      relations: ['cafeList', 'user', 'cafeList.cafeListImage'],
       take: 2,
       skip: page ? (page - 1) * 2 : 0,
     });

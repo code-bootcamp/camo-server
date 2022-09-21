@@ -4,7 +4,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Image } from '../images/entities/image.entity';
 import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entites/user.entity';
@@ -30,6 +30,7 @@ export class BoardsService {
 
     private readonly elasticsearchService: ElasticsearchService,
     private readonly imagesService: ImagesService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findAll({ page }) {
@@ -133,14 +134,12 @@ export class BoardsService {
   }
 
   async update({ boardId, updateBoardInput }) {
-    const { image, ...Board } = updateBoardInput;
-
+    const { image } = updateBoardInput;
     const boardList = await this.boardRepository.findOne({
       where: { id: boardId },
     });
-
     const _image = await this.imageRepository.find({
-      where: { id: Board.id },
+      where: { board: { id: boardId } },
     });
 
     await Promise.all(
@@ -154,11 +153,11 @@ export class BoardsService {
     );
 
     await Promise.all(
-      _image.map(
+      image.map(
         (el) =>
           new Promise((resolve) => {
             this.imageRepository.save({
-              url: el.url,
+              url: el,
               board: { id: boardList.id },
             });
             resolve('이미지 저장 완료');
@@ -263,10 +262,8 @@ export class BoardsService {
   async updateBoard({ boardId, nickName, updateBoardInput, context }) {
     const board = await this.findBoardOne({ boardId });
     const user = context.req.user.id;
-
     if (!board)
       throw new UnprocessableEntityException('등록된 게시글이 없습니다.');
-
     if (!user)
       throw new ConflictException(`${nickName}님의 게시글이 아닙니다.`);
 

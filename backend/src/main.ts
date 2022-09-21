@@ -16,6 +16,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://localhost:81',
       'https://cafemoment.site',
+      'https://cafemoment-backend.site',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: [

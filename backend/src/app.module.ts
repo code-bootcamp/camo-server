@@ -58,7 +58,11 @@ import { APP_GUARD } from '@nestjs/core';
           'Content-Type',
           'Accept',
         ],
-        origin: ['http://localhost:3000', 'https://cafemoment.site'],
+        origin: [
+          'http://localhost:3000',
+          'https://cafemoment.site',
+          'https://cafemoment-backend.site',
+        ],
         exposedHeaders: ['Set-Cookie', 'Cookie'],
       },
     }),

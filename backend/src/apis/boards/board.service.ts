@@ -156,11 +156,11 @@ export class BoardsService {
     );
 
     await Promise.all(
-      image.map(
+      _image.map(
         (el) =>
           new Promise((resolve) => {
             this.imageRepository.save({
-              url: el,
+              url: el.id,
               board: { id: boardList.id },
             });
             resolve('이미지 저장 완료');

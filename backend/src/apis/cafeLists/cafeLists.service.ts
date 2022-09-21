@@ -180,11 +180,11 @@ export class CafeListsService {
     );
 
     await Promise.all(
-      image.map(
+      _image.map(
         (el) =>
           new Promise((resolve) => {
             this.cafeListImageRepository.save({
-              url: el,
+              url: el.id,
               cafeList: { id: cafeListId },
             });
             resolve('이미지 저장 완료');

@@ -135,9 +135,12 @@ export class BoardsService {
 
   async update({ boardId, updateBoardInput }) {
     const { image } = updateBoardInput;
+
     const boardList = await this.boardRepository.findOne({
       where: { id: boardId },
+      relations: ['user'],
     });
+
     const _image = await this.imageRepository.find({
       where: { board: { id: boardId } },
     });

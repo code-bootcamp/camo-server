@@ -157,18 +157,20 @@ export class CafeListsService {
   }
 
   async update({ userId, cafeListId, updateCafeListInput }) {
-    const { image, ...updatecafeList } = updateCafeListInput;
+    const { image } = updateCafeListInput;
 
     const newCafeList = await this.cafeListRepository.findOne({
       where: { id: cafeListId },
       relations: ['user'],
     });
-    if (userId !== newCafeList.user.id)
-      throw new ConflictException('권한이 없습니다.');
 
     const _image = await this.cafeListImageRepository.find({
       where: { cafeList: { id: cafeListId } },
     });
+
+    if (userId !== newCafeList.user.id)
+      throw new ConflictException('권한이 없습니다.');
+
     await Promise.all(
       _image.map(
         (el) =>
@@ -180,11 +182,11 @@ export class CafeListsService {
     );
 
     await Promise.all(
-      _image.map(
+      image.map(
         (el) =>
           new Promise((resolve) => {
             this.cafeListImageRepository.save({
-              url: el.id,
+              url: el,
               cafeList: { id: cafeListId },
             });
             resolve('이미지 저장 완료');
@@ -194,7 +196,8 @@ export class CafeListsService {
 
     const result = this.cafeListRepository.save({
       ...newCafeList,
-      ...updatecafeList,
+      id: cafeListId,
+      ...updateCafeListInput,
     });
     return result;
   }

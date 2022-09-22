@@ -201,6 +201,7 @@ export class BoardsService {
     } else {
       const result = await this.elasticsearchService.search({
         index: 'board',
+        size: 10000,
         body: {
           query: {
             multi_match: {
@@ -210,18 +211,16 @@ export class BoardsService {
           },
         },
       });
-
       const arrayBoard = result.hits.hits.map((el) => {
         const obj = {
-          id: el._source['id'],
+          id: el['_id'],
           title: el._source['title'],
           contents: el._source['contents'],
         };
         return obj;
       });
 
-      await this.cacheManager.set(search_board, arrayBoard, { ttl: 20 });
-
+      await this.cacheManager.set(search_board, arrayBoard, { ttl: 1 });
       return arrayBoard;
     }
   }

@@ -113,9 +113,9 @@ export class CafeListsResolver {
     @Args('updateCafeListInput') updateCafeListInput: UpdateCafeListInput,
     @Context() context: IContext,
   ) {
-    const user = context.req.user.email;
+    const userEmail = context.req.user.email;
     const result = await this.cafeListsService.update({
-      user,
+      userEmail,
       cafeListId,
       updateCafeListInput,
     });

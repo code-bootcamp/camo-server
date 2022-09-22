@@ -21,8 +21,6 @@ import { FileModule } from './apis/files/file.module';
 import { ChatModule } from './apis/chat/chat.module';
 import { CafeListImageModule } from './apis/cafeListImage/cafeListImages.module';
 import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
-import { RolesGuard } from './commons/auth/roles.guard';
-import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -46,8 +44,8 @@ import { APP_GUARD } from '@nestjs/core';
     ChatModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      // playground: false
-      // debug: false
+      // playground: false,
+      // debug: false,
       autoSchemaFile: 'src/commons/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
       cors: {
@@ -63,7 +61,6 @@ import { APP_GUARD } from '@nestjs/core';
         origin: [
           'http://localhost:3000',
           // 'https://cafemoment.site',
-          // 'https://cafemoment-backend.site',
         ],
         exposedHeaders: ['Set-Cookie', 'Cookie'],
       },

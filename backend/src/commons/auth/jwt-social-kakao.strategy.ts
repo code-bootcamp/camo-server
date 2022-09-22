@@ -22,6 +22,7 @@ export class jwtKakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       password: process.env.DEFAULT_PASSWORD,
       name: profile._json.properties.nickname,
       provider: 'KAKAO',
+      nickName: '카카오 소셜',
     };
   }
 }

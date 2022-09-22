@@ -241,16 +241,18 @@ export class CafeListsService {
           },
         },
       });
+      console.log(result);
       const arrayCafeList = result.hits.hits.map((el) => {
         const obj = {
-          id: el._source['_id'],
+          id: el['_id'],
           title: el._source['title'],
           contents: el._source['contents'],
           address: el._source['address'],
         };
+        console.log(obj);
         return obj;
       });
-      await this.cacheManager.set(search_cafelist, arrayCafeList, { ttl: 20 });
+      await this.cacheManager.set(search_cafelist, arrayCafeList, { ttl: 1 });
       return arrayCafeList;
     }
   }

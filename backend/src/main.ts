@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(graphqlUploadExpress());
   app.enableCors({
-    origin: ['http://localhost:81', 'https://cafemoment.site'],
+    origin: ['http://localhost:81', process.env.CORS_ORIGIN],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: [
       'Access-Control-Allow-Headers',

@@ -16,7 +16,7 @@ import { ChatRoom } from './entities/chatRoom.entity';
 // 소켓 81번 포트에서 열어 줌
 @WebSocketGateway(81, {
   namespace: 'chat',
-  cors: { origin: 'http://localhost:3000' },
+  cors: { origin: 'https://cafemoment.site' },
 })
 @Injectable()
 export class ChatGateway {

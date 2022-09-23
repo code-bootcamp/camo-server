@@ -56,6 +56,7 @@ export class ReviewsResolver {
     return this.reviewsService.update({ context, updateReviewInput });
   }
 
+  /** 리뷰 삭제 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteReview(

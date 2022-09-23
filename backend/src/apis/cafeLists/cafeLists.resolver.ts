@@ -31,6 +31,7 @@ export class CafeListsResolver {
     private readonly cafeListRepository: Repository<CafeList>,
   ) {}
 
+  /** 카페 소개글 검색 */
   @Query(() => [CafeList])
   async searchCafeList(
     @Args({ name: 'search_cafelist', nullable: true }) search_cafelist: string,

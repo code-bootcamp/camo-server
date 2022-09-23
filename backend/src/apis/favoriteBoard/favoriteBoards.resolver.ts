@@ -9,6 +9,7 @@ import { FavoriteBoardsService } from './favoriteBoards.service';
  * Comment GrqphQL API Resolver
  * @APIs
  * 'toggleLikeFeed'
+ * 'fetchFavoriteUser'
  */
 @Resolver()
 export class FavoriteBoardsResolver {

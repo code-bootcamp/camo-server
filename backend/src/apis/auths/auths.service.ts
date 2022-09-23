@@ -46,11 +46,7 @@ export class AuthsService {
       { email: user.email, sub: user.id },
       { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '2w' },
     );
-    const alloweOrigins = [
-      // 'https://cafemoment.site',
-      'http://localhost:3000',
-      // 'https://cafemoment-backend.site',
-    ];
+    const alloweOrigins = ['https://cafemoment.site'];
     const origin = req.headers.origin;
 
     if (alloweOrigins.includes(origin)) {
@@ -62,10 +58,7 @@ export class AuthsService {
       'Access-Control-Allow-Headers',
       'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
     );
-    res.setHeader('Access-Control-Allow-Origin', [
-      // 'https://cafemoment.site',
-      'http://localhost:3000',
-    ]);
+    res.setHeader('Access-Control-Allow-Origin', ['https://cafemoment.site']);
     res.setHeader(
       'Set-Cookie',
       `refreshToken=${refreshToken}; path=/; domain=.cafemoment-backend.site; SameSite=None; Secure; httpOnly;`,
@@ -78,7 +71,6 @@ export class AuthsService {
     let user = await this.usersService.findOneUser({ email: req.user.email });
     if (!user) user = await this.usersService.create({ role, ...req.user });
     this.setRefreshToken({ user, res, req });
-    // res.redirect('http://localhost:3000/graphql');
     res.redirect('https://cafemoment.site');
   }
 

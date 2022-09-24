@@ -249,10 +249,9 @@ export class CafeListsService {
           contents: el._source['contents'],
           address: el._source['address'],
         };
-        console.log(obj);
         return obj;
       });
-      await this.cacheManager.set(search_cafelist, arrayCafeList, { ttl: 1 });
+      await this.cacheManager.set(search_cafelist, arrayCafeList, { ttl: 5 });
       return arrayCafeList;
     }
   }

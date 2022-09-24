@@ -3,7 +3,6 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
-import { Args, Mutation } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Board } from '../boards/entities/board.entity';
@@ -70,9 +69,6 @@ export class FavoriteBoardsService {
 
         likeStatus = true;
       } else if (boardLike?.isLike) {
-        // case 3. 이미 좋아요를 누른 상태
-        // 좋아요 취소로 간주합니다
-        // 좋아요 상태를 false로 변경하고 피드의 좋아요 수를 감소시킵니다
         updateLike = this.favoriteBoardsRepository.create({
           ...boardLike,
           user,

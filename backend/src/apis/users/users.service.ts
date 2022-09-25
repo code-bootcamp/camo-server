@@ -12,6 +12,7 @@ import { User } from './entites/user.entity';
 import * as coolsms from 'coolsms-node-sdk';
 import * as bcrypt from 'bcrypt';
 import { Cache } from 'cache-manager';
+import { CafeReservation } from '../cafeReservations/entities/cafeReservations.entity';
 
 @Injectable()
 export class UsersService {
@@ -23,26 +24,26 @@ export class UsersService {
   ) {}
 
   /** 모든 유저 조회 */
-  async findAll() {
+  async findAll(): Promise<User[]> {
     return await this.usersRepository.find({});
   }
 
   /** 개별 유저 조회 */
-  async findOneUser({ email }) {
+  async findOneUser({ email }): Promise<User> {
     return await this.usersRepository.findOne({
       where: { email },
     });
   }
 
   /** 유저 핸드폰 번호로 찾기 */
-  async findUserByPhoneNumber({ phoneNumber }) {
+  async findUserByPhoneNumber({ phoneNumber }): Promise<User> {
     return await this.usersRepository.findOne({
       where: { phoneNumber },
     });
   }
 
-  /** 개별 유저 조회 */
-  async findAllByUser({ userId, page }) {
+  /** 개별 유저의 예약, 찜, 게시글 정보 조회 */
+  async findAllByUser({ userId, page }): Promise<User[]> {
     return await this.usersRepository.find({
       where: { id: userId },
       relations: ['cafeReservation', 'favoriteCafe', 'board'],
@@ -52,7 +53,7 @@ export class UsersService {
   }
 
   /** 개별 유저 조회 */
-  async findOne({ userId }) {
+  async findOne({ userId }): Promise<User> {
     return await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['cafeReservation', 'favoriteCafe', 'board'],
@@ -60,7 +61,7 @@ export class UsersService {
   }
 
   /** 일반 유저 생성 */
-  async create({ role, ...createUserInput }) {
+  async create({ role, ...createUserInput }): Promise<User> {
     const { password, email } = createUserInput;
     const hashedPassword = await bcrypt.hash(
       password,
@@ -76,7 +77,7 @@ export class UsersService {
     });
   }
 
-  async updatePassword({ email, password }) {
+  async updatePassword({ email, password }): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { email },
     });
@@ -91,7 +92,7 @@ export class UsersService {
     return result;
   }
 
-  async update({ email, updateUserInput, loginhash }) {
+  async update({ email, updateUserInput, loginhash }): Promise<User> {
     // 수정 후 결과값까지 받을 때 사용
     const userList = await this.usersRepository.findOne({
       where: { email },
@@ -105,7 +106,7 @@ export class UsersService {
     return result;
   }
 
-  async updateUser({ email, ...updateUserInput }) {
+  async updateUser({ email, ...updateUserInput }): Promise<User> {
     const password = updateUserInput.password;
 
     const user = await this.findOneUser({ email });
@@ -125,7 +126,7 @@ export class UsersService {
   //
   //
   /** 유저 Delete */
-  async delete({ password, userId }) {
+  async delete({ password, userId }): Promise<boolean> {
     const user = await this.findOne({ userId });
     const userPassword = user.password;
     const isAuth = await bcrypt.compare(password, userPassword);
@@ -139,7 +140,7 @@ export class UsersService {
   }
 
   /** 유저 삭제 (어드민) */
-  async deleteUser({ userId }) {
+  async deleteUser({ userId }): Promise<boolean> {
     const deleteresult = await this.usersRepository.softDelete({
       id: userId,
     });
@@ -147,18 +148,18 @@ export class UsersService {
   }
 
   /** 유저 복구 */
-  async restore({ email }) {
+  async restore({ email }): Promise<boolean> {
     const result = await this.usersRepository.restore({ email });
     return result.affected ? true : false;
   }
 
   //** 랜덤 토큰 생성 */
-  getToken() {
+  getToken(): string {
     return String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
   }
 
   //** SMS 인증문자 전송 */
-  async sendTokenToSMS({ phoneNumber }) {
+  async sendTokenToSMS({ phoneNumber }): Promise<string> {
     const SMS_KEY = process.env.SMS_KEY;
     const SMS_SECRET = process.env.SMS_SECRET;
     const SMS_SENDER = process.env.SMS_SENDER;
@@ -188,7 +189,7 @@ export class UsersService {
   }
 
   /** 삭제된 유저 조회 Admin */
-  async WithDelete() {
+  async WithDelete(): Promise<User[]> {
     return await this.usersRepository.find({
       withDeleted: true,
     });

@@ -52,9 +52,6 @@ export class FavoriteBoardsService {
       let likeStatus: boolean = null;
 
       if (!boardLike?.isLike || !boardLike) {
-        // case 1.좋아요를 누르지 않은 상태
-        // case 2.좋아요 관계가 형성되어있지 않은 상태
-        // 좋아요 상태를 true로 변경하고 피드의 좋아요 수를 증가시킵니다
         updateLike = this.favoriteBoardsRepository.create({
           ...boardLike,
           user,

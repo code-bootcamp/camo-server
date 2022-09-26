@@ -16,7 +16,7 @@ export class PaymentsService {
     private readonly datasource: DataSource,
   ) {}
 
-  async create({ impUid, paymentAmount, user: _user }) {
+  async create({ impUid, paymentAmount, user: _user }): Promise<Payment> {
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.connect();
 
@@ -87,7 +87,7 @@ export class PaymentsService {
     }
   }
 
-  async findStatus({ impUid }) {
+  async findStatus({ impUid }): Promise<Payment> {
     return await this.paymentsRepository.findOne({
       where: { impUid },
     });

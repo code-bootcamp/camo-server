@@ -25,20 +25,20 @@ export class ReviewsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<Review[]> {
     return await this.reviewsRepository.find({
       relations: ['user', 'cafeList'],
     });
   }
 
-  async findOne({ reviewId }) {
+  async findOne({ reviewId }): Promise<Review> {
     return await this.reviewsRepository.findOne({
       where: { id: reviewId },
       relations: ['user', 'cafeList'],
     });
   }
 
-  async create({ createReviewInput }) {
+  async create({ createReviewInput }): Promise<Review> {
     const { userId, cafeListId, comment } = createReviewInput;
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     const cafeList = await this.cafeListsRepository.findOne({
@@ -51,7 +51,7 @@ export class ReviewsService {
     });
   }
 
-  async delete({ context, reviewId }) {
+  async delete({ context, reviewId }): Promise<boolean> {
     const email = context.req.user.email;
     const checkUser = await this.usersService.findOneUser({ email });
     if (checkUser.email !== email)
@@ -63,7 +63,7 @@ export class ReviewsService {
     return result.affected ? true : false;
   }
 
-  async update({ context, updateReviewInput }) {
+  async update({ context, updateReviewInput }): Promise<Review> {
     const email = context.req.user.email;
     const { comment, reviewId } = updateReviewInput;
     const checkUser = await this.usersService.findOneUser({ email });

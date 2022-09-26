@@ -17,7 +17,7 @@ export class CommentsService {
   ) {}
 
   /** 댓글 개별 조회 */
-  async find({ commentId }) {
+  async find({ commentId }): Promise<Comment> {
     const result = await this.commentRepository.findOne({
       where: { id: commentId },
       relations: ['board', 'user'],
@@ -26,7 +26,7 @@ export class CommentsService {
   }
 
   /** 댓글 모두 조회 */
-  async findAll({ boardId }) {
+  async findAll({ boardId }): Promise<Comment[]> {
     const result = await this.commentRepository.find({
       where: {
         board: { id: boardId },
@@ -36,7 +36,7 @@ export class CommentsService {
     return result;
   }
 
-  async create({ user, createCommentInput }) {
+  async create({ user, createCommentInput }): Promise<Comment> {
     const { boardId, comment } = createCommentInput;
     const checkUser = await this.userRepository.findOne({
       where: { email: user },
@@ -52,7 +52,7 @@ export class CommentsService {
     });
   }
 
-  async update({ commentId, userId, updateCommentInput }) {
+  async update({ commentId, userId, updateCommentInput }): Promise<Comment[]> {
     const checkComment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
@@ -74,7 +74,7 @@ export class CommentsService {
     });
   }
 
-  async deleteComment({ context, commentId }) {
+  async deleteComment({ context, commentId }): Promise<boolean> {
     const email = context.req.user.email;
     const comment = await this.find({ commentId });
     const commentUserEmail = comment.user.email;

@@ -75,7 +75,7 @@ export class AuthsService {
   }
 
   /** 일반 유저 로그인 */
-  async getUserLogin({ email, password, context }) {
+  async getUserLogin({ email, password, context }): Promise<string> {
     const user = await this.usersService.findOneUser({ email });
     if (!user) throw new UnprocessableEntityException('이메일이 없습니다.');
 
@@ -88,7 +88,7 @@ export class AuthsService {
   }
 
   /** 일반 유저 로그아웃 */
-  async getLogout({ context }) {
+  async getLogout({ context }): Promise<string> {
     try {
       /** 토큰 확인 */
       const accessToken = context.req.headers['authorization'].split(' ')[1];
@@ -132,7 +132,7 @@ export class AuthsService {
   }
 
   /** 유저 SMS Token 검증 */
-  async checkSMSTokenValid({ phoneNumber, SMSToken }) {
+  async checkSMSTokenValid({ phoneNumber, SMSToken }): Promise<boolean> {
     const isSMSToken = await this.cacheManager.get(phoneNumber);
     if (isSMSToken !== SMSToken)
       throw new ConflictException('인증번호가 올바르지 않습니다.');
@@ -140,7 +140,7 @@ export class AuthsService {
   }
 
   /** 로그아웃을 위한 token TTL 구하기  */
-  getTTL(token) {
+  getTTL(token): number {
     const now = new Date().getTime();
     const tokenTTL = token.exp - Number(String(now).slice(0, -3));
     return tokenTTL;

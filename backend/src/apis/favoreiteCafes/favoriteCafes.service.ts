@@ -55,9 +55,6 @@ export class FavoriteCafesService {
       let likeStatus: boolean = null;
 
       if (!cafeLike?.isLike || !cafeLike) {
-        // case 1.좋아요를 누르지 않은 상태
-        // case 2.좋아요 관계가 형성되어있지 않은 상태
-        // 좋아요 상태를 true로 변경하고 피드의 좋아요 수를 증가시킵니다
         updateLike = this.favoriteCafeRepository.create({
           ...cafeLike,
           user,
@@ -72,9 +69,6 @@ export class FavoriteCafesService {
 
         likeStatus = true;
       } else if (cafeLike?.isLike) {
-        // case 3. 이미 좋아요를 누른 상태
-        // 좋아요 취소로 간주합니다
-        // 좋아요 상태를 false로 변경하고 피드의 좋아요 수를 감소시킵니다
         updateLike = this.favoriteCafeRepository.create({
           ...cafeLike,
           user,
@@ -117,22 +111,21 @@ export class FavoriteCafesService {
     return board[0];
   }
 
-  async findByUserId({ userId }) {
+  async findByUserId({ userId }): Promise<number> {
     const result = await this.favoriteCafeRepository.find({
       where: { user: { id: userId } },
     });
     return result.length;
   }
 
-  async findAll({ cafeListId }) {
-    const user = await this.favoriteCafeRepository.find({
+  async findAll({ cafeListId }): Promise<FavoriteCafe[]> {
+    return await this.favoriteCafeRepository.find({
       where: { cafeList: { id: cafeListId } },
       relations: ['cafeList', 'user'],
     });
-    console.log(user);
   }
 
-  async findUserLike({ userId, page }) {
+  async findUserLike({ userId, page }): Promise<FavoriteCafe[]> {
     return await this.favoriteCafeRepository.find({
       where: { user: { id: userId } },
       relations: ['cafeList', 'user', 'cafeList.cafeListImage'],

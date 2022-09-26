@@ -12,7 +12,6 @@ import { User } from './entites/user.entity';
 import * as coolsms from 'coolsms-node-sdk';
 import * as bcrypt from 'bcrypt';
 import { Cache } from 'cache-manager';
-import { CafeReservation } from '../cafeReservations/entities/cafeReservations.entity';
 
 @Injectable()
 export class UsersService {

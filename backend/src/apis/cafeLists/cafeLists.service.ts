@@ -25,6 +25,7 @@ export class CafeListsService {
     @InjectRepository(CafeListTag)
     private readonly cafeListTagRepository: Repository<CafeListTag>,
     private readonly elasticsearchService: ElasticsearchService,
+
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
 
@@ -35,7 +36,7 @@ export class CafeListsService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findOne({ cafeListId }) {
+  async findOne({ cafeListId }): Promise<CafeList> {
     const result = await this.cafeListRepository.findOne({
       where: { id: cafeListId },
       relations: [
@@ -50,7 +51,7 @@ export class CafeListsService {
     // 12개 기준
   }
 
-  async findByCreatedAt({ page, sortBy }) {
+  async findByCreatedAt({ page, sortBy }): Promise<CafeList[]> {
     return await this.cafeListRepository.find({
       relations: [
         'cafeListImage',
@@ -65,7 +66,7 @@ export class CafeListsService {
     });
   }
 
-  async findByfavoriteCafeCount({ page, sortBy }) {
+  async findByfavoriteCafeCount({ page, sortBy }): Promise<CafeList[]> {
     return await this.cafeListRepository.find({
       relations: [
         'cafeListImage',
@@ -80,7 +81,7 @@ export class CafeListsService {
     });
   }
 
-  async findAll({ page }) {
+  async findAll({ page }): Promise<CafeList[]> {
     const result = await this.cafeListRepository.find({
       relations: [
         'cafeListImage',
@@ -95,7 +96,7 @@ export class CafeListsService {
     return result;
   }
 
-  async create({ user, createCafeListInput }) {
+  async create({ user, createCafeListInput }): Promise<CafeList[]> {
     const { tags, image, ...cafeList } = createCafeListInput;
 
     const _user = await this.userRepository.findOne({
@@ -141,7 +142,11 @@ export class CafeListsService {
     }
   }
 
-  async update({ userEmail, cafeListId, updateCafeListInput }) {
+  async update({
+    userEmail,
+    cafeListId,
+    updateCafeListInput,
+  }): Promise<CafeList[]> {
     const { image, ...updatecafeList } = updateCafeListInput;
 
     const myCafeList = await this.cafeListRepository.findOne({
@@ -186,7 +191,7 @@ export class CafeListsService {
     return result;
   }
 
-  async delete({ context, cafeListId }) {
+  async delete({ context, cafeListId }): Promise<boolean> {
     const userId = context.req.user.id;
     const cafeList = await this.cafeListRepository.findOne({
       where: { id: cafeListId },
@@ -201,7 +206,7 @@ export class CafeListsService {
     return result.affected ? true : false;
   }
 
-  async restore({ cafeListId }) {
+  async restore({ cafeListId }): Promise<boolean> {
     const restoreResult = await this.cafeListRepository.restore({
       id: cafeListId,
     });

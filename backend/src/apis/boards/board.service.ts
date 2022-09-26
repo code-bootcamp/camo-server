@@ -33,7 +33,7 @@ export class BoardsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async findAll({ page }) {
+  async findAll({ page }): Promise<Board[]> {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'images', 'user'],
       order: { createdAt: 'DESC' },
@@ -42,7 +42,7 @@ export class BoardsService {
     });
   }
 
-  async findBoardByUser({ userId }) {
+  async findBoardByUser({ userId }): Promise<number> {
     const result = await this.boardRepository.find({
       where: { user: { id: userId } },
       relations: ['user'],
@@ -50,7 +50,7 @@ export class BoardsService {
     return result.length;
   }
 
-  async findBoardByUserWithPage({ userId, page }) {
+  async findBoardByUserWithPage({ userId, page }): Promise<Board[]> {
     const result = await this.boardRepository.find({
       where: { user: { id: userId } },
       order: { createdAt: 'DESC' },
@@ -61,7 +61,7 @@ export class BoardsService {
     return result;
   }
 
-  async findBoardsCreatedAt({ page, sortBy }) {
+  async findBoardsCreatedAt({ page, sortBy }): Promise<Board[]> {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
       order: { createdAt: sortBy },
@@ -70,7 +70,7 @@ export class BoardsService {
     });
   }
 
-  async findBoardsLikeCount({ page, sortBy }) {
+  async findBoardsLikeCount({ page, sortBy }): Promise<Board[]> {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
       order: { likeCount: sortBy },
@@ -79,7 +79,7 @@ export class BoardsService {
     });
   }
 
-  async findBoardOne({ boardId }) {
+  async findBoardOne({ boardId }): Promise<Board> {
     const result = await this.boardRepository.findOne({
       where: { id: boardId },
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
@@ -88,7 +88,7 @@ export class BoardsService {
     return result;
   }
 
-  async create({ user, createBoardInput }) {
+  async create({ user, createBoardInput }): Promise<Board[]> {
     const { tags, image, ...Board } = createBoardInput;
 
     const _user = await this.userRepository.findOne({
@@ -133,7 +133,7 @@ export class BoardsService {
     }
   }
 
-  async update({ boardId, updateBoardInput }) {
+  async update({ boardId, updateBoardInput }): Promise<Board[]> {
     const { image } = updateBoardInput;
 
     const boardList = await this.boardRepository.findOne({
@@ -175,21 +175,21 @@ export class BoardsService {
     return result;
   }
 
-  async delete({ boardId }) {
+  async delete({ boardId }): Promise<boolean> {
     const deleteresult = await this.boardRepository.softDelete({
       id: boardId,
     });
     return deleteresult.affected ? true : false;
   }
 
-  async WithBoardDelete() {
+  async WithBoardDelete(): Promise<Board[]> {
     return await this.boardRepository.find({
       relations: ['boardTag', 'favoritBoard', 'Comment'],
       withDeleted: true,
     });
   }
 
-  async restore({ boardId }) {
+  async restore({ boardId }): Promise<boolean> {
     const restoreResult = await this.boardRepository.restore({ id: boardId });
     return restoreResult.affected ? true : false;
   }
@@ -260,7 +260,12 @@ export class BoardsService {
   }
 
   /** 게시글 수정 */
-  async updateBoard({ boardId, nickName, updateBoardInput, context }) {
+  async updateBoard({
+    boardId,
+    nickName,
+    updateBoardInput,
+    context,
+  }): Promise<Board[]> {
     const board = await this.findBoardOne({ boardId });
     const user = context.req.user.id;
     if (!board)

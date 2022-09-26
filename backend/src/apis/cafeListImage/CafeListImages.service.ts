@@ -26,7 +26,7 @@ export class CafeListImagesService {
     );
   }
 
-  async updateImage({ image, cafeList }) {
+  async updateImage({ image, cafeList }): Promise<string[]> {
     await this.cafeListImagesRepository.find({
       where: { cafeList: { id: cafeList.id } },
     });

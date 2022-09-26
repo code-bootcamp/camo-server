@@ -14,14 +14,14 @@ export class CafeReservationsService {
     private readonly cafeListsRepository: Repository<CafeList>,
   ) {}
 
-  async find({ cafeReservationId }) {
+  async find({ cafeReservationId }): Promise<CafeReservation> {
     return await this.cafeReservationsRepository.findOne({
       where: { id: cafeReservationId },
       relations: ['cafeList', 'user'],
     });
   }
 
-  async findbyUser({ userId }) {
+  async findbyUser({ userId }): Promise<number> {
     const result = await this.cafeReservationsRepository.find({
       where: { user: { id: userId } },
       relations: ['cafeList', 'user'],
@@ -29,7 +29,7 @@ export class CafeReservationsService {
     return result.length;
   }
 
-  async findUser({ page, userId }) {
+  async findUser({ page, userId }): Promise<CafeReservation[]> {
     return await this.cafeReservationsRepository.find({
       where: { user: { id: userId } },
       relations: ['cafeList', 'user', 'cafeList.cafeListImage'],
@@ -38,7 +38,7 @@ export class CafeReservationsService {
     });
   }
 
-  async create({ createReservationInput }) {
+  async create({ createReservationInput }): Promise<CafeReservation[]> {
     const { userId, cafeListId } = createReservationInput;
 
     const cafeList = await this.cafeListsRepository.findOne({

@@ -13,6 +13,7 @@ import { Cache } from 'cache-manager';
 import { CACHE_MANAGER, Inject } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ImagesService } from '../images/image.service';
+import { UpdateBoardInput } from './dto/updateBoard.input';
 
 @Injectable()
 export class BoardsService {
@@ -33,7 +34,7 @@ export class BoardsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async findAll({ page }): Promise<Board[]> {
+  async findAll({ page }: { page: number }): Promise<Board[]> {
     return await this.boardRepository.find({
       relations: ['tags', 'comment', 'images', 'user'],
       order: { createdAt: 'DESC' },
@@ -42,7 +43,7 @@ export class BoardsService {
     });
   }
 
-  async findBoardByUser({ userId }): Promise<number> {
+  async findBoardByUser({ userId }: { userId: string }): Promise<number> {
     const result = await this.boardRepository.find({
       where: { user: { id: userId } },
       relations: ['user'],
@@ -50,7 +51,13 @@ export class BoardsService {
     return result.length;
   }
 
-  async findBoardByUserWithPage({ userId, page }): Promise<Board[]> {
+  async findBoardByUserWithPage({
+    userId,
+    page,
+  }: {
+    userId: string;
+    page: number;
+  }): Promise<Board[]> {
     const result = await this.boardRepository.find({
       where: { user: { id: userId } },
       order: { createdAt: 'DESC' },
@@ -79,7 +86,7 @@ export class BoardsService {
     });
   }
 
-  async findBoardOne({ boardId }): Promise<Board> {
+  async findBoardOne({ boardId }: { boardId: string }): Promise<Board> {
     const result = await this.boardRepository.findOne({
       where: { id: boardId },
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
@@ -133,7 +140,13 @@ export class BoardsService {
     }
   }
 
-  async update({ boardId, updateBoardInput }): Promise<Board[]> {
+  async update({
+    boardId,
+    updateBoardInput,
+  }: {
+    boardId: string;
+    updateBoardInput: UpdateBoardInput;
+  }): Promise<Board[]> {
     const { image } = updateBoardInput;
 
     const boardList = await this.boardRepository.findOne({

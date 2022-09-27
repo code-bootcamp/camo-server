@@ -95,7 +95,7 @@ export class BoardsService {
     return result;
   }
 
-  async create({ user, createBoardInput }): Promise<Board[]> {
+  async create({ user, createBoardInput }) {
     const { tags, image, ...Board } = createBoardInput;
 
     const _user = await this.userRepository.findOne({
@@ -140,13 +140,7 @@ export class BoardsService {
     }
   }
 
-  async update({
-    boardId,
-    updateBoardInput,
-  }: {
-    boardId: string;
-    updateBoardInput: UpdateBoardInput;
-  }): Promise<Board[]> {
+  async update({ boardId, updateBoardInput }) {
     const { image } = updateBoardInput;
 
     const boardList = await this.boardRepository.findOne({
@@ -273,12 +267,7 @@ export class BoardsService {
   }
 
   /** 게시글 수정 */
-  async updateBoard({
-    boardId,
-    nickName,
-    updateBoardInput,
-    context,
-  }): Promise<Board[]> {
+  async updateBoard({ boardId, nickName, updateBoardInput, context }) {
     const board = await this.findBoardOne({ boardId });
     const user = context.req.user.id;
     if (!board)

@@ -31,7 +31,7 @@ export class ReviewsService {
     });
   }
 
-  async findOne({ reviewId }): Promise<Review> {
+  async findOne({ reviewId }: { reviewId: string }): Promise<Review> {
     return await this.reviewsRepository.findOne({
       where: { id: reviewId },
       relations: ['user', 'cafeList'],

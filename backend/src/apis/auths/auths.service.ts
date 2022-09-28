@@ -24,7 +24,7 @@ export class AuthsService {
   ) {}
 
   /** AccessToken 발급 */
-  getAccessToken({ user }: { user: User }) {
+  getAccessToken({ user }) {
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
       { secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: '2w' },

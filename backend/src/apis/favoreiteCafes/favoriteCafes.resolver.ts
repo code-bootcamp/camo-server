@@ -23,10 +23,10 @@ export class FavoriteCafesResolver {
   @Mutation(() => Boolean)
   toggleFavoriteCafes(
     @Context() context: IContext,
-    @Args('cafeListId') cafeListId: string,
+    @Args('cafeBoardId') cafeBoardId: string,
   ) {
     const userId = context.req.user.id;
-    return this.favoriteCafesService.like({ userId, cafeListId });
+    return this.favoriteCafesService.like({ userId, cafeBoardId });
   }
 
   /** 유저가 찜한 카페 조회 */
@@ -50,8 +50,8 @@ export class FavoriteCafesResolver {
   /** 유저가 찜한 카페 조회 */
   @Query(() => [FavoriteCafe])
   fetchFavoriteCafeUser(
-    @Args('cafeListId') cafeListId: string, //
+    @Args('cafeBoardId') cafeBoardId: string, //
   ) {
-    return this.favoriteCafesService.findAll({ cafeListId });
+    return this.favoriteCafesService.findAll({ cafeBoardId });
   }
 }

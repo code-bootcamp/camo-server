@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
+import { CafeBoard } from 'src/apis/cafeBoards/entities/cafeBoard.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
@@ -42,9 +42,9 @@ export class CafeReservation {
   @Field(() => Boolean, { nullable: true })
   reservationStatus: boolean;
 
-  @ManyToOne(() => CafeList)
-  @Field(() => CafeList)
-  cafeList: CafeList;
+  @ManyToOne(() => CafeBoard)
+  @Field(() => CafeBoard)
+  cafeBoard: CafeBoard;
 
   @ManyToOne(() => User)
   @Field(() => User)

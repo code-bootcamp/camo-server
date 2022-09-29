@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CafeList } from '../cafeLists/entities/cafeList.entity';
+import { CafeBoard } from '../cafeBoards/entities/cafeBoard.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersService } from '../users/users.service';
 import { Review } from './entites/review.entity';
@@ -19,8 +19,8 @@ export class ReviewsService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
 
-    @InjectRepository(CafeList)
-    private readonly cafeListsRepository: Repository<CafeList>,
+    @InjectRepository(CafeBoard)
+    private readonly cafeBoardsRepository: Repository<CafeBoard>,
 
     private readonly usersService: UsersService,
   ) {}
@@ -39,10 +39,10 @@ export class ReviewsService {
   }
 
   async create({ createReviewInput }): Promise<Review> {
-    const { userId, cafeListId, comment } = createReviewInput;
+    const { userId, cafeBoardId, comment } = createReviewInput;
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    const cafeList = await this.cafeListsRepository.findOne({
-      where: { id: cafeListId },
+    const cafeList = await this.cafeBoardsRepository.findOne({
+      where: { id: cafeBoardId },
     });
     return await this.reviewsRepository.save({
       comment: comment,

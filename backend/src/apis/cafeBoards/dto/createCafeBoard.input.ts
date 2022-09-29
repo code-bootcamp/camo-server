@@ -2,7 +2,7 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 import { Column } from 'typeorm';
 
 @InputType()
-export class CreateCafeListInput {
+export class CreateCafeBoardInput {
   @Field(() => String)
   title: string;
 

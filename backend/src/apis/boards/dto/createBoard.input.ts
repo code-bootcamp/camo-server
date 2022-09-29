@@ -24,5 +24,5 @@ export class CreateBoardInput {
   image: string[];
 
   @Field(() => String, { nullable: true })
-  cafeList: string;
+  cafeBoard: string;
 }

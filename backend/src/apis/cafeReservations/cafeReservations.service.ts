@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CafeList } from '../cafeLists/entities/cafeList.entity';
+import { CafeBoard } from '../cafeBoards/entities/cafeBoard.entity';
 import { CafeReservation } from './entities/cafeReservations.entity';
 
 @Injectable()
@@ -10,8 +10,8 @@ export class CafeReservationsService {
     @InjectRepository(CafeReservation)
     private readonly cafeReservationsRepository: Repository<CafeReservation>,
 
-    @InjectRepository(CafeList)
-    private readonly cafeListsRepository: Repository<CafeList>,
+    @InjectRepository(CafeBoard)
+    private readonly cafeListsRepository: Repository<CafeBoard>,
   ) {}
 
   async find({ cafeReservationId }): Promise<CafeReservation> {
@@ -39,10 +39,10 @@ export class CafeReservationsService {
   }
 
   async create({ createReservationInput }): Promise<CafeReservation[]> {
-    const { userId, cafeListId } = createReservationInput;
+    const { userId, cafeBoardId } = createReservationInput;
 
     const cafeList = await this.cafeListsRepository.findOne({
-      where: { id: cafeListId },
+      where: { id: cafeBoardId },
     });
 
     const result = await this.cafeReservationsRepository.save({
@@ -50,7 +50,7 @@ export class CafeReservationsService {
       title: cafeList.title,
       deposit: cafeList.deposit,
       user: userId,
-      cafeList: cafeListId,
+      cafeList: cafeBoardId,
     });
     return result;
   }

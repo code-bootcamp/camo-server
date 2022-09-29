@@ -20,7 +20,7 @@ import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservat
 
 @Entity()
 @ObjectType()
-export class CafeList {
+export class CafeBoard {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -90,25 +90,25 @@ export class CafeList {
   updatedAt: Date;
 
   @JoinTable()
-  @ManyToMany(() => CafeListTag, (cafeListTag) => cafeListTag.cafeList, {
+  @ManyToMany(() => CafeListTag, (cafeListTag) => cafeListTag.cafeBoard, {
     nullable: true,
   })
   @Field(() => [CafeListTag], { nullable: true })
   cafeListTag: CafeListTag[];
 
-  @OneToMany(() => Review, (review) => review.cafeList, { nullable: true })
+  @OneToMany(() => Review, (review) => review.cafeBoard, { nullable: true })
   @Field(() => [Review], { nullable: true })
   reviews: Review[];
 
   @JoinTable()
-  @OneToMany(() => FavoriteCafe, (favoriteCafe) => favoriteCafe.cafeList, {
+  @OneToMany(() => FavoriteCafe, (favoriteCafe) => favoriteCafe.cafeBoard, {
     nullable: true,
   })
   @Field(() => [FavoriteCafe], { nullable: true })
   favoriteCafe: FavoriteCafe[];
 
   @JoinTable()
-  @OneToMany(() => CafeListImage, (cafeListImage) => cafeListImage.cafeList, {
+  @OneToMany(() => CafeListImage, (cafeListImage) => cafeListImage.cafeBoard, {
     nullable: true,
   })
   @Field(() => [CafeListImage], { nullable: true })
@@ -117,7 +117,7 @@ export class CafeList {
   @JoinTable()
   @OneToMany(
     () => CafeReservation,
-    (cafeReservation) => cafeReservation.cafeList,
+    (cafeReservation) => cafeReservation.cafeBoard,
     {
       nullable: true,
     },

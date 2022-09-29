@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
+import { CafeBoard } from 'src/apis/cafeBoards/entities/cafeBoard.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -13,7 +13,7 @@ export class CafeListTag {
   @Field(() => String)
   name: string;
 
-  @ManyToMany(() => CafeList, (cafeList) => cafeList.cafeListTag)
-  @Field(() => [CafeList])
-  cafeList: CafeList[];
+  @ManyToMany(() => CafeBoard, (cafeBoard) => cafeBoard.cafeListTag)
+  @Field(() => [CafeBoard])
+  cafeBoard: CafeBoard[];
 }

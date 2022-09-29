@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
+import { CafeBoard } from 'src/apis/cafeBoards/entities/cafeBoard.entity';
 import { Comment } from 'src/apis/comments/entites/comment.entity';
 import { favoriteBoard } from 'src/apis/favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from 'src/apis/images/entities/image.entity';
@@ -76,9 +76,9 @@ export class Board {
   @Field(() => User)
   user: User;
 
-  @ManyToOne(() => CafeList, { nullable: true })
-  @Field(() => CafeList, { nullable: true })
-  cafeList: CafeList;
+  @ManyToOne(() => CafeBoard, { nullable: true })
+  @Field(() => CafeBoard, { nullable: true })
+  cafeBoard: CafeBoard;
 
   @JoinTable()
   @OneToMany(() => Image, (image) => image.board, {

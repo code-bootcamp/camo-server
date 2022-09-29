@@ -34,6 +34,6 @@ services:
       - ./elk/logstash/logstash.dev.conf:/usr/share/logstash/pipeline/logstash.dev.conf
       - ./elk/logstash/mysql-connector-java-8.0.28.jar:/usr/share/logstash/mysql-connector-java-8.0.28.jar
       - ./elk/logstash/elasticsearch.json:/usr/share/logstash/elasticsearch.json
-      - ./elk/logstash/cafe.dev.conf:/usr/share/logstash/pipeline/cafe.dev.conf
-      - ./elk/logstash/cafe.json:/usr/share/logstash/templates/cafe.json
+      - ./elk/logstash/cafeBoard.dev.conf:/usr/share/logstash/pipeline/cafeBoard.dev.conf
+      - ./elk/logstash/cafeBoard.json:/usr/share/logstash/templates/cafeBoard.json
       - ./elk/logstash/pipelines.dev.yml:/usr/share/logstash/path.settings/pipelines.dev.yml

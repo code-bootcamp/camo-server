@@ -18,7 +18,7 @@ export class CreateReservationInput {
   endTime: string;
 
   @Field(() => String)
-  cafeListId: string;
+  cafeBoardId: string;
 
   @Field(() => String)
   userId: string;

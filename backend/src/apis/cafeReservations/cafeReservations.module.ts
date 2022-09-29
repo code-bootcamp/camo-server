@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CafeList } from '../cafeLists/entities/cafeList.entity';
+import { CafeBoard } from '../cafeBoards/entities/cafeBoard.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersService } from '../users/users.service';
 import { CafeReservationsResolver } from './cafeReservations.resolver';
@@ -12,7 +12,7 @@ import { CafeReservation } from './entities/cafeReservations.entity';
     TypeOrmModule.forFeature([
       CafeReservation, //
       User,
-      CafeList,
+      CafeBoard,
     ]),
   ],
   providers: [

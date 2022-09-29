@@ -14,14 +14,14 @@ import { Review } from '../reviews/entites/review.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersResolver } from '../users/users.resolver';
 import { UsersService } from '../users/users.service';
-import { CafeListsResolver } from './cafeLists.resolver';
-import { CafeListsService } from './cafeLists.service';
-import { CafeList } from './entities/cafeList.entity';
+import { CafeBoardsResolver } from './cafeBoards.resolver';
+import { CafeBoardsService } from './cafeBoards.service';
+import { CafeBoard } from './entities/cafeBoard.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      CafeList, //
+      CafeBoard, //
       FavoriteCafe,
       Review,
       CafeListImage,
@@ -34,11 +34,11 @@ import { CafeList } from './entities/cafeList.entity';
     }),
   ],
   providers: [
-    CafeListsResolver, //
-    CafeListsService,
+    CafeBoardsModule, //
+    CafeBoardsService,
     UsersService,
     CafeListImagesService,
     UsersResolver,
   ],
 })
-export class CafeListsModule {}
+export class CafeBoardsModule {}

@@ -4,13 +4,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
 import { IContext } from 'src/commons/type/context';
 import { Repository } from 'typeorm';
-import { CafeListsService } from './cafeLists.service';
-import { CreateCafeListInput } from './dto/createCafeList.input';
-import { UpdateCafeListInput } from './dto/updateCafeList.input';
-import { CafeList } from './entities/cafeList.entity';
+import { CafeBoardsService } from './cafeBoards.service';
+import { CreateCafeBoardInput } from './dto/createCafeBoard.input';
+import { UpdateCafeBoardInput } from './dto/updateCafeBoard.input';
+import { CafeBoard } from './entities/cafeBoard.entity';
 
 /**
- * CafeList(카페 소개글) GrqphQL API Resolver
+ * CafeBoard(카페 소개글) GrqphQL API Resolver
  * @APIs
  * 'searchCafeList'
  * 'fetchCafeListNumber',
@@ -24,54 +24,54 @@ import { CafeList } from './entities/cafeList.entity';
  * 'restoreCafeList'
  */
 @Resolver()
-export class CafeListsResolver {
+export class CafeBoardsResolver {
   constructor(
-    private readonly cafeListsService: CafeListsService, //
-    @InjectRepository(CafeList)
-    private readonly cafeListRepository: Repository<CafeList>,
+    private readonly cafeBoardsService: CafeBoardsService, //
+    @InjectRepository(CafeBoard)
+    private readonly cafeBoardsRepository: Repository<CafeBoard>,
   ) {}
 
   /** 카페 소개글 검색 */
-  @Query(() => [CafeList])
+  @Query(() => [CafeBoard])
   async searchCafeList(
     @Args({ name: 'search_cafelist', nullable: true }) search_cafelist: string,
   ) {
-    return this.cafeListsService.search({ search_cafelist });
+    return this.cafeBoardsService.search({ search_cafelist });
   }
 
   /** 카페 소개글 개수 조회 */
   @Query(() => Int)
   async fetchCafeListNumber() {
-    const result = await this.cafeListRepository.find({});
+    const result = await this.cafeBoardsRepository.find({});
     return result.length;
   }
 
   /** 카페게시글 하나 조회 */
-  @Query(() => CafeList)
+  @Query(() => CafeBoard)
   fetchCafeList(
-    @Args('cafeListId') cafeListId: string, //
+    @Args('cafeBoardId') cafeBoardId: string, //
   ) {
-    return this.cafeListsService.findOne({ cafeListId });
+    return this.cafeBoardsService.findOne({ cafeBoardId });
   }
 
   /** 카페 게시글 전체 조회 */
-  @Query(() => [CafeList])
+  @Query(() => [CafeBoard])
   async fetchCafeLists(
     @Args('page', { defaultValue: 1 }) page: number, //
   ) {
-    return this.cafeListsService.findAll({ page });
+    return this.cafeBoardsService.findAll({ page });
   }
 
   /** 카페 소개글 생성일 기준 조회
    * @Params page : 조회할 페이지 (ex 1, 2, 3)
    * @Params sortBy : 정렬기준 (ex ASC, DESC)
    */
-  @Query(() => [CafeList])
+  @Query(() => [CafeBoard])
   fetchCafeListsCreatedAt(
     @Args('page', { defaultValue: 1 }) page: number, //
     @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
   ) {
-    return this.cafeListsService.findByCreatedAt({
+    return this.cafeBoardsService.findByCreatedAt({
       page,
       sortBy,
     });
@@ -81,12 +81,12 @@ export class CafeListsResolver {
    * @Params page : 조회할 페이지 (ex 1, 2, 3)
    * @Params sortBy : 정렬기준 (ex ASC, DESC)
    */
-  @Query(() => [CafeList])
+  @Query(() => [CafeBoard])
   fetchCafeListsFavoriteCafe(
     @Args('page', { defaultValue: 1 }) page: number, //
     @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
   ) {
-    return this.cafeListsService.findByfavoriteCafeCount({
+    return this.cafeBoardsService.findByfavoriteCafeCount({
       page,
       sortBy,
     });
@@ -94,13 +94,13 @@ export class CafeListsResolver {
 
   /** 카페 소개글 생성 */
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => CafeList)
+  @Mutation(() => CafeBoard)
   async createCafeList(
-    @Args('createCafeListInput') createCafeListInput: CreateCafeListInput,
+    @Args('createCafeListInput') createCafeListInput: CreateCafeBoardInput,
     @Context() context: IContext,
   ) {
     const user = context.req.user.email;
-    return await this.cafeListsService.create({
+    return await this.cafeBoardsService.create({
       user,
       createCafeListInput,
     });
@@ -108,16 +108,16 @@ export class CafeListsResolver {
 
   /** 카페 소개글 업데이트 */
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => CafeList)
+  @Mutation(() => CafeBoard)
   async updateCafeList(
-    @Args('cafeListId') cafeListId: string,
-    @Args('updateCafeListInput') updateCafeListInput: UpdateCafeListInput,
+    @Args('cafeBoardId') cafeBoardId: string,
+    @Args('updateCafeListInput') updateCafeListInput: UpdateCafeBoardInput,
     @Context() context: IContext,
   ) {
     const userEmail = context.req.user.email;
-    const result = await this.cafeListsService.update({
+    const result = await this.cafeBoardsService.update({
       userEmail,
-      cafeListId,
+      cafeBoardId,
       updateCafeListInput,
     });
     return result;
@@ -127,10 +127,10 @@ export class CafeListsResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteCafeList(
-    @Args('cafeListId') cafeListId: string, //
+    @Args('cafeBoardId') cafeBoardId: string, //
     @Context() context: IContext,
   ) {
-    return this.cafeListsService.delete({ context, cafeListId });
+    return this.cafeBoardsService.delete({ context, cafeBoardId });
   }
 
   /** Admin */
@@ -138,8 +138,8 @@ export class CafeListsResolver {
   /** 카페 소개글 복구 */
   @Mutation(() => Boolean)
   restoreCafeList(
-    @Args('cafeListId') cafeListId: string, //
+    @Args('cafeBoardId') cafeBoardId: string, //
   ) {
-    return this.cafeListsService.restore({ cafeListId });
+    return this.cafeBoardsService.restore({ cafeBoardId });
   }
 }

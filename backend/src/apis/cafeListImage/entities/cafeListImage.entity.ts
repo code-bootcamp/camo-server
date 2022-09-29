@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CafeList } from 'src/apis/cafeLists/entities/cafeList.entity';
+import { CafeBoard } from 'src/apis/cafeBoards/entities/cafeBoard.entity';
 import {
   Column,
   DeleteDateColumn,
@@ -27,10 +27,10 @@ export class CafeListImage {
   @Field(() => String, { nullable: true })
   deletedAt: Date;
 
-  @ManyToOne(() => CafeList, {
+  @ManyToOne(() => CafeBoard, {
     nullable: true,
     orphanedRowAction: 'soft-delete',
   })
-  @Field(() => CafeList, { nullable: true })
-  cafeList: CafeList;
+  @Field(() => CafeBoard, { nullable: true })
+  cafeBoard: CafeBoard;
 }

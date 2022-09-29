@@ -17,7 +17,7 @@ export class CafeListImagesService {
             this.cafeListImagesRepository.save({
               isMain: idx === 0 ? true : false,
               url: el,
-              cafeList: { id: result.id },
+              cafeBoard: { id: result.id },
             });
             resolve('이미지 저장 완료');
             reject('이미지 저장 실패');
@@ -26,13 +26,13 @@ export class CafeListImagesService {
     );
   }
 
-  async updateImage({ image, cafeList }): Promise<string[]> {
+  async updateImage({ image, cafeBoard }): Promise<string[]> {
     await this.cafeListImagesRepository.find({
-      where: { cafeList: { id: cafeList.id } },
+      where: { cafeBoard: { id: cafeBoard.id } },
     });
 
     await this.cafeListImagesRepository.delete({
-      cafeList: { id: cafeList.id },
+      cafeBoard: { id: cafeBoard.id },
     });
 
     const result = await Promise.all(
@@ -42,7 +42,7 @@ export class CafeListImagesService {
             const result = this.cafeListImagesRepository.save({
               isMain: idx === 0 ? true : false,
               url: el,
-              cafeList: cafeList,
+              cafeBoard: cafeBoard,
             });
             resolve(result);
           }),

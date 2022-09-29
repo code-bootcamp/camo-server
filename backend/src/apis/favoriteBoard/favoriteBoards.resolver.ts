@@ -20,18 +20,18 @@ export class FavoriteBoardsResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   toggleLikeFeed(
-    @Args('boardId') boardId: string,
+    @Args('freeBoardId') freeBoardId: string,
     @Context() context: IContext,
   ) {
     const userId = context.req.user.id;
-    const result = this.favoriteBoardsService.like({ userId, boardId });
+    const result = this.favoriteBoardsService.like({ userId, freeBoardId });
     return result;
   }
 
   @Query(() => [favoriteBoard])
   fetchFavoriteUser(
-    @Args('boardId') boardId: string, //
+    @Args('freeBoardId') freeBoardId: string, //
   ) {
-    return this.favoriteBoardsService.findAll({ boardId });
+    return this.favoriteBoardsService.findAll({ freeBoardId });
   }
 }

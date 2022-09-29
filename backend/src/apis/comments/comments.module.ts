@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BoardsService } from '../boards/board.service';
-import { Board } from '../boards/entities/board.entity';
+import { FreeBoardsService } from '../freeboards/freeBoards.service';
+import { FreeBoard } from '../freeboards/entities/freeBoard.entity';
 import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
 import { Image } from '../images/entities/image.entity';
 import { TagsService } from '../tags/tags.service';
@@ -18,7 +18,7 @@ import { ImagesService } from '../images/image.service';
   imports: [
     TypeOrmModule.forFeature([
       Comment, //
-      Board,
+      FreeBoard,
       User,
       Tag,
       Image,
@@ -32,10 +32,9 @@ import { ImagesService } from '../images/image.service';
     CommentsResolver, //
     CommentsService,
     UsersService,
-    BoardsService,
+    FreeBoardsService,
     TagsService,
     ImagesService,
-    // ElasticsearchService,
   ],
 })
 export class CommentsModule {}

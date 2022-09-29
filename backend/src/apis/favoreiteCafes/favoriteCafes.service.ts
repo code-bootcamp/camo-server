@@ -23,8 +23,6 @@ export class FavoriteCafesService {
     private readonly usersRepository: Repository<User>,
 
     private readonly dataSource: DataSource,
-
-    private readonly usersService: UsersService,
   ) {}
 
   async like({ userId, cafeBoardId }): Promise<boolean> {

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Board } from '../../boards/entities/board.entity';
+import { FreeBoard } from '../../freeboards/entities/freeBoard.entity';
 
 @Entity()
 @ObjectType()
@@ -13,7 +13,7 @@ export class Tag {
   @Field(() => String)
   name: string;
 
-  @ManyToMany(() => Board, (boards) => boards.tags)
-  @Field(() => [Board])
-  boards: Board[];
+  @ManyToMany(() => FreeBoard, (freeBoard) => freeBoard.tags)
+  @Field(() => [FreeBoard])
+  boards: FreeBoard[];
 }

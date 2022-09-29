@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Board } from 'src/apis/boards/entities/board.entity';
+import { FreeBoard } from 'src/apis/freeboards/entities/freeBoard.entity';
 import {
   Column,
   DeleteDateColumn,
@@ -26,7 +26,7 @@ export class Image {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => Board, (board) => board.images)
-  @Field(() => Board)
-  board: Board;
+  @ManyToOne(() => FreeBoard, (freeBoard) => freeBoard.images)
+  @Field(() => FreeBoard)
+  freeBoard: FreeBoard;
 }

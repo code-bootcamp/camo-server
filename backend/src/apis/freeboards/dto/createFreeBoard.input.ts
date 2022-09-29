@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CreateBoardInput {
+export class CreateFreeBoardInput {
   @Field(() => String)
   title: string;
 

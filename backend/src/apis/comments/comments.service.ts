@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Board } from '../boards/entities/board.entity';
+import { FreeBoard } from '../freeboards/entities/freeBoard.entity';
 import { User } from '../users/entites/user.entity';
 import { Comment } from './entites/comment.entity';
 
@@ -12,15 +12,15 @@ export class CommentsService {
     private readonly commentRepository: Repository<Comment>, //
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Board)
-    private readonly boardRepository: Repository<Board>,
+    @InjectRepository(FreeBoard)
+    private readonly boardRepository: Repository<FreeBoard>,
   ) {}
 
   /** 댓글 개별 조회 */
   async find({ commentId }): Promise<Comment> {
     const result = await this.commentRepository.findOne({
       where: { id: commentId },
-      relations: ['board', 'user'],
+      relations: ['freeBoard', 'user'],
     });
     return result;
   }
@@ -29,9 +29,9 @@ export class CommentsService {
   async findAll({ boardId }): Promise<Comment[]> {
     const result = await this.commentRepository.find({
       where: {
-        board: { id: boardId },
+        freeBoard: { id: boardId },
       },
-      relations: ['board', 'user'],
+      relations: ['freeBoard', 'user'],
     });
     return result;
   }
@@ -47,7 +47,7 @@ export class CommentsService {
 
     return await this.commentRepository.save({
       user: { id: checkUser.id },
-      board: { id: checkBoard.id },
+      freeBoard: { id: checkBoard.id },
       comment,
     });
   }

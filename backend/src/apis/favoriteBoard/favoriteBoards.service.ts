@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { Board } from '../boards/entities/board.entity';
+import { FreeBoard } from '../freeboards/entities/freeBoard.entity';
 import { User } from '../users/entites/user.entity';
 import { favoriteBoard } from './entities/favoriteBoard.entity';
 
@@ -18,13 +18,13 @@ export class FavoriteBoardsService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
 
-    @InjectRepository(Board)
-    private readonly boardsRepository: Repository<Board>,
+    @InjectRepository(FreeBoard)
+    private readonly freeBoardsRepository: Repository<FreeBoard>,
 
     private readonly dataSource: DataSource,
   ) {}
 
-  async like({ userId, boardId }): Promise<boolean> {
+  async like({ userId, freeBoardId }): Promise<boolean> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction('REPEATABLE READ');
@@ -33,35 +33,35 @@ export class FavoriteBoardsService {
         where: { id: userId },
       });
 
-      const board = await queryRunner.manager.findOne(Board, {
-        where: { id: boardId },
+      const freeBoard = await queryRunner.manager.findOne(FreeBoard, {
+        where: { id: freeBoardId },
       });
 
-      if (!board) throw new NotFoundException('존재하지 않는 피드입니다');
+      if (!freeBoard) throw new NotFoundException('존재하지 않는 피드입니다');
 
       const boardLike = await this.favoriteBoardsRepository
         .createQueryBuilder('boardLike')
         .leftJoin('boardLike.user', 'user')
-        .leftJoin('boardLike.board', 'board')
+        .leftJoin('boardLike.freeBoard', 'freeBoard')
         .where({ user })
-        .andWhere({ board })
+        .andWhere({ freeBoard })
         .getOne();
 
       let updateLike: favoriteBoard;
-      let updateBoard: Board;
+      let updateBoard: FreeBoard;
       let likeStatus: boolean = null;
 
       if (!boardLike?.isLike || !boardLike) {
         updateLike = this.favoriteBoardsRepository.create({
           ...boardLike,
           user,
-          board,
+          freeBoard,
           isLike: true,
         });
 
-        updateBoard = this.boardsRepository.create({
-          ...board,
-          likeCount: board.likeCount + 1,
+        updateBoard = this.freeBoardsRepository.create({
+          ...freeBoard,
+          likeCount: freeBoard.likeCount + 1,
         });
 
         likeStatus = true;
@@ -69,18 +69,18 @@ export class FavoriteBoardsService {
         updateLike = this.favoriteBoardsRepository.create({
           ...boardLike,
           user,
-          board,
+          freeBoard,
           isLike: false,
         });
 
-        updateBoard = this.boardsRepository.create({
-          ...board,
-          likeCount: board.likeCount - 1,
+        updateBoard = this.freeBoardsRepository.create({
+          ...freeBoard,
+          likeCount: freeBoard.likeCount - 1,
         });
 
         likeStatus = false;
         await this.favoriteBoardsRepository.delete({
-          board: boardId,
+          freeBoard: freeBoardId,
           user: userId,
         });
       }
@@ -101,10 +101,10 @@ export class FavoriteBoardsService {
     }
   }
 
-  async findAll({ boardId }) {
+  async findAll({ freeBoardId }) {
     const result = await this.favoriteBoardsRepository.find({
-      where: { board: { id: boardId } },
-      relations: ['board', 'user'],
+      where: { freeBoard: { id: freeBoardId } },
+      relations: ['freeBoard', 'user'],
     });
     return result;
   }

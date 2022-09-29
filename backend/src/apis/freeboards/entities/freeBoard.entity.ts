@@ -20,7 +20,7 @@ import {
 
 @Entity()
 @ObjectType()
-export class Board {
+export class FreeBoard {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -66,7 +66,7 @@ export class Board {
   @Field(() => [Tag], { nullable: true })
   tags: Tag[];
 
-  @OneToMany(() => favoriteBoard, (favoriteBoard) => favoriteBoard.board, {
+  @OneToMany(() => favoriteBoard, (favoriteBoard) => favoriteBoard.freeBoard, {
     nullable: true,
   })
   @Field(() => [favoriteBoard], { nullable: true })
@@ -81,7 +81,7 @@ export class Board {
   cafeBoard: CafeBoard;
 
   @JoinTable()
-  @OneToMany(() => Image, (image) => image.board, {
+  @OneToMany(() => Image, (image) => image.freeBoard, {
     nullable: true,
     cascade: true,
   })
@@ -89,7 +89,7 @@ export class Board {
   images: Image[];
 
   @JoinTable()
-  @OneToMany(() => Comment, (comment) => comment.board, {
+  @OneToMany(() => Comment, (comment) => comment.freeBoard, {
     nullable: true,
     cascade: true,
   })

@@ -26,9 +26,9 @@ export class ImagesService {
     );
   }
 
-  async updateImage({ image, board }) {
+  async updateImage({ image, freeBoard }) {
     await this.ImagesRepository.delete({
-      board: { id: board.id },
+      freeBoard: { id: freeBoard.id },
     });
 
     const result = await Promise.all(
@@ -38,7 +38,7 @@ export class ImagesService {
             const result = this.ImagesRepository.save({
               isMain: idx === 0 ? true : false,
               url: el,
-              board: board,
+              freeBoard: freeBoard,
             });
             resolve(result);
           }),

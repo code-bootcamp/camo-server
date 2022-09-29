@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Board } from '../../boards/entities/board.entity';
+import { FreeBoard } from '../../freeboards/entities/freeBoard.entity';
 import { User } from '../../users/entites/user.entity';
 
 @Entity()
@@ -34,13 +34,13 @@ export class Comment {
   @Field(() => Date)
   deletedAt: Date;
 
-  @ManyToOne(() => Board, {
+  @ManyToOne(() => FreeBoard, {
     nullable: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @Field(() => Board, { nullable: true })
-  board: Board;
+  @Field(() => FreeBoard, { nullable: true })
+  freeBoard: FreeBoard;
 
   @ManyToOne(() => User, { nullable: true })
   @Field(() => User, { nullable: true })

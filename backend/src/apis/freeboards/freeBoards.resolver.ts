@@ -1,16 +1,16 @@
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation, Context, Int } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/commons/auth/gql-auth.guard';
-import { BoardsService } from './board.service';
-import { CreateBoardInput } from './dto/createBoard.input';
-import { UpdateBoardInput } from './dto/updateBoard.input';
-import { Board } from './entities/board.entity';
+import { FreeBoardsService } from './freeBoards.service';
+import { CreateFreeBoardInput } from './dto/createFreeBoard.input';
+import { UpdateFreeBoardInput } from './dto/updateBoard.input';
+import { FreeBoard } from './entities/freeBoard.entity';
 import { IContext } from 'src/commons/type/context';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 /**
- * Board GraphQL API Resolver
+ * FreeBoard GraphQL API Resolver
  * @APIs
  * 'searchBoards',
  * 'fetchBoardsNumber',
@@ -28,54 +28,55 @@ import { Repository } from 'typeorm';
  * 'fetchBoardWithDeleted',
  */
 @Resolver()
-export class Boardsresolver {
+export class FreeBoardsresolver {
   constructor(
-    private readonly boardsService: BoardsService, //
-    @InjectRepository(Board)
-    private readonly boardRepository: Repository<Board>,
+    private readonly freeBoardsService: FreeBoardsService, //
+
+    @InjectRepository(FreeBoard)
+    private readonly freeboardsRepository: Repository<FreeBoard>,
   ) {}
 
   /** 게시글을 검색어로 조회 */
-  @Query(() => [Board])
+  @Query(() => [FreeBoard])
   async searchBoards(
     @Args({ name: 'search_board', nullable: true }) search_board: string, //
   ) {
-    return this.boardsService.search({ search_board });
+    return this.freeBoardsService.search({ search_board });
   }
 
   /** 게시글 개수 조회 */
   @Query(() => Int)
   async fetchBoardsNumber() {
-    const result = await this.boardRepository.find({});
+    const result = await this.freeboardsRepository.find({});
     return result.length;
   }
 
   /** 게시글 하나 조회 */
-  @Query(() => Board)
+  @Query(() => FreeBoard)
   fetchBoard(
     @Args('boardId') boardId: string, //
   ) {
-    return this.boardsService.findBoardOne({ boardId });
+    return this.freeBoardsService.findBoardOne({ boardId });
   }
 
   /** 게시글 전체 내림차순 조회 */
-  @Query(() => [Board])
+  @Query(() => [FreeBoard])
   fetchBoards(
     @Args('page', { defaultValue: 1 }) page: number, //
   ) {
-    return this.boardsService.findAll({ page });
+    return this.freeBoardsService.findAll({ page });
   }
 
   /** 게시글 생성일 기준 조회
    * @Params page : 조회할 페이지 (ex 1, 2, 3)
    * @Params sortBy : 정렬기준 (ex ASC, DESC)
    */
-  @Query(() => [Board])
+  @Query(() => [FreeBoard])
   fetchBoardsCreatedAt(
     @Args('page', { defaultValue: 1 }) page: number, //
     @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
   ) {
-    return this.boardsService.findBoardsCreatedAt({
+    return this.freeBoardsService.findBoardsCreatedAt({
       page,
       sortBy,
     });
@@ -85,12 +86,12 @@ export class Boardsresolver {
    * @Params page : 조회할 페이지 (ex 1, 2, 3)
    * @Params sortBy : 정렬기준 (ex ASC, DESC)
    */
-  @Query(() => [Board])
+  @Query(() => [FreeBoard])
   fetchBoardsLikeCount(
     @Args('page', { defaultValue: 1 }) page: number, //
     @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
   ) {
-    return this.boardsService.findBoardsLikeCount({
+    return this.freeBoardsService.findBoardsLikeCount({
       page,
       sortBy,
     });
@@ -98,37 +99,37 @@ export class Boardsresolver {
 
   /** 로그인한 본인 게시글만 조회 */
   @UseGuards(GqlAuthAccessGuard)
-  @Query(() => [Board])
+  @Query(() => [FreeBoard])
   async searchMyBoards(
     @Args({ name: 'search', nullable: true }) search: string, //
   ) {
-    return this.boardsService.searchUsersBoard({ search });
+    return this.freeBoardsService.searchUsersBoard({ search });
   }
 
   /** 게시글 생성 */
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => Board)
+  @Mutation(() => FreeBoard)
   async createBoard(
     @Context() context: IContext,
-    @Args('createBoardInput') createBoardInput: CreateBoardInput,
+    @Args('createBoardInput') createBoardInput: CreateFreeBoardInput,
   ) {
     const user = context.req.user.email;
-    return await this.boardsService.create({ user, createBoardInput });
+    return await this.freeBoardsService.create({ user, createBoardInput });
   }
 
   /** 게시글 수정 */
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => Board)
+  @Mutation(() => FreeBoard)
   async updateBoard(
     @Context() context: IContext,
     @Args('boardId') boardId: string,
     @Args('nickName') nickName: string,
-    @Args('updateBoardInput') updateBoardInput: UpdateBoardInput,
+    @Args('updateFreeBoardInput') updateFreeBoardInput: UpdateFreeBoardInput,
   ) {
-    return this.boardsService.updateBoard({
+    return this.freeBoardsService.updateBoard({
       boardId,
       nickName,
-      updateBoardInput,
+      updateFreeBoardInput,
       context,
     });
   }
@@ -139,7 +140,7 @@ export class Boardsresolver {
   deleteBoard(
     @Args('boardId') boardId: string, //
   ) {
-    return this.boardsService.delete({ boardId });
+    return this.freeBoardsService.delete({ boardId });
   }
 
   /** 게시글 복구 */
@@ -148,7 +149,7 @@ export class Boardsresolver {
   restoreBoard(
     @Args('boardId') boardId: string, //
   ) {
-    return this.boardsService.restore({ boardId });
+    return this.freeBoardsService.restore({ boardId });
   }
 
   /** 유저가 작성한 게시글 조회 */
@@ -156,21 +157,21 @@ export class Boardsresolver {
   fetchUsermyBoardNumber(
     @Args('userId') userId: string, //
   ) {
-    return this.boardsService.findBoardByUser({ userId });
+    return this.freeBoardsService.findBoardByUser({ userId });
   }
 
   /** 로그인한 본인 게시글만 조회 */
-  @Query(() => [Board])
+  @Query(() => [FreeBoard])
   fetchUserMyBoard(
     @Args('userId') userId: string, //
     @Args('page', { defaultValue: 1 }) page: number,
   ) {
-    return this.boardsService.findBoardByUserWithPage({ userId, page });
+    return this.freeBoardsService.findBoardByUserWithPage({ userId, page });
   }
 
   /** 삭제된 게시글 조회 */
-  @Query(() => [Board])
+  @Query(() => [FreeBoard])
   fetchBoardWithDeleted() {
-    return this.boardsService.WithBoardDelete();
+    return this.freeBoardsService.WithBoardDelete();
   }
 }

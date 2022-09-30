@@ -6,24 +6,25 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
-import { CafeListImagesService } from '../cafeListImage/CafeListImages.service';
 import { User } from '../users/entites/user.entity';
 import { Like } from '../likes/entities/like.entity';
+import { ImagesService } from '../images/image.service';
+import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class CafeBoardsService {
   constructor(
     @InjectRepository(CafeBoard)
-    private readonly cafeBoardRepository: Repository<CafeBoard>,
+    private readonly cafeBoardsRepository: Repository<CafeBoard>,
 
-    @InjectRepository(CafeListImage)
-    private readonly cafeListImageRepository: Repository<CafeListImage>,
+    @InjectRepository(Image)
+    private readonly imagesRepository: Repository<Image>,
 
-    private readonly cafeListImageService: CafeListImagesService,
+    private readonly imagesService: ImagesService,
 
     @InjectRepository(CafeListTag)
     private readonly cafeListTagRepository: Repository<CafeListTag>,
+
     private readonly elasticsearchService: ElasticsearchService,
 
     @Inject(CACHE_MANAGER)
@@ -33,14 +34,14 @@ export class CafeBoardsService {
     private readonly likesRepository: Repository<Like>,
 
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async findOne({ cafeBoardId }: { cafeBoardId: string }): Promise<CafeBoard> {
-    const result = await this.cafeBoardRepository.findOne({
+    const result = await this.cafeBoardsRepository.findOne({
       where: { id: cafeBoardId },
       relations: [
-        'cafeListImage',
+        'images',
         'reviews',
         'cafeListTag',
         'user',
@@ -51,9 +52,9 @@ export class CafeBoardsService {
   }
 
   async findByCreatedAt({ page, sortBy }): Promise<CafeBoard[]> {
-    return await this.cafeBoardRepository.find({
+    return await this.cafeBoardsRepository.find({
       relations: [
-        'cafeListImage',
+        'images',
         'reviews',
         'cafeListTag',
         'user',
@@ -66,9 +67,9 @@ export class CafeBoardsService {
   }
 
   async findByfavoriteCafeCount({ page, sortBy }): Promise<CafeBoard[]> {
-    return await this.cafeBoardRepository.find({
+    return await this.cafeBoardsRepository.find({
       relations: [
-        'cafeListImage',
+        'images',
         'reviews',
         'cafeListTag',
         'user',
@@ -81,9 +82,9 @@ export class CafeBoardsService {
   }
 
   async findAll({ page }: { page: number }): Promise<CafeBoard[]> {
-    const result = await this.cafeBoardRepository.find({
+    const result = await this.cafeBoardsRepository.find({
       relations: [
-        'cafeListImage',
+        'images',
         'reviews',
         'cafeListTag',
         'user',
@@ -98,7 +99,7 @@ export class CafeBoardsService {
   async create({ userId, createCafeBoardInput }): Promise<CafeBoard[]> {
     const { tags, image, ...cafeBoard } = createCafeBoardInput;
 
-    const _user = await this.userRepository.findOne({
+    const _user = await this.usersRepository.findOne({
       where: { id: userId },
     });
 
@@ -120,22 +121,22 @@ export class CafeBoardsService {
           cafeListTag.push(newTag);
         }
       }
-      const result = await this.cafeBoardRepository.save({
+      const result = await this.cafeBoardsRepository.save({
         ...cafeBoard,
         cafeListTag: cafeListTag,
         user: _user.id,
       });
       if (image) {
-        await this.cafeListImageService.createImage({ image, result });
+        await this.imagesService.createCafeBoardImage({ image, result });
       }
       return result;
     } else {
-      const result = await this.cafeBoardRepository.save({
+      const result = await this.cafeBoardsRepository.save({
         ...cafeBoard,
         user: _user,
       });
       if (image) {
-        await this.cafeListImageService.createImage({ image, result });
+        await this.imagesService.createCafeBoardImage({ image, result });
       }
       return result;
     }
@@ -146,9 +147,9 @@ export class CafeBoardsService {
     cafeBoardId,
     updateCafeBoardInput,
   }): Promise<CafeBoard[]> {
-    const { image, ...updatecafeBoard } = updateCafeBoardInput;
+    const { image, ...updateCafeBoard } = updateCafeBoardInput;
 
-    const myCafeBoard = await this.cafeBoardRepository.findOne({
+    const myCafeBoard = await this.cafeBoardsRepository.findOne({
       where: { id: cafeBoardId },
       relations: ['user'],
     });
@@ -156,7 +157,7 @@ export class CafeBoardsService {
     if (userEmail !== myCafeBoard.user.email)
       throw new ConflictException('권한이 없습니다.');
 
-    const _image = await this.cafeListImageRepository.find({
+    const _image = await this.imagesRepository.find({
       where: { cafeBoard: { id: cafeBoardId } },
     });
 
@@ -164,7 +165,7 @@ export class CafeBoardsService {
       _image.map(
         (el) =>
           new Promise((resolve) => {
-            this.cafeListImageRepository.softDelete({ id: el.id });
+            this.imagesRepository.softDelete({ id: el.id });
             resolve('이미지 삭제 완료');
           }),
       ),
@@ -174,7 +175,7 @@ export class CafeBoardsService {
       image.map(
         (el) =>
           new Promise((resolve) => {
-            this.cafeListImageRepository.save({
+            this.imagesRepository.save({
               url: el,
               cafeBoard: { id: myCafeBoard.id },
             });
@@ -183,7 +184,7 @@ export class CafeBoardsService {
       ),
     );
 
-    const result = this.cafeBoardRepository.save({
+    const result = this.cafeBoardsRepository.save({
       ...myCafeBoard,
       ...updateCafeBoardInput,
     });
@@ -192,23 +193,23 @@ export class CafeBoardsService {
 
   async delete({ context, cafeBoardId }): Promise<boolean> {
     const userId = context.req.user.id;
-    const cafeBoard = await this.cafeBoardRepository.findOne({
+    const cafeBoard = await this.cafeBoardsRepository.findOne({
       where: { id: cafeBoardId },
       relations: ['user'],
     });
     // if (cafeBoard.user.id !== userId)
     //   throw new ConflictException('게시물의 작성자만 삭제할 수 있습니다.');
 
-    const result = await this.cafeBoardRepository.softDelete({
+    const result = await this.cafeBoardsRepository.softDelete({
       id: cafeBoardId,
     });
-    this.cafeListImageRepository.delete({ cafeBoard: { id: cafeBoard.id } });
+    this.imagesRepository.delete({ cafeBoard: { id: cafeBoard.id } });
     this.likesRepository.delete({ cafeBoard: { id: cafeBoard.id } });
     return result.affected ? true : false;
   }
 
   async restore({ cafeBoardId }): Promise<boolean> {
-    const restoreResult = await this.cafeBoardRepository.restore({
+    const restoreResult = await this.cafeBoardsRepository.restore({
       id: cafeBoardId,
     });
     return restoreResult.affected ? true : false;
@@ -219,7 +220,7 @@ export class CafeBoardsService {
       images.map(
         (el, idx) =>
           new Promise((resolve, reject) => {
-            this.cafeListImageRepository.save({
+            this.imagesRepository.save({
               iaMain: idx === 0 ? true : false,
               url: el,
               cafeBoard: { id: result.id },

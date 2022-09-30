@@ -5,10 +5,10 @@ import {
 } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesGuard } from 'src/commons/auth/roles.guard';
-import { CafeListImagesService } from '../cafeListImage/CafeListImages.service';
-import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
 import { CafeReservation } from '../cafeReservations/entities/cafeReservations.entity';
+import { Image } from '../images/entities/image.entity';
+import { ImagesService } from '../images/image.service';
 import { Like } from '../likes/entities/like.entity';
 import { Review } from '../reviews/entites/review.entity';
 import { User } from '../users/entites/user.entity';
@@ -24,7 +24,7 @@ import { CafeBoard } from './entities/cafeBoard.entity';
       CafeBoard, //
       Like,
       Review,
-      CafeListImage,
+      Image,
       CafeListTag,
       User,
       CafeReservation,
@@ -38,7 +38,7 @@ import { CafeBoard } from './entities/cafeBoard.entity';
     CafeBoardsService,
     CafeBoardsResolver,
     UsersService,
-    CafeListImagesService,
+    ImagesService,
     UsersResolver,
   ],
 })

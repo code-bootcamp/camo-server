@@ -14,9 +14,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Review } from 'src/apis/reviews/entites/review.entity';
-import { CafeListImage } from 'src/apis/cafeListImage/entities/cafeListImage.entity';
 import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { Like } from 'src/apis/likes/entities/like.entity';
+import { Image } from 'src/apis/images/entities/image.entity';
 
 @Entity()
 @ObjectType()
@@ -108,11 +108,12 @@ export class CafeBoard {
   like: Like[];
 
   @JoinTable()
-  @OneToMany(() => CafeListImage, (cafeListImage) => cafeListImage.cafeBoard, {
+  @OneToMany(() => Image, (image) => image.cafeBoard, {
     nullable: true,
+    cascade: true,
   })
-  @Field(() => [CafeListImage], { nullable: true })
-  cafeListImage: CafeListImage[];
+  @Field(() => [Image], { nullable: true })
+  images: Image[];
 
   @JoinTable()
   @OneToMany(

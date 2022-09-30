@@ -29,7 +29,13 @@ export class CafeReservationsService {
     return result.length;
   }
 
-  async findUser({ page, userId }): Promise<CafeReservation[]> {
+  async findUser({
+    page,
+    userId,
+  }: {
+    page: number;
+    userId: string;
+  }): Promise<CafeReservation[]> {
     return await this.cafeReservationsRepository.find({
       where: { user: { id: userId } },
       relations: ['cafeList', 'user', 'cafeList.cafeListImage'],

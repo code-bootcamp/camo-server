@@ -36,7 +36,7 @@ export class CafeBoardsService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findOne({ cafeBoardId }): Promise<CafeBoard> {
+  async findOne({ cafeBoardId }: { cafeBoardId: string }): Promise<CafeBoard> {
     const result = await this.cafeBoardRepository.findOne({
       where: { id: cafeBoardId },
       relations: [
@@ -48,7 +48,6 @@ export class CafeBoardsService {
       ],
     });
     return result;
-    // 12개 기준
   }
 
   async findByCreatedAt({ page, sortBy }): Promise<CafeBoard[]> {
@@ -81,7 +80,7 @@ export class CafeBoardsService {
     });
   }
 
-  async findAll({ page }): Promise<CafeBoard[]> {
+  async findAll({ page }: { page: number }): Promise<CafeBoard[]> {
     const result = await this.cafeBoardRepository.find({
       relations: [
         'cafeListImage',
@@ -96,11 +95,11 @@ export class CafeBoardsService {
     return result;
   }
 
-  async create({ user, createCafeBoardInput }): Promise<CafeBoard[]> {
+  async create({ userId, createCafeBoardInput }): Promise<CafeBoard[]> {
     const { tags, image, ...cafeBoard } = createCafeBoardInput;
 
     const _user = await this.userRepository.findOne({
-      where: { email: user },
+      where: { id: userId },
     });
 
     if (tags) {
@@ -145,16 +144,16 @@ export class CafeBoardsService {
   async update({
     userEmail,
     cafeBoardId,
-    updateCafeListInput,
+    updateCafeBoardInput,
   }): Promise<CafeBoard[]> {
-    const { image, ...updatecafeList } = updateCafeListInput;
+    const { image, ...updatecafeBoard } = updateCafeBoardInput;
 
-    const myCafeList = await this.cafeBoardRepository.findOne({
+    const myCafeBoard = await this.cafeBoardRepository.findOne({
       where: { id: cafeBoardId },
       relations: ['user'],
     });
 
-    if (userEmail !== myCafeList.user.email)
+    if (userEmail !== myCafeBoard.user.email)
       throw new ConflictException('권한이 없습니다.');
 
     const _image = await this.cafeListImageRepository.find({
@@ -177,7 +176,7 @@ export class CafeBoardsService {
           new Promise((resolve) => {
             this.cafeListImageRepository.save({
               url: el,
-              cafeBoard: { id: myCafeList.id },
+              cafeBoard: { id: myCafeBoard.id },
             });
             resolve('이미지 저장 완료');
           }),
@@ -185,8 +184,8 @@ export class CafeBoardsService {
     );
 
     const result = this.cafeBoardRepository.save({
-      ...myCafeList,
-      ...updateCafeListInput,
+      ...myCafeBoard,
+      ...updateCafeBoardInput,
     });
     return result;
   }

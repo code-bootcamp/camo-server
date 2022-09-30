@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Image } from '../images/entities/image.entity';
-import { Tag } from '../tags/entities/tag.entity';
+import { FreeBoardTag } from '../freeBoardTags/entities/freeBoardTag.entity';
 import { User } from '../users/entites/user.entity';
 import { FreeBoard } from './entities/freeBoard.entity';
 import { Cache } from 'cache-manager';
@@ -18,13 +18,13 @@ import { ImagesService } from '../images/image.service';
 export class FreeBoardsService {
   constructor(
     @InjectRepository(FreeBoard)
-    private readonly boardRepository: Repository<FreeBoard>,
-    @InjectRepository(Tag)
-    private readonly tagRepository: Repository<Tag>,
+    private readonly freeBoardsRepository: Repository<FreeBoard>,
+    @InjectRepository(FreeBoardTag)
+    private readonly freeBoardTagsRepository: Repository<FreeBoardTag>,
     @InjectRepository(Image)
-    private readonly imageRepository: Repository<Image>,
+    private readonly imagesRepository: Repository<Image>,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
 
@@ -34,7 +34,7 @@ export class FreeBoardsService {
   ) {}
 
   async findAll({ page }: { page: number }): Promise<FreeBoard[]> {
-    return await this.boardRepository.find({
+    return await this.freeBoardsRepository.find({
       relations: ['tags', 'comment', 'images', 'user'],
       order: { createdAt: 'DESC' },
       take: 10,
@@ -43,7 +43,7 @@ export class FreeBoardsService {
   }
 
   async findBoardByUser({ userId }: { userId: string }): Promise<number> {
-    const result = await this.boardRepository.find({
+    const result = await this.freeBoardsRepository.find({
       where: { user: { id: userId } },
       relations: ['user'],
     });
@@ -57,7 +57,7 @@ export class FreeBoardsService {
     userId: string;
     page: number;
   }): Promise<FreeBoard[]> {
-    const result = await this.boardRepository.find({
+    const result = await this.freeBoardsRepository.find({
       where: { user: { id: userId } },
       order: { createdAt: 'DESC' },
       relations: ['user'],
@@ -68,7 +68,7 @@ export class FreeBoardsService {
   }
 
   async findBoardsCreatedAt({ page, sortBy }): Promise<FreeBoard[]> {
-    return await this.boardRepository.find({
+    return await this.freeBoardsRepository.find({
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
       order: { createdAt: sortBy },
       take: 10,
@@ -77,7 +77,7 @@ export class FreeBoardsService {
   }
 
   async findBoardsLikeCount({ page, sortBy }): Promise<FreeBoard[]> {
-    return await this.boardRepository.find({
+    return await this.freeBoardsRepository.find({
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
       order: { likeCount: sortBy },
       take: 10,
@@ -86,7 +86,7 @@ export class FreeBoardsService {
   }
 
   async findBoardOne({ boardId }: { boardId: string }): Promise<FreeBoard> {
-    const result = await this.boardRepository.findOne({
+    const result = await this.freeBoardsRepository.findOne({
       where: { id: boardId },
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
     });
@@ -97,7 +97,7 @@ export class FreeBoardsService {
   async create({ user, createBoardInput }) {
     const { tags, image, ...FreeBoard } = createBoardInput;
 
-    const _user = await this.userRepository.findOne({
+    const _user = await this.usersRepository.findOne({
       where: { email: user },
     });
     if (tags) {
@@ -105,35 +105,35 @@ export class FreeBoardsService {
       for (let i = 0; i < tags.length; i++) {
         const tagName = tags[i].replace('#', '');
 
-        const prevTag = await this.tagRepository.findOne({
+        const prevTag = await this.freeBoardTagsRepository.findOne({
           where: { name: tagName },
         });
         if (prevTag) {
           boardtag.push(prevTag);
         } else {
-          const newTag = await this.tagRepository.save({
+          const newTag = await this.freeBoardTagsRepository.save({
             name: tagName,
           });
           boardtag.push(newTag);
         }
       }
-      const result = await this.boardRepository.save({
+      const result = await this.freeBoardsRepository.save({
         ...FreeBoard,
         tags: boardtag,
         user: _user.id,
       });
 
       if (image) {
-        await this.imagesService.createImage({ image, result });
+        await this.imagesService.createFreeBoardImage({ image, result });
       }
       return result;
     } else {
-      const result = await this.boardRepository.save({
+      const result = await this.freeBoardsRepository.save({
         ...FreeBoard,
         user: _user,
       });
       if (image) {
-        await this.imagesService.createImage({ image, result });
+        await this.imagesService.createFreeBoardImage({ image, result });
       }
       return result;
     }
@@ -142,12 +142,12 @@ export class FreeBoardsService {
   async update({ boardId, updateFreeBoardInput }) {
     const { image } = updateFreeBoardInput;
 
-    const boardList = await this.boardRepository.findOne({
+    const boardList = await this.freeBoardsRepository.findOne({
       where: { id: boardId },
       relations: ['user'],
     });
 
-    const _image = await this.imageRepository.find({
+    const _image = await this.imagesRepository.find({
       where: { freeBoard: { id: boardId } },
     });
 
@@ -155,7 +155,7 @@ export class FreeBoardsService {
       _image.map(
         (el) =>
           new Promise((resolve) => {
-            this.imageRepository.softDelete({ id: el.id });
+            this.imagesRepository.softDelete({ id: el.id });
             resolve('이미지 삭제 완료');
           }),
       ),
@@ -165,7 +165,7 @@ export class FreeBoardsService {
       image.map(
         (el) =>
           new Promise((resolve) => {
-            this.imageRepository.save({
+            this.imagesRepository.save({
               url: el,
               board: { id: boardList.id },
             });
@@ -174,7 +174,7 @@ export class FreeBoardsService {
       ),
     );
 
-    const result = this.boardRepository.save({
+    const result = this.freeBoardsRepository.save({
       ...boardList,
       ...updateFreeBoardInput,
     });
@@ -182,21 +182,23 @@ export class FreeBoardsService {
   }
 
   async delete({ boardId }): Promise<boolean> {
-    const deleteresult = await this.boardRepository.softDelete({
+    const deleteresult = await this.freeBoardsRepository.softDelete({
       id: boardId,
     });
     return deleteresult.affected ? true : false;
   }
 
   async WithBoardDelete(): Promise<FreeBoard[]> {
-    return await this.boardRepository.find({
+    return await this.freeBoardsRepository.find({
       relations: ['boardTag', 'favoritBoard', 'Comment'],
       withDeleted: true,
     });
   }
 
   async restore({ boardId }): Promise<boolean> {
-    const restoreResult = await this.boardRepository.restore({ id: boardId });
+    const restoreResult = await this.freeBoardsRepository.restore({
+      id: boardId,
+    });
     return restoreResult.affected ? true : false;
   }
 

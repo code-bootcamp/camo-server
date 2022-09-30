@@ -7,17 +7,17 @@ import { Image } from './entities/image.entity';
 export class ImagesService {
   constructor(
     @InjectRepository(Image)
-    private readonly ImagesRepository: Repository<Image>, //
+    private readonly imagesRepository: Repository<Image>, //
   ) {}
-  async createImage({ image, result }) {
+  async createFreeBoardImage({ image, result }) {
     return await Promise.all(
       image.map(
         (el, idx) =>
           new Promise((resolve, reject) => {
-            this.ImagesRepository.save({
+            this.imagesRepository.save({
               isMain: idx === 0 ? true : false,
               url: el,
-              board: { id: result.id },
+              freeBoard: { id: result.id },
             });
             resolve('이미지 저장 완료');
             reject('이미지 저장 실패');
@@ -26,8 +26,25 @@ export class ImagesService {
     );
   }
 
-  async updateImage({ image, freeBoard }) {
-    await this.ImagesRepository.delete({
+  async createCafeBoardImage({ image, result }) {
+    return await Promise.all(
+      image.map(
+        (el, idx) =>
+          new Promise((resolve, reject) => {
+            this.imagesRepository.save({
+              isMain: idx === 0 ? true : false,
+              url: el,
+              cafeBoard: { id: result.id },
+            });
+            resolve('이미지 저장 완료');
+            reject('이미지 저장 실패');
+          }),
+      ),
+    );
+  }
+
+  async updateFreeBoardImage({ image, freeBoard }) {
+    await this.imagesRepository.delete({
       freeBoard: { id: freeBoard.id },
     });
 
@@ -35,7 +52,7 @@ export class ImagesService {
       image.map(
         (el, idx) =>
           new Promise((resolve) => {
-            const result = this.ImagesRepository.save({
+            const result = this.imagesRepository.save({
               isMain: idx === 0 ? true : false,
               url: el,
               freeBoard: freeBoard,
@@ -47,7 +64,28 @@ export class ImagesService {
     return result;
   }
 
-  async findImageAll({ image }) {
-    return image.map((el) => el.url);
+  async updateCafeBoardImage({ image, cafeBoard }): Promise<string[]> {
+    await this.imagesRepository.find({
+      where: { cafeBoard: { id: cafeBoard.id } },
+    });
+
+    await this.imagesRepository.delete({
+      cafeBoard: { id: cafeBoard.id },
+    });
+
+    const result = await Promise.all(
+      image.map(
+        (el, idx) =>
+          new Promise((resolve) => {
+            const result = this.imagesRepository.save({
+              isMain: idx === 0 ? true : false,
+              url: el,
+              cafeBoard: cafeBoard,
+            });
+            resolve(result);
+          }),
+      ),
+    );
+    return result;
   }
 }

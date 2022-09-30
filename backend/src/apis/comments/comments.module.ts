@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FreeBoardsService } from '../freeboards/freeBoards.service';
 import { FreeBoard } from '../freeboards/entities/freeBoard.entity';
 import { Image } from '../images/entities/image.entity';
-import { TagsService } from '../tags/tags.service';
-import { Tag } from '../tags/entities/tag.entity';
+import { FreeBoardTagsService } from '../freeBoardTags/freeBoardTags.service';
+import { FreeBoardTag } from '../freeBoardTags/entities/freeBoardTag.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersService } from '../users/users.service';
 import { CommentsResolver } from './comments.resolver';
@@ -20,7 +20,7 @@ import { Like } from '../likes/entities/like.entity';
       Comment, //
       FreeBoard,
       User,
-      Tag,
+      FreeBoardTag,
       Image,
       Like,
     ]),
@@ -33,7 +33,7 @@ import { Like } from '../likes/entities/like.entity';
     CommentsService,
     UsersService,
     FreeBoardsService,
-    TagsService,
+    FreeBoardTagsService,
     ImagesService,
   ],
 })

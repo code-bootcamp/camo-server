@@ -3,7 +3,7 @@ import { CafeBoard } from 'src/apis/cafeBoards/entities/cafeBoard.entity';
 import { Comment } from 'src/apis/comments/entites/comment.entity';
 import { Image } from 'src/apis/images/entities/image.entity';
 import { Like } from 'src/apis/likes/entities/like.entity';
-import { Tag } from 'src/apis/tags/entities/tag.entity';
+import { FreeBoardTag } from 'src/apis/freeBoardTags/entities/freeBoardTag.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,
@@ -62,9 +62,9 @@ export class FreeBoard {
   addressDetail: string;
 
   @JoinTable()
-  @ManyToMany(() => Tag, (tags) => tags.boards, { nullable: true })
-  @Field(() => [Tag], { nullable: true })
-  tags: Tag[];
+  @ManyToMany(() => FreeBoardTag, (tags) => tags.freeBoard, { nullable: true })
+  @Field(() => [FreeBoardTag], { nullable: true })
+  tags: FreeBoardTag[];
 
   @OneToMany(() => Like, (like) => like.freeBoard, {
     nullable: true,

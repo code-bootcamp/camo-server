@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Image } from '../images/entities/image.entity';
-import { FreeBoardTag } from '../freeBoardTags/entities/freeBoardTag.entity';
+import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entites/user.entity';
 import { FreeBoard } from './entities/freeBoard.entity';
 import { Cache } from 'cache-manager';
@@ -19,8 +19,8 @@ export class FreeBoardsService {
   constructor(
     @InjectRepository(FreeBoard)
     private readonly freeBoardsRepository: Repository<FreeBoard>,
-    @InjectRepository(FreeBoardTag)
-    private readonly freeBoardTagsRepository: Repository<FreeBoardTag>,
+    @InjectRepository(Tag)
+    private readonly tagsRepository: Repository<Tag>,
     @InjectRepository(Image)
     private readonly imagesRepository: Repository<Image>,
     @InjectRepository(User)
@@ -95,7 +95,7 @@ export class FreeBoardsService {
   }
 
   async create({ user, createBoardInput }) {
-    const { tags, image, ...FreeBoard } = createBoardInput;
+    const { tags, image, ...freeBoard } = createBoardInput;
 
     const _user = await this.usersRepository.findOne({
       where: { email: user },
@@ -105,20 +105,20 @@ export class FreeBoardsService {
       for (let i = 0; i < tags.length; i++) {
         const tagName = tags[i].replace('#', '');
 
-        const prevTag = await this.freeBoardTagsRepository.findOne({
+        const prevTag = await this.tagsRepository.findOne({
           where: { name: tagName },
         });
         if (prevTag) {
           boardtag.push(prevTag);
         } else {
-          const newTag = await this.freeBoardTagsRepository.save({
+          const newTag = await this.tagsRepository.save({
             name: tagName,
           });
           boardtag.push(newTag);
         }
       }
       const result = await this.freeBoardsRepository.save({
-        ...FreeBoard,
+        ...freeBoard,
         tags: boardtag,
         user: _user.id,
       });
@@ -129,7 +129,7 @@ export class FreeBoardsService {
       return result;
     } else {
       const result = await this.freeBoardsRepository.save({
-        ...FreeBoard,
+        ...freeBoard,
         user: _user,
       });
       if (image) {

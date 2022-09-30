@@ -11,12 +11,11 @@ import { FreeBoardsmodule } from './apis/freeboards/freeBoards.module';
 import { AuthsModule } from './apis/auths/auths.module';
 import { CafeBoardsModule } from './apis/cafeBoards/cafeBoards.module';
 import { CommentsModule } from './apis/comments/comments.module';
-import { FreeBoardTagsModule } from './apis/freeBoardTags/freeBoardTags.module';
+import { TagsModule } from './apis/tags/tags.module';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 import { FileModule } from './apis/files/file.module';
 import { ChatModule } from './apis/chat/chat.module';
-import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
 import { LikesModule } from './apis/likes/likes.module';
 
 @Module({
@@ -28,13 +27,12 @@ import { LikesModule } from './apis/likes/likes.module';
     FreeBoardsmodule,
     CafeBoardsModule,
     CafeReservationsMoudule,
-    CafeListTagsModule,
     CommentsModule,
     LikesModule,
     FileModule,
     PaymentsModule,
     ReviewsModule,
-    FreeBoardTagsModule,
+    TagsModule,
     UsersModule,
     ChatModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({

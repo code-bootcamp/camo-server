@@ -1,4 +1,3 @@
-import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
 import { CafeBoard } from './entities/cafeBoard.entity';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER, Inject } from '@nestjs/common';
@@ -10,6 +9,7 @@ import { User } from '../users/entites/user.entity';
 import { Like } from '../likes/entities/like.entity';
 import { ImagesService } from '../images/image.service';
 import { Image } from '../images/entities/image.entity';
+import { Tag } from '../tags/entities/tag.entity';
 
 @Injectable()
 export class CafeBoardsService {
@@ -22,8 +22,8 @@ export class CafeBoardsService {
 
     private readonly imagesService: ImagesService,
 
-    @InjectRepository(CafeListTag)
-    private readonly cafeListTagRepository: Repository<CafeListTag>,
+    @InjectRepository(Tag)
+    private readonly tagsRepository: Repository<Tag>,
 
     private readonly elasticsearchService: ElasticsearchService,
 
@@ -40,42 +40,24 @@ export class CafeBoardsService {
   async findOne({ cafeBoardId }: { cafeBoardId: string }): Promise<CafeBoard> {
     const result = await this.cafeBoardsRepository.findOne({
       where: { id: cafeBoardId },
-      relations: [
-        'images',
-        'reviews',
-        'cafeListTag',
-        'user',
-        'cafeReservation',
-      ],
+      relations: ['images', 'reviews', 'tags', 'user', 'cafeReservation'],
     });
     return result;
   }
 
   async findByCreatedAt({ page, sortBy }): Promise<CafeBoard[]> {
     return await this.cafeBoardsRepository.find({
-      relations: [
-        'images',
-        'reviews',
-        'cafeListTag',
-        'user',
-        'cafeReservation',
-      ],
+      relations: ['images', 'reviews', 'tags', 'user', 'cafeReservation'],
       order: { createdAt: sortBy },
       take: 10,
       skip: page ? (page - 1) * 10 : 0,
     });
   }
 
-  async findByfavoriteCafeCount({ page, sortBy }): Promise<CafeBoard[]> {
+  async findByCafeLikeCount({ page, sortBy }): Promise<CafeBoard[]> {
     return await this.cafeBoardsRepository.find({
-      relations: [
-        'images',
-        'reviews',
-        'cafeListTag',
-        'user',
-        'cafeReservation',
-      ],
-      order: { favoriteCafeCount: sortBy },
+      relations: ['images', 'reviews', 'tags', 'user', 'cafeReservation'],
+      order: { CafeLikeCount: sortBy },
       take: 6,
       skip: page ? (page - 1) * 6 : 0,
     });
@@ -83,47 +65,41 @@ export class CafeBoardsService {
 
   async findAll({ page }: { page: number }): Promise<CafeBoard[]> {
     const result = await this.cafeBoardsRepository.find({
-      relations: [
-        'images',
-        'reviews',
-        'cafeListTag',
-        'user',
-        'cafeReservation',
-      ],
+      relations: ['images', 'reviews', 'tags', 'user', 'cafeReservation'],
       take: 10,
       skip: (page - 1) * 10,
     });
     return result;
   }
 
-  async create({ userId, createCafeBoardInput }): Promise<CafeBoard[]> {
+  async create({ user, createCafeBoardInput }): Promise<CafeBoard[]> {
     const { tags, image, ...cafeBoard } = createCafeBoardInput;
 
     const _user = await this.usersRepository.findOne({
-      where: { id: userId },
+      where: { email: user },
     });
 
     if (tags) {
-      const cafeListTag = [];
+      const boardtag = [];
       for (let i = 0; i < tags.length; i++) {
         const tagName = tags[i].replace('#', '');
 
-        const prevTag = await this.cafeListTagRepository.findOne({
+        const prevTag = await this.tagsRepository.findOne({
           where: { name: tagName },
         });
 
         if (prevTag) {
-          cafeListTag.push(prevTag);
+          boardtag.push(prevTag);
         } else {
-          const newTag = await this.cafeListTagRepository.save({
+          const newTag = await this.tagsRepository.save({
             name: tagName,
           });
-          cafeListTag.push(newTag);
+          boardtag.push(newTag);
         }
       }
       const result = await this.cafeBoardsRepository.save({
         ...cafeBoard,
-        cafeListTag: cafeListTag,
+        tags: boardtag,
         user: _user.id,
       });
       if (image) {
@@ -213,23 +189,6 @@ export class CafeBoardsService {
       id: cafeBoardId,
     });
     return restoreResult.affected ? true : false;
-  }
-
-  async saveImage({ images, result }) {
-    await Promise.all(
-      images.map(
-        (el, idx) =>
-          new Promise((resolve, reject) => {
-            this.imagesRepository.save({
-              iaMain: idx === 0 ? true : false,
-              url: el,
-              cafeBoard: { id: result.id },
-            });
-            resolve('이미지 저장 완료');
-            reject('이미지 저장 실패');
-          }),
-      ),
-    );
   }
 
   async search({ search_cafelist }) {

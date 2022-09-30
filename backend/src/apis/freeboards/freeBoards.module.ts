@@ -3,7 +3,7 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Image } from '../images/entities/image.entity';
 import { ImagesService } from '../images/image.service';
-import { FreeBoardTag } from '../freeBoardTags/entities/freeBoardTag.entity';
+import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersService } from '../users/users.service';
 import { FreeBoardsresolver } from './freeBoards.resolver';
@@ -20,7 +20,7 @@ import { CafeBoard } from '../cafeBoards/entities/cafeBoard.entity';
       User,
       Like,
       Image,
-      FreeBoardTag,
+      Tag,
       CafeBoard,
     ]),
     ElasticsearchModule.register({

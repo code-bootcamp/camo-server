@@ -12,16 +12,16 @@ import { CafeBoard } from './entities/cafeBoard.entity';
 /**
  * CafeBoard(카페 소개글) GrqphQL API Resolver
  * @APIs
- * 'searchCafeList'
- * 'fetchCafeListNumber',
- * 'fetchCafeList',
- * 'fetchCafeLists',
+ * 'searchCafeBoards'
+ * 'fetchCafeBoardsNumber',
+ * 'fetchCafeBoard',
+ * 'fetchCafeBoards',
  * 'fetchCafeListsCreatedAt',
- * 'fetchCafeListsFavoriteCafe',
- * 'createCafeList',
- * 'updateCafeList',
- * 'deleteCafeList',
- * 'restoreCafeList'
+ * 'fetchCafeBoardLike',
+ * 'createCafeBoard',
+ * 'updateCafeBoard',
+ * 'deleteCafeBoard',
+ * 'restoreCafeBoard'
  */
 @Resolver()
 export class CafeBoardsResolver {
@@ -57,7 +57,7 @@ export class CafeBoardsResolver {
 
   /** 카페 게시글 전체 조회 */
   @Query(() => [CafeBoard])
-  async fetchCafeLists(
+  async fetchCafeBoards(
     @Args('page', { defaultValue: 1 }) page: number, //
   ) {
     return this.cafeBoardsService.findAll({ page });
@@ -83,11 +83,11 @@ export class CafeBoardsResolver {
    * @Params sortBy : 정렬기준 (ex ASC, DESC)
    */
   @Query(() => [CafeBoard])
-  fetchCafeListsFavoriteCafe(
+  fetchCafeBoardLike(
     @Args('page', { defaultValue: 1 }) page: number, //
     @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
   ) {
-    return this.cafeBoardsService.findByfavoriteCafeCount({
+    return this.cafeBoardsService.findByCafeLikeCount({
       page,
       sortBy,
     });
@@ -97,11 +97,12 @@ export class CafeBoardsResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeBoard)
   async createCafeBoard(
+    @Context() context: IContext,
     @Args('createCafeBoardInput') createCafeBoardInput: CreateCafeBoardInput,
-    @Args('userId') userId: string,
   ) {
+    const user = context.req.user.email;
     return await this.cafeBoardsService.create({
-      userId,
+      user,
       createCafeBoardInput,
     });
   }

@@ -15,8 +15,8 @@ import {
 } from 'typeorm';
 import { Review } from 'src/apis/reviews/entites/review.entity';
 import { CafeListImage } from 'src/apis/cafeListImage/entities/cafeListImage.entity';
-import { FavoriteCafe } from 'src/apis/favoreiteCafes/entities/favoriteCafe.entity';
 import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
+import { Like } from 'src/apis/likes/entities/like.entity';
 
 @Entity()
 @ObjectType()
@@ -101,11 +101,11 @@ export class CafeBoard {
   reviews: Review[];
 
   @JoinTable()
-  @OneToMany(() => FavoriteCafe, (favoriteCafe) => favoriteCafe.cafeBoard, {
+  @OneToMany(() => Like, (like) => like.cafeBoard, {
     nullable: true,
   })
-  @Field(() => [FavoriteCafe], { nullable: true })
-  favoriteCafe: FavoriteCafe[];
+  @Field(() => [Like], { nullable: true })
+  like: Like[];
 
   @JoinTable()
   @OneToMany(() => CafeListImage, (cafeListImage) => cafeListImage.cafeBoard, {

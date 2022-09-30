@@ -31,9 +31,9 @@ services:
   logstash:
     image: logstash:7.17.0
     volumes:
-      - ./elk/logstash/logstash.dev.conf:/usr/share/logstash/pipeline/logstash.dev.conf
+      - ./elk/logstash/freeBoard.dev.conf:/usr/share/logstash/pipeline/freeBoard.dev.conf
       - ./elk/logstash/mysql-connector-java-8.0.28.jar:/usr/share/logstash/mysql-connector-java-8.0.28.jar
-      - ./elk/logstash/elasticsearch.json:/usr/share/logstash/elasticsearch.json
+      - ./elk/logstash/freeBoard.json:/usr/share/logstash/freeBoard.json
       - ./elk/logstash/cafeBoard.dev.conf:/usr/share/logstash/pipeline/cafeBoard.dev.conf
       - ./elk/logstash/cafeBoard.json:/usr/share/logstash/templates/cafeBoard.json
       - ./elk/logstash/pipelines.dev.yml:/usr/share/logstash/path.settings/pipelines.dev.yml

@@ -96,13 +96,13 @@ export class CafeBoardsResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeBoard)
   async createCafeList(
-    @Args('createCafeListInput') createCafeListInput: CreateCafeBoardInput,
+    @Args('createCafeBoardInput') createCafeBoardInput: CreateCafeBoardInput,
     @Context() context: IContext,
   ) {
     const user = context.req.user.email;
     return await this.cafeBoardsService.create({
       user,
-      createCafeListInput,
+      createCafeBoardInput,
     });
   }
 

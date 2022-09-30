@@ -9,7 +9,7 @@ import { CafeListImagesService } from '../cafeListImage/CafeListImages.service';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
 import { CafeListTag } from '../cafeListTags/entities/cafeListTag.entity';
 import { CafeReservation } from '../cafeReservations/entities/cafeReservations.entity';
-import { FavoriteCafe } from '../favoreiteCafes/entities/favoriteCafe.entity';
+import { Like } from '../likes/entities/like.entity';
 import { Review } from '../reviews/entites/review.entity';
 import { User } from '../users/entites/user.entity';
 import { UsersResolver } from '../users/users.resolver';
@@ -22,7 +22,7 @@ import { CafeBoard } from './entities/cafeBoard.entity';
   imports: [
     TypeOrmModule.forFeature([
       CafeBoard, //
-      FavoriteCafe,
+      Like,
       Review,
       CafeListImage,
       CafeListTag,
@@ -36,6 +36,7 @@ import { CafeBoard } from './entities/cafeBoard.entity';
   providers: [
     CafeBoardsModule, //
     CafeBoardsService,
+    CafeBoardsResolver,
     UsersService,
     CafeListImagesService,
     UsersResolver,

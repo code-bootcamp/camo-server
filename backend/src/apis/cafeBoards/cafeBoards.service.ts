@@ -7,9 +7,9 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CafeListImage } from '../cafeListImage/entities/cafeListImage.entity';
-import { FavoriteCafe } from '../favoreiteCafes/entities/favoriteCafe.entity';
 import { CafeListImagesService } from '../cafeListImage/CafeListImages.service';
 import { User } from '../users/entites/user.entity';
+import { Like } from '../likes/entities/like.entity';
 
 @Injectable()
 export class CafeBoardsService {
@@ -29,8 +29,8 @@ export class CafeBoardsService {
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
 
-    @InjectRepository(FavoriteCafe)
-    private readonly favoriteCafeRepository: Repository<FavoriteCafe>,
+    @InjectRepository(Like)
+    private readonly likesRepository: Repository<Like>,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -96,8 +96,8 @@ export class CafeBoardsService {
     return result;
   }
 
-  async create({ user, createCafeListInput }): Promise<CafeBoard[]> {
-    const { tags, image, ...cafeBoard } = createCafeListInput;
+  async create({ user, createCafeBoardInput }): Promise<CafeBoard[]> {
+    const { tags, image, ...cafeBoard } = createCafeBoardInput;
 
     const _user = await this.userRepository.findOne({
       where: { email: user },
@@ -204,7 +204,7 @@ export class CafeBoardsService {
       id: cafeBoardId,
     });
     this.cafeListImageRepository.delete({ cafeBoard: { id: cafeBoard.id } });
-    this.favoriteCafeRepository.delete({ cafeBoard: { id: cafeBoard.id } });
+    this.likesRepository.delete({ cafeBoard: { id: cafeBoard.id } });
     return result.affected ? true : false;
   }
 

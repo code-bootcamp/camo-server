@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { favoriteBoard } from '../favoriteBoard/entities/favoriteBoard.entity';
-import { FavoriteBoardsService } from '../favoriteBoard/favoriteBoards.service';
 import { Image } from '../images/entities/image.entity';
 import { ImagesService } from '../images/image.service';
 import { Tag } from '../tags/entities/tag.entity';
@@ -11,15 +9,19 @@ import { UsersService } from '../users/users.service';
 import { FreeBoardsresolver } from './freeBoards.resolver';
 import { FreeBoardsService } from './freeBoards.service';
 import { FreeBoard } from './entities/freeBoard.entity';
+import { Like } from '../likes/entities/like.entity';
+import { LikesService } from '../likes/likes.service';
+import { CafeBoard } from '../cafeBoards/entities/cafeBoard.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       FreeBoard, //
       User,
-      favoriteBoard,
+      Like,
       Image,
       Tag,
+      CafeBoard,
     ]),
     ElasticsearchModule.register({
       node: 'http://elasticsearch:9200',
@@ -30,7 +32,7 @@ import { FreeBoard } from './entities/freeBoard.entity';
     FreeBoardsService,
     UsersService,
     ImagesService,
-    FavoriteBoardsService,
+    LikesService,
   ],
 })
 export class FreeBoardsmodule {}

@@ -41,8 +41,8 @@ services:
       - elasticsearch
     volumes:
       - ./elk/logstash/mysql-connector-java-8.0.28.jar:/usr/share/logstash/mysql-connector-java-8.0.28.jar
-      - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./elk/logstash/elasticsearch.json:/usr/share/logstash/templates/elasticsearch.json
+      - ./elk/logstash/freeBoard.conf:/usr/share/logstash/pipeline/freeBoard.conf
+      - ./elk/logstash/freeBoard.json:/usr/share/logstash/templates/freeBoard.json
       - ./elk/logstash/cafeBoard.conf:/usr/share/logstash/pipeline/cafeBoard.conf
       - ./elk/logstash/cafeBoard.json:/usr/share/logstash/templates/cafeBoard.json
       - ./elk/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml

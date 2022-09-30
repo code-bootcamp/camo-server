@@ -24,7 +24,7 @@ export class FavoriteBoardsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async like({ userId, freeBoardId }): Promise<boolean> {
+  async freeBoardlike({ userId, freeBoardId }): Promise<boolean> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction('REPEATABLE READ');
@@ -37,7 +37,7 @@ export class FavoriteBoardsService {
         where: { id: freeBoardId },
       });
 
-      if (!freeBoard) throw new NotFoundException('존재하지 않는 피드입니다');
+      if (!freeBoard) throw new NotFoundException('존재하지 않는 게시글입니다');
 
       const boardLike = await this.favoriteBoardsRepository
         .createQueryBuilder('boardLike')
@@ -101,7 +101,7 @@ export class FavoriteBoardsService {
     }
   }
 
-  async findAll({ freeBoardId }) {
+  async finFreeBoarddAll({ freeBoardId }) {
     const result = await this.favoriteBoardsRepository.find({
       where: { freeBoard: { id: freeBoardId } },
       relations: ['freeBoard', 'user'],

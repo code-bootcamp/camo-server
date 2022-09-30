@@ -65,7 +65,7 @@ export class LikesService {
 
         updateCafeList = this.cafeBoardsRepository.create({
           ...cafeBoard,
-          favoriteCafeCount: cafeBoard.favoriteCafeCount + 1,
+          CafeLikeCount: cafeBoard.CafeLikeCount + 1,
         });
 
         likeStatus = true;
@@ -79,7 +79,7 @@ export class LikesService {
 
         updateCafeList = this.cafeBoardsRepository.create({
           ...cafeBoard,
-          favoriteCafeCount: cafeBoard.favoriteCafeCount - 1,
+          CafeLikeCount: cafeBoard.CafeLikeCount - 1,
         });
 
         likeStatus = false;

@@ -1,6 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/apis/users/entites/user.entity';
-import { CafeListTag } from 'src/apis/cafeListTags/entities/cafeListTag.entity';
 import {
   Column,
   CreateDateColumn,
@@ -17,6 +16,7 @@ import { Review } from 'src/apis/reviews/entites/review.entity';
 import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
 import { Like } from 'src/apis/likes/entities/like.entity';
 import { Image } from 'src/apis/images/entities/image.entity';
+import { Tag } from 'src/apis/tags/entities/tag.entity';
 
 @Entity()
 @ObjectType()
@@ -75,7 +75,7 @@ export class CafeBoard {
 
   @Column({ nullable: true })
   @Field(() => Number, { nullable: true })
-  favoriteCafeCount: number;
+  CafeLikeCount: number;
 
   @CreateDateColumn()
   @Field(() => Date)
@@ -90,11 +90,11 @@ export class CafeBoard {
   updatedAt: Date;
 
   @JoinTable()
-  @ManyToMany(() => CafeListTag, (cafeListTag) => cafeListTag.cafeBoard, {
+  @ManyToMany(() => Tag, (tags) => tags.cafeBoard, {
     nullable: true,
   })
-  @Field(() => [CafeListTag], { nullable: true })
-  cafeListTag: CafeListTag[];
+  @Field(() => [Tag], { nullable: true })
+  tags: Tag[];
 
   @OneToMany(() => Review, (review) => review.cafeBoard, { nullable: true })
   @Field(() => [Review], { nullable: true })

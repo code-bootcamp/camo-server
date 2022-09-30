@@ -16,7 +16,6 @@ import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
 import { FileModule } from './apis/files/file.module';
 import { ChatModule } from './apis/chat/chat.module';
-import { CafeListImageModule } from './apis/cafeListImage/cafeListImages.module';
 import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
 import { LikesModule } from './apis/likes/likes.module';
 
@@ -29,7 +28,6 @@ import { LikesModule } from './apis/likes/likes.module';
     FreeBoardsmodule,
     CafeBoardsModule,
     CafeReservationsMoudule,
-    CafeListImageModule,
     CafeListTagsModule,
     CommentsModule,
     LikesModule,

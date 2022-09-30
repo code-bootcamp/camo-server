@@ -4,7 +4,7 @@ import { FreeBoard } from '../../freeboards/entities/freeBoard.entity';
 
 @Entity()
 @ObjectType()
-export class Tag {
+export class FreeBoardTag {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -15,5 +15,5 @@ export class Tag {
 
   @ManyToMany(() => FreeBoard, (freeBoard) => freeBoard.tags)
   @Field(() => [FreeBoard])
-  boards: FreeBoard[];
+  freeBoard: FreeBoard[];
 }

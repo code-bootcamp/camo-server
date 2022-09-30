@@ -16,7 +16,7 @@ import { CafeBoard } from './entities/cafeBoard.entity';
  * 'fetchCafeBoardsNumber',
  * 'fetchCafeBoard',
  * 'fetchCafeBoards',
- * 'fetchCafeListsCreatedAt',
+ * 'fetchCafeBoardsByCreatedAt',
  * 'fetchCafeBoardLike',
  * 'createCafeBoard',
  * 'updateCafeBoard',

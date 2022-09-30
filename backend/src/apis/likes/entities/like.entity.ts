@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CafeBoard } from 'src/apis/cafeBoards/entities/cafeBoard.entity';
+import { FreeBoard } from 'src/apis/freeboards/entities/freeBoard.entity';
 import { User } from 'src/apis/users/entites/user.entity';
 import {
   Column,
@@ -11,7 +12,7 @@ import {
 
 @Entity()
 @ObjectType()
-export class FavoriteCafe {
+export class Like {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -28,4 +29,8 @@ export class FavoriteCafe {
   @ManyToOne(() => CafeBoard, { nullable: true })
   @Field(() => CafeBoard, { nullable: true })
   cafeBoard: CafeBoard;
+
+  @ManyToOne(() => FreeBoard, { nullable: true })
+  @Field(() => FreeBoard, { nullable: true })
+  freeBoard: FreeBoard;
 }

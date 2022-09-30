@@ -17,21 +17,21 @@ export class FavoriteBoardsResolver {
     private readonly favoriteBoardsService: FavoriteBoardsService, //
   ) {}
 
-  @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => Boolean)
-  toggleLikeFeed(
-    @Args('freeBoardId') freeBoardId: string,
-    @Context() context: IContext,
-  ) {
-    const userId = context.req.user.id;
-    const result = this.favoriteBoardsService.like({ userId, freeBoardId });
-    return result;
-  }
+  // @UseGuards(GqlAuthAccessGuard)
+  // @Mutation(() => Boolean)
+  // toggleLikeFeed(
+  //   @Args('freeBoardId') freeBoardId: string,
+  //   @Context() context: IContext,
+  // ) {
+  //   const userId = context.req.user.id;
+  //   const result = this.favoriteBoardsService.cafeBoardlike({ userId, freeBoardId });
+  //   return result;
+  // }
 
-  @Query(() => [favoriteBoard])
-  fetchFavoriteUser(
-    @Args('freeBoardId') freeBoardId: string, //
-  ) {
-    return this.favoriteBoardsService.findAll({ freeBoardId });
-  }
+  // @Query(() => [favoriteBoard])
+  // fetchFavoriteUser(
+  //   @Args('freeBoardId') freeBoardId: string, //
+  // ) {
+  //   return this.favoriteBoardsService.findAll({ freeBoardId });
+  // }
 }

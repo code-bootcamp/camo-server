@@ -1,7 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { FreeBoard } from 'src/apis/freeboards/entities/freeBoard.entity';
 import { CafeReservation } from 'src/apis/cafeReservations/entities/cafeReservations.entity';
-import { FavoriteCafe } from 'src/apis/favoreiteCafes/entities/favoriteCafe.entity';
 import { USER_ROLE } from 'src/commons/type/user';
 import {
   Column,
@@ -12,6 +11,7 @@ import {
   OneToMany,
   JoinTable,
 } from 'typeorm';
+import { Like } from 'src/apis/likes/entities/like.entity';
 
 registerEnumType(USER_ROLE, {
   name: 'USER_ROLE_ENUM',
@@ -67,11 +67,11 @@ export class User {
   cafeReservation: CafeReservation[];
 
   @JoinTable()
-  @OneToMany(() => FavoriteCafe, (favoriteCafe) => favoriteCafe.user, {
+  @OneToMany(() => Like, (like) => like.user, {
     nullable: true,
   })
-  @Field(() => [FavoriteCafe], { nullable: true })
-  favoriteCafe: FavoriteCafe[];
+  @Field(() => [Like], { nullable: true })
+  like: Like[];
 
   @JoinTable()
   @OneToMany(() => FreeBoard, (freeBoard) => freeBoard.user, {

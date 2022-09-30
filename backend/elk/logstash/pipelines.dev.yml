@@ -1,7 +1,7 @@
-- pipeline.id: cafe
+- pipeline.id: cafeBoard
   pipeline.workers: 1
-  path.config: '/usr/share/logstash/pipeline/cafe.dev.conf'
+  path.config: '/usr/share/logstash/pipeline/cafeBoard.dev.conf'
 
-- pipeline.id: board
+- pipeline.id: freeBoard
   pipeline.workers: 1
-  path.config: '/usr/share/logstash/pipeline/logstash.dev.conf'
+  path.config: '/usr/share/logstash/pipeline/freeBoard.dev.conf'

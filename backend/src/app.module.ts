@@ -11,8 +11,6 @@ import { FreeBoardsmodule } from './apis/freeboards/freeBoards.module';
 import { AuthsModule } from './apis/auths/auths.module';
 import { CafeBoardsModule } from './apis/cafeBoards/cafeBoards.module';
 import { CommentsModule } from './apis/comments/comments.module';
-import { FavoriteCafesModule } from './apis/favoreiteCafes/favoriteCafes.module';
-import { FavoriteBoardsModule } from './apis/favoriteBoard/favoriteBoards.module';
 import { TagsModule } from './apis/tags/tags.module';
 import * as redisStore from 'cache-manager-redis-store';
 import type { RedisClientOptions } from 'redis';
@@ -20,6 +18,7 @@ import { FileModule } from './apis/files/file.module';
 import { ChatModule } from './apis/chat/chat.module';
 import { CafeListImageModule } from './apis/cafeListImage/cafeListImages.module';
 import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
+import { LikesModule } from './apis/likes/likes.module';
 
 @Module({
   imports: [
@@ -33,8 +32,7 @@ import { CafeListTagsModule } from './apis/cafeListTags/cafeListTags.module';
     CafeListImageModule,
     CafeListTagsModule,
     CommentsModule,
-    FavoriteCafesModule,
-    FavoriteBoardsModule,
+    LikesModule,
     FileModule,
     PaymentsModule,
     ReviewsModule,

@@ -26,14 +26,15 @@ import { CafeBoard } from './entities/cafeBoard.entity';
 @Resolver()
 export class CafeBoardsResolver {
   constructor(
-    private readonly cafeBoardsService: CafeBoardsService, //
+    private readonly cafeBoardsService: CafeBoardsService,
+
     @InjectRepository(CafeBoard)
     private readonly cafeBoardsRepository: Repository<CafeBoard>,
   ) {}
 
   /** 카페 소개글 검색 */
   @Query(() => [CafeBoard])
-  async searchCafeList(
+  async searchCafeBoards(
     @Args({ name: 'search_cafelist', nullable: true }) search_cafelist: string,
   ) {
     return this.cafeBoardsService.search({ search_cafelist });
@@ -41,14 +42,14 @@ export class CafeBoardsResolver {
 
   /** 카페 소개글 개수 조회 */
   @Query(() => Int)
-  async fetchCafeListNumber() {
+  async fetchCafeBoardsNumber() {
     const result = await this.cafeBoardsRepository.find({});
     return result.length;
   }
 
   /** 카페게시글 하나 조회 */
   @Query(() => CafeBoard)
-  fetchCafeList(
+  fetchCafeBoard(
     @Args('cafeBoardId') cafeBoardId: string, //
   ) {
     return this.cafeBoardsService.findOne({ cafeBoardId });
@@ -67,7 +68,7 @@ export class CafeBoardsResolver {
    * @Params sortBy : 정렬기준 (ex ASC, DESC)
    */
   @Query(() => [CafeBoard])
-  fetchCafeListsCreatedAt(
+  fetchCafeBoardsByCreatedAt(
     @Args('page', { defaultValue: 1 }) page: number, //
     @Args('sortBy', { defaultValue: 'DESC', nullable: true }) sortBy: string,
   ) {
@@ -95,13 +96,12 @@ export class CafeBoardsResolver {
   /** 카페 소개글 생성 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeBoard)
-  async createCafeList(
+  async createCafeBoard(
     @Args('createCafeBoardInput') createCafeBoardInput: CreateCafeBoardInput,
-    @Context() context: IContext,
+    @Args('userId') userId: string,
   ) {
-    const user = context.req.user.email;
     return await this.cafeBoardsService.create({
-      user,
+      userId,
       createCafeBoardInput,
     });
   }
@@ -109,16 +109,16 @@ export class CafeBoardsResolver {
   /** 카페 소개글 업데이트 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => CafeBoard)
-  async updateCafeList(
+  async updateCafeBoard(
     @Args('cafeBoardId') cafeBoardId: string,
-    @Args('updateCafeListInput') updateCafeListInput: UpdateCafeBoardInput,
+    @Args('updateCafeBoardInput') updateCafeBoardInput: UpdateCafeBoardInput,
     @Context() context: IContext,
   ) {
     const userEmail = context.req.user.email;
     const result = await this.cafeBoardsService.update({
       userEmail,
       cafeBoardId,
-      updateCafeListInput,
+      updateCafeBoardInput,
     });
     return result;
   }
@@ -126,7 +126,7 @@ export class CafeBoardsResolver {
   /** 카페 소개글 삭제 */
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
-  deleteCafeList(
+  deleteCafeBoard(
     @Args('cafeBoardId') cafeBoardId: string, //
     @Context() context: IContext,
   ) {
@@ -137,7 +137,7 @@ export class CafeBoardsResolver {
 
   /** 카페 소개글 복구 */
   @Mutation(() => Boolean)
-  restoreCafeList(
+  restoreCafeBoard(
     @Args('cafeBoardId') cafeBoardId: string, //
   ) {
     return this.cafeBoardsService.restore({ cafeBoardId });

@@ -10,6 +10,7 @@ import { Like } from '../likes/entities/like.entity';
 import { ImagesService } from '../images/image.service';
 import { Image } from '../images/entities/image.entity';
 import { Tag } from '../tags/entities/tag.entity';
+import { CreateCafeBoardInput } from './dto/createCafeBoard.input';
 
 @Injectable()
 export class CafeBoardsService {
@@ -74,7 +75,6 @@ export class CafeBoardsService {
 
   async create({ user, createCafeBoardInput }): Promise<CafeBoard[]> {
     const { tags, image, ...cafeBoard } = createCafeBoardInput;
-
     const _user = await this.usersRepository.findOne({
       where: { email: user },
     });
@@ -98,7 +98,7 @@ export class CafeBoardsService {
         }
       }
       const result = await this.cafeBoardsRepository.save({
-        ...cafeBoard,
+        ...createCafeBoardInput,
         tags: boardtag,
         user: _user.id,
       });

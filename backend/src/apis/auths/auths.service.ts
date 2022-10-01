@@ -27,9 +27,8 @@ export class AuthsService {
   getAccessToken({ user }) {
     return this.jwtService.sign(
       { email: user.email, sub: user.id },
-      { secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: '2w' },
+      { secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: '15M' },
     );
-    // 배포시 expireIn: 15Minute 설정
   }
 
   /** refreshToken 발급 */

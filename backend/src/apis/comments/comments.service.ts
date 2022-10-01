@@ -52,7 +52,7 @@ export class CommentsService {
     });
   }
 
-  async update({ commentId, userId, updateCommentInput }): Promise<Comment[]> {
+  async update({ commentId, user, updateCommentInput }): Promise<Comment[]> {
     const checkComment = await this.commentsRepository.findOne({
       where: { id: commentId },
     });
@@ -61,10 +61,10 @@ export class CommentsService {
       throw new ConflictException('해당 댓글을 찾을 수 없습니다.');
 
     const checkUser = await this.usersRepository.findOne({
-      where: { id: userId },
+      where: { email: user.email },
     });
 
-    if (checkUser.id !== userId)
+    if (checkUser.email !== user)
       throw new ConflictException('댓글 작성자만 접근이 가능합니다.');
 
     return await this.commentsRepository.save({

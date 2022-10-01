@@ -34,15 +34,14 @@ export class CommentsResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Comment)
   updateComment(
-    // @Context() context: IContext, // 개발 완료후 변경
-    @Args('userId') userId: string,
+    @Context() context: IContext,
     @Args('commentId') commentId: string,
     @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
   ) {
-    // const userId = context.req.user.id // 개발 완료 후 변경
+    const user = context.req.user.email;
     return this.commentService.update({
       commentId,
-      userId,
+      user,
       updateCommentInput,
     });
   }

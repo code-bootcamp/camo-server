@@ -85,9 +85,13 @@ export class FreeBoardsService {
     });
   }
 
-  async findBoardOne({ boardId }: { boardId: string }): Promise<FreeBoard> {
+  async findBoardOne({
+    freeBoardId,
+  }: {
+    freeBoardId: string;
+  }): Promise<FreeBoard> {
     const result = await this.freeBoardsRepository.findOne({
-      where: { id: boardId },
+      where: { id: freeBoardId },
       relations: ['tags', 'comment', 'images', 'user', 'favoriteBoard'],
     });
 
@@ -139,16 +143,22 @@ export class FreeBoardsService {
     }
   }
 
-  async update({ boardId, updateFreeBoardInput }) {
+  /** 게시글 수정 */
+  async update({ userEmail, freeBoardId, nickName, updateFreeBoardInput }) {
     const { image } = updateFreeBoardInput;
 
-    const boardList = await this.freeBoardsRepository.findOne({
-      where: { id: boardId },
+    const myfreeBoard = await this.freeBoardsRepository.findOne({
+      where: { id: freeBoardId },
       relations: ['user'],
     });
 
+    if (!myfreeBoard)
+      throw new UnprocessableEntityException('등록된 게시글이 없습니다.');
+    if (userEmail !== myfreeBoard.user.email)
+      throw new ConflictException(`${nickName}님의 게시글이 아닙니다.`);
+
     const _image = await this.imagesRepository.find({
-      where: { freeBoard: { id: boardId } },
+      where: { freeBoard: { id: freeBoardId } },
     });
 
     await Promise.all(
@@ -167,7 +177,7 @@ export class FreeBoardsService {
           new Promise((resolve) => {
             this.imagesRepository.save({
               url: el,
-              board: { id: boardList.id },
+              board: { id: myfreeBoard.id },
             });
             resolve('이미지 저장 완료');
           }),
@@ -175,7 +185,7 @@ export class FreeBoardsService {
     );
 
     const result = this.freeBoardsRepository.save({
-      ...boardList,
+      ...myfreeBoard,
       ...updateFreeBoardInput,
     });
     return result;
@@ -265,17 +275,5 @@ export class FreeBoardsService {
 
       return arrayBoard;
     }
-  }
-
-  /** 게시글 수정 */
-  async updateBoard({ boardId, nickName, updateFreeBoardInput, context }) {
-    const board = await this.findBoardOne({ boardId });
-    const user = context.req.user.id;
-    if (!board)
-      throw new UnprocessableEntityException('등록된 게시글이 없습니다.');
-    if (!user)
-      throw new ConflictException(`${nickName}님의 게시글이 아닙니다.`);
-
-    return this.update({ boardId, updateFreeBoardInput });
   }
 }

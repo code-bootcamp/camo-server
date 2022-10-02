@@ -18,3 +18,24 @@
   }
 
   ======================================================================
+
+  freeBoard.service.ts
+  /** 게시글 수정 */
+  async updateBoard({
+    userEmail,
+    boardId,
+    nickName,
+    updateFreeBoardInput,
+    context,
+  }) {
+    const board = await this.findBoardOne({ boardId });
+    const user = context.req.user.id;
+    if (!board)
+      throw new UnprocessableEntityException('등록된 게시글이 없습니다.');
+    if (!user)
+      throw new ConflictException(`${nickName}님의 게시글이 아닙니다.`);
+
+    return this.update({ userEmail, boardId, updateFreeBoardInput });
+  }
+
+======================================================================

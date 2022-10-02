@@ -54,9 +54,9 @@ export class FreeBoardsresolver {
   /** 게시글 하나 조회 */
   @Query(() => FreeBoard)
   fetchFreeBoard(
-    @Args('boardId') boardId: string, //
+    @Args('freeBoardId') freeBoardId: string, //
   ) {
-    return this.freeBoardsService.findBoardOne({ boardId });
+    return this.freeBoardsService.findBoardOne({ freeBoardId });
   }
 
   /** 게시글 전체 내림차순 조회 */
@@ -122,16 +122,18 @@ export class FreeBoardsresolver {
   @Mutation(() => FreeBoard)
   async updateFreeBoard(
     @Context() context: IContext,
-    @Args('boardId') boardId: string,
+    @Args('freeBoardId') freeBoardId: string,
     @Args('nickName') nickName: string,
     @Args('updateFreeBoardInput') updateFreeBoardInput: UpdateFreeBoardInput,
   ) {
-    return this.freeBoardsService.updateBoard({
-      boardId,
+    const userEmail = context.req.user.email;
+    const result = this.freeBoardsService.update({
+      userEmail,
+      freeBoardId,
       nickName,
       updateFreeBoardInput,
-      context,
     });
+    return result;
   }
 
   /** 게시글 삭제 */

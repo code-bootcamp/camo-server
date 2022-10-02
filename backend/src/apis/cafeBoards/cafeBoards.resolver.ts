@@ -112,6 +112,7 @@ export class CafeBoardsResolver {
   @Mutation(() => CafeBoard)
   async updateCafeBoard(
     @Args('cafeBoardId') cafeBoardId: string,
+    @Args('nickName') nickName: string,
     @Args('updateCafeBoardInput') updateCafeBoardInput: UpdateCafeBoardInput,
     @Context() context: IContext,
   ) {
@@ -119,6 +120,7 @@ export class CafeBoardsResolver {
     const result = await this.cafeBoardsService.update({
       userEmail,
       cafeBoardId,
+      nickName,
       updateCafeBoardInput,
     });
     return result;

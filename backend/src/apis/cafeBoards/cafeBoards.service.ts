@@ -1,6 +1,10 @@
 import { CafeBoard } from './entities/cafeBoard.entity';
 import { Cache } from 'cache-manager';
-import { CACHE_MANAGER, Inject } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -121,17 +125,20 @@ export class CafeBoardsService {
   async update({
     userEmail,
     cafeBoardId,
+    nickName,
     updateCafeBoardInput,
   }): Promise<CafeBoard[]> {
-    const { image, ...updateCafeBoard } = updateCafeBoardInput;
+    const { image } = updateCafeBoardInput;
 
     const myCafeBoard = await this.cafeBoardsRepository.findOne({
       where: { id: cafeBoardId },
       relations: ['user'],
     });
 
+    if (!myCafeBoard)
+      throw new UnprocessableEntityException('등록된 카페가 없습니다.');
     if (userEmail !== myCafeBoard.user.email)
-      throw new ConflictException('권한이 없습니다.');
+      throw new ConflictException(`${nickName}님의 카페가 아닙니다.`);
 
     const _image = await this.imagesRepository.find({
       where: { cafeBoard: { id: cafeBoardId } },
@@ -168,13 +175,13 @@ export class CafeBoardsService {
   }
 
   async delete({ context, cafeBoardId }): Promise<boolean> {
-    const userId = context.req.user.id;
+    const userEmail = context.req.user.email;
     const cafeBoard = await this.cafeBoardsRepository.findOne({
       where: { id: cafeBoardId },
       relations: ['user'],
     });
-    // if (cafeBoard.user.id !== userId)
-    //   throw new ConflictException('게시물의 작성자만 삭제할 수 있습니다.');
+    if (cafeBoard.user.email !== userEmail)
+      throw new ConflictException('게시물의 작성자만 삭제할 수 있습니다.');
 
     const result = await this.cafeBoardsRepository.softDelete({
       id: cafeBoardId,

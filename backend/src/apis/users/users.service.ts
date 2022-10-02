@@ -18,6 +18,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
@@ -92,7 +93,6 @@ export class UsersService {
   }
 
   async update({ email, updateUserInput, loginhash }): Promise<User> {
-    // 수정 후 결과값까지 받을 때 사용
     const userList = await this.usersRepository.findOne({
       where: { email },
     });
@@ -118,13 +118,7 @@ export class UsersService {
     return await this.update({ email, updateUserInput, loginhash });
   }
 
-  // 관리자용
-  //
-  //
-  //
-  //
-  //
-  /** 유저 Delete */
+  /** 유저 회원 탈퇴 */
   async delete({ password, userId }): Promise<boolean> {
     const user = await this.findOne({ userId });
     const userPassword = user.password;
@@ -136,25 +130,6 @@ export class UsersService {
       id: user.id,
     });
     return deleteresult.affected ? true : false;
-  }
-
-  /** 유저 삭제 (어드민) */
-  async deleteUser({ userId }): Promise<boolean> {
-    const deleteresult = await this.usersRepository.softDelete({
-      id: userId,
-    });
-    return deleteresult.affected ? true : false;
-  }
-
-  /** 유저 복구 */
-  async restore({ email }): Promise<boolean> {
-    const result = await this.usersRepository.restore({ email });
-    return result.affected ? true : false;
-  }
-
-  //** 랜덤 토큰 생성 */
-  getToken(): string {
-    return String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
   }
 
   //** SMS 인증문자 전송 */
@@ -185,6 +160,26 @@ export class UsersService {
         );
       }
     }
+  }
+
+  // 관리자용
+  /** 유저 삭제 (어드민) */
+  async deleteUser({ userId }): Promise<boolean> {
+    const deleteresult = await this.usersRepository.softDelete({
+      id: userId,
+    });
+    return deleteresult.affected ? true : false;
+  }
+
+  /** 유저 복구 */
+  async restore({ email }): Promise<boolean> {
+    const result = await this.usersRepository.restore({ email });
+    return result.affected ? true : false;
+  }
+
+  //** 랜덤 토큰 생성 */
+  getToken(): string {
+    return String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
   }
 
   /** 삭제된 유저 조회 Admin */

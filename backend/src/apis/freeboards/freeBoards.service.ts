@@ -261,7 +261,6 @@ export class FreeBoardsService {
           },
         },
       });
-
       const arrayBoard = result.hits.hits.map((el) => {
         const obj = {
           id: el._source['id'],
@@ -270,7 +269,6 @@ export class FreeBoardsService {
         };
         return obj;
       });
-
       await this.cacheManager.set(search, arrayBoard, { ttl: 20 });
 
       return arrayBoard;

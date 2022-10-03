@@ -204,7 +204,7 @@ export class CafeBoardsService {
       return checkRedis;
     } else {
       const result = await this.elasticsearchService.search({
-        index: 'cafeBoard',
+        index: 'cafeboard',
         body: {
           query: {
             multi_match: {

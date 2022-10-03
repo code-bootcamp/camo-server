@@ -218,7 +218,7 @@ export class FreeBoardsService {
       return checkRedis;
     } else {
       const result = await this.elasticsearchService.search({
-        index: 'freeBoard',
+        index: 'freeboard',
         size: 10000,
         body: {
           query: {
@@ -251,7 +251,7 @@ export class FreeBoardsService {
       return checkRedis;
     } else {
       const result = await this.elasticsearchService.search({
-        index: 'freeBoard',
+        index: 'freeboard',
         body: {
           query: {
             multi_match: {

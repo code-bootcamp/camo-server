@@ -1,6 +1,6 @@
 {
-  "template": "freeBoard",
-  "index_patterns": ["freeBoard"],
+  "template": "freeboard",
+  "index_patterns": ["freeboard"],
   "settings": {
     "index": {
       "max_ngram_diff": "20"

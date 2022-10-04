@@ -14,9 +14,9 @@ import { ChatMessage } from './entities/chatMessage.entity';
 import { ChatRoom } from './entities/chatRoom.entity';
 
 // 소켓 81번 포트에서 열어 줌
-@WebSocketGateway(81, {
+@WebSocketGateway({
   namespace: 'chat',
-  cors: { origin: process.env.CORS_ORIGIN },
+  cors: { origin: [true] },
 })
 @Injectable()
 export class ChatGateway {

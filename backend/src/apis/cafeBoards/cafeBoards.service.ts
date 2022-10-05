@@ -156,7 +156,7 @@ export class CafeBoardsService {
 
     await Promise.all(
       image.map(
-        (el) =>
+        ({ el }: { el: string }) =>
           new Promise((resolve) => {
             this.imagesRepository.save({
               url: el,

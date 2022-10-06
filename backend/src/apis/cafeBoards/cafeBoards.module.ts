@@ -1,10 +1,6 @@
 import { Module } from '@nestjs/common';
-import {
-  ElasticsearchModule,
-  ElasticsearchService,
-} from '@nestjs/elasticsearch';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RolesGuard } from 'src/commons/auth/roles.guard';
 import { CafeReservation } from '../cafeReservations/entities/cafeReservations.entity';
 import { Image } from '../images/entities/image.entity';
 import { ImagesService } from '../images/image.service';

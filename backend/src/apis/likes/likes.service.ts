@@ -8,7 +8,6 @@ import { DataSource, Repository } from 'typeorm';
 import { CafeBoard } from '../cafeBoards/entities/cafeBoard.entity';
 import { FreeBoard } from '../freeboards/entities/freeBoard.entity';
 import { User } from '../users/entites/user.entity';
-import { UsersService } from '../users/users.service';
 import { Like } from './entities/like.entity';
 
 @Injectable()

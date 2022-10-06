@@ -14,7 +14,6 @@ import { Like } from '../likes/entities/like.entity';
 import { ImagesService } from '../images/image.service';
 import { Image } from '../images/entities/image.entity';
 import { Tag } from '../tags/entities/tag.entity';
-import { CreateCafeBoardInput } from './dto/createCafeBoard.input';
 
 @Injectable()
 export class CafeBoardsService {

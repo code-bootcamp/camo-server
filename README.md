@@ -78,7 +78,129 @@
 </p><br>
 
 ## 8. 서버 폴더 구조
--추가 예정
+```
+├── apis
+│   ├── auths
+│   │   ├── auths.controllers.ts
+│   │   ├── auths.module.ts
+│   │   ├── auths.resolver.ts
+│   │   └── auths.service.ts
+│   ├── cafeBoards
+│   │   ├── cafeBoards.module.ts
+│   │   ├── cafeBoards.resolver.ts
+│   │   ├── cafeBoards.service.ts
+│   │   ├── dto
+│   │   │   ├── createCafeBoard.input.ts
+│   │   │   └── updateCafeBoard.input.ts
+│   │   └── entities
+│   │       └── cafeBoard.entity.ts
+│   ├── cafeReservations
+│   │   ├── cafeReservations.module.ts
+│   │   ├── cafeReservations.resolver.ts
+│   │   ├── cafeReservations.service.ts
+│   │   ├── dto
+│   │   │   └── createReservation.input.ts
+│   │   └── entities
+│   │       └── cafeReservations.entity.ts
+│   ├── chat
+│   │   ├── chat.gateway.ts
+│   │   ├── chat.module.ts
+│   │   ├── chat.resolver.ts
+│   │   ├── chat.service.ts
+│   │   └── entities
+│   │       ├── chatMessage.entity.ts
+│   │       └── chatRoom.entity.ts
+│   ├── comments
+│   │   ├── comments.module.ts
+│   │   ├── comments.resolver.ts
+│   │   ├── comments.service.ts
+│   │   ├── dto
+│   │   │   ├── createComment.input.ts
+│   │   │   └── updateComment.input.ts
+│   │   └── entites
+│   │       └── comment.entity.ts
+│   ├── files
+│   │   ├── file.module.ts
+│   │   ├── file.resolver.ts
+│   │   └── file.service.ts
+│   ├── freeboards
+│   │   ├── dto
+│   │   │   ├── createFreeBoard.input.ts
+│   │   │   ├── fetchFreeBoard.output.ts
+│   │   │   └── updateFreeBoard.input.ts
+│   │   ├── entities
+│   │   │   └── freeBoard.entity.ts
+│   │   ├── freeBoards.module.ts
+│   │   ├── freeBoards.resolver.ts
+│   │   └── freeBoards.service.ts
+│   ├── iamport
+│   │   └── iamport.service.ts
+│   ├── images
+│   │   ├── entities
+│   │   │   └── image.entity.ts
+│   │   ├── image.module.ts
+│   │   ├── image.resolver.ts
+│   │   └── image.service.ts
+│   ├── likes
+│   │   ├── entities
+│   │   │   └── like.entity.ts
+│   │   ├── likes.module.ts
+│   │   ├── likes.resolver.ts
+│   │   └── likes.service.ts
+│   ├── payments
+│   │   ├── entities
+│   │   │   └── payment.entity.ts
+│   │   ├── payments.module.ts
+│   │   ├── payments.resolver.ts
+│   │   └── payments.service.ts
+│   ├── reviews
+│   │   ├── dto
+│   │   │   ├── createReview.input.ts
+│   │   │   └── updateReview.input.ts
+│   │   ├── entites
+│   │   │   └── review.entity.ts
+│   │   ├── reviews.module.ts
+│   │   ├── reviews.resolver.ts
+│   │   └── reviews.service.ts
+│   ├── tags
+│   │   ├── entities
+│   │   │   └── tag.entity.ts
+│   │   ├── tags.module.ts
+│   │   ├── tags.resolver.ts
+│   │   └── tags.service.ts
+│   └── users
+│       ├── dto
+│       │   ├── createCafeOwner.input.ts
+│       │   ├── createUser.input.ts
+│       │   └── updateUser.input.ts
+│       ├── entites
+│       │   └── user.entity.ts
+│       ├── users.module.ts
+│       ├── users.resolver.ts
+│       └── users.service.ts
+├── app.module.ts
+├── commons
+│   ├── auth
+│   │   ├── gql-auth.guard.ts
+│   │   ├── jwt-access.strategy.ts
+│   │   ├── jwt-admin.strategy.ts
+│   │   ├── jwt-refresh.strategy.ts
+│   │   ├── jwt-social-google.strategy.ts
+│   │   ├── jwt-social-kakao.strategy.ts
+│   │   ├── jwt-social-naver.strategy.ts
+│   │   ├── roles.decorator.ts
+│   │   └── roles.guard.ts
+│   ├── filter
+│   │   └── http-exception.filter.ts
+│   ├── graphql
+│   │   └── schema.gql
+│   ├── libraries
+│   │   └── utils.ts
+│   └── type
+│       ├── context.ts
+│       └── user.ts
+└── main.ts
+```
 
 ## 9. 프로젝트 설치
 ```
